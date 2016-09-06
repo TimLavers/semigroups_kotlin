@@ -1,0 +1,29 @@
+C4 = { 1 2 3 4, 2 3 4 1, 3 4 1 2, 4 1 2 3 }
+
+2 1 3 4 = 2 1 3 4 * 1 2 3 4
+1 3 2 4 = 1 3 2 4 * 1 2 3 4
+1 2 4 3 = 2 3 1 4 * 4 1 2 3
+4 2 3 1 = 1 3 2 4 * 2 3 4 1
+1 4 3 2 = 3 2 1 4 * 3 4 1 2
+
+In the following, a, b, c, d are distinct elements of {1, 2, 3, 4}.
+
+Consider a b c d.
+
+This permutation takes d to 4. It can be written as a product theta * gamma^k,
+where theta(4) = 4 and gamma = 2 3 4 1. In this case, k = d.
+
+So a b c d = x y z 4 * gamma^d.
+
+So x y z 4 = a b c d * gamma^(4 - d).
+
+Consider (alpha, gamma^x) * (beta, gamma*y)
+
+This is the same as (alpha * gamma^x) * (beta * gamma^y)
+Which is alpha * (gamma^x * beta) * gamma^y
+
+Now beta fixes 4: beta(4) = 4.
+
+So gamma^x * beta takes x to 4.
+
+gamma^x * beta = gamma^x * beta * gamma^(4 - x) * gamma^x
