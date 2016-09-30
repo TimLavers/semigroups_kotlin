@@ -1,8 +1,8 @@
 package org.grandtestauto.maths.monoid.test
 
-import org.grandtestauto.assertion.Assert
 import org.grandtestauto.maths.monoid.FiniteFunction
 import org.grandtestauto.maths.monoid.allFunctionsFromTo
+import org.junit.Assert
 import org.junit.Test
 
 import java.util.HashMap
@@ -19,72 +19,72 @@ class FiniteFunctionTest : TestBase() {
 
     @Test
     fun applyTest(){
-        Assert.aequals(1, f.apply("one"))
-        Assert.aequals(1, f.apply("uno"))
-        Assert.aequals(1, f.apply("eins"))
-        Assert.aequals(1, f.apply("satu"))
-        Assert.aequals(2, f.apply("two"))
-        Assert.aequals(2, f.apply("zwei"))
-        Assert.aequals(2, f.apply("dos"))
-        Assert.aequals(2, f.apply("dua"))
-        Assert.aequals(3, f.apply("three"))
-        Assert.aequals(3, f.apply("tres"))
-        Assert.aequals(3, f.apply("drei"))
-        Assert.aequals(3, f.apply("tiga"))
+        Assert.assertEquals(1, f.invoke("one"))
+        Assert.assertEquals(1, f.invoke("uno"))
+        Assert.assertEquals(1, f.invoke("eins"))
+        Assert.assertEquals(1, f.invoke("satu"))
+        Assert.assertEquals(2, f.invoke("two"))
+        Assert.assertEquals(2, f.invoke("zwei"))
+        Assert.assertEquals(2, f.invoke("dos"))
+        Assert.assertEquals(2, f.invoke("dua"))
+        Assert.assertEquals(3, f.invoke("three"))
+        Assert.assertEquals(3, f.invoke("tres"))
+        Assert.assertEquals(3, f.invoke("drei"))
+        Assert.assertEquals(3, f.invoke("tiga"))
     }
 
     @Test
     fun domainTest(){
         val d = f.domain()
-        Assert.aequals(12, d.size)
-        Assert.azzert(d.contains("one"))
-        Assert.azzert(d.contains("uno"))
-        Assert.azzert(d.contains("satu"))
-        Assert.azzert(d.contains("eins"))
-        Assert.azzert(d.contains("two"))
-        Assert.azzert(d.contains("dua"))
-        Assert.azzert(d.contains("zwei"))
-        Assert.azzert(d.contains("dos"))
-        Assert.azzert(d.contains("tiga"))
-        Assert.azzert(d.contains("tres"))
-        Assert.azzert(d.contains("drei"))
-        Assert.azzert(d.contains("three"))
+        Assert.assertEquals(12, d.size)
+        Assert.assertTrue(d.contains("one"))
+        Assert.assertTrue(d.contains("uno"))
+        Assert.assertTrue(d.contains("satu"))
+        Assert.assertTrue(d.contains("eins"))
+        Assert.assertTrue(d.contains("two"))
+        Assert.assertTrue(d.contains("dua"))
+        Assert.assertTrue(d.contains("zwei"))
+        Assert.assertTrue(d.contains("dos"))
+        Assert.assertTrue(d.contains("tiga"))
+        Assert.assertTrue(d.contains("tres"))
+        Assert.assertTrue(d.contains("drei"))
+        Assert.assertTrue(d.contains("three"))
     }
 
     @Test
     fun rangeTest(){
         val range = f.range()
-        Assert.aequals(3, range.size)
-        Assert.azzert(range.contains(1))
-        Assert.azzert(range.contains(2))
-        Assert.azzert(range.contains(3))
+        Assert.assertEquals(3, range.size)
+        Assert.assertTrue(range.contains(1))
+        Assert.assertTrue(range.contains(2))
+        Assert.assertTrue(range.contains(3))
     }
 
     @Test
     fun equalsTest(){
         val missingTiga = FiniteFunction.Builder<String, Int>().add("one", 1).add("uno", 1).add("eins", 1).add("satu", 1).add("two", 2).add("dos", 2).add("zwei", 2).add("dua", 2).add("three", 3).add("tres", 3).add("drei", 3).build()
-        Assert.azzert(missingTiga != f)
-        Assert.azzert(f != missingTiga)
+        Assert.assertTrue(missingTiga != f)
+        Assert.assertTrue(f != missingTiga)
 
         val wrong = FiniteFunction.Builder<String, Int>().add("one", 1).add("uno", 1).add("eins", 1).add("satu", 1).add("two", 2).add("dos", 12).add("zwei", 2).add("dua", 2).add("three", 3).add("tres", 3).add("drei", 3).build()
-        Assert.azzert(wrong != f)
-        Assert.azzert(f != wrong)
+        Assert.assertTrue(wrong != f)
+        Assert.assertTrue(f != wrong)
 
         val same = FiniteFunction.Builder<String, Int>().add("one", 1).add("uno", 1).add("eins", 1).add("satu", 1).add("two", 2).add("dos", 2).add("zwei", 2).add("dua", 2).add("three", 3).add("tres", 3).add("drei", 3).add("tiga", 3).build()
-        Assert.azzert(same == f)
-        Assert.azzert(f == same)
+        Assert.assertTrue(same == f)
+        Assert.assertTrue(f == same)
     }
 
     @Test
     fun hashCodeTest(){
         val same = FiniteFunction.Builder<String, Int>().add("one", 1).add("uno", 1).add("eins", 1).add("satu", 1).add("two", 2).add("dos", 2).add("zwei", 2).add("dua", 2).add("three", 3).add("tres", 3).add("drei", 3).add("tiga", 3).build()
-        Assert.aequals(same.hashCode(), f.hashCode())
+        Assert.assertEquals(same.hashCode(), f.hashCode())
     }
 
     @Test
     fun toStringTest(){
-        Assert.azzert(f.toString().startsWith("{"))
-        Assert.azzert(f.toString().endsWith("}"))
+        Assert.assertTrue(f.toString().startsWith("{"))
+        Assert.assertTrue(f.toString().endsWith("}"))
     }
 
     @Test
@@ -93,93 +93,93 @@ class FiniteFunctionTest : TestBase() {
         val domain = HashSet<String>()
         var range: MutableSet<Int> = HashSet()
         var all = allFunctionsFromTo(domain, range)
-        Assert.aequals(1, all.size)
-        Assert.azzert(all.iterator().next().domain().isEmpty())
-        Assert.azzert(all.iterator().next().range().isEmpty())
+        Assert.assertEquals(1, all.size)
+        Assert.assertTrue(all.iterator().next().domain().isEmpty())
+        Assert.assertTrue(all.iterator().next().range().isEmpty())
 
         //Empty not empty.
         range.add(1)
         all = allFunctionsFromTo(domain, range)
-        Assert.aequals(1, all.size)
-        Assert.azzert(all.iterator().next().domain().isEmpty())
-        Assert.azzert(all.iterator().next().range().isEmpty())
+        Assert.assertEquals(1, all.size)
+        Assert.assertTrue(all.iterator().next().domain().isEmpty())
+        Assert.assertTrue(all.iterator().next().range().isEmpty())
 
         //Empty not empty.
         domain.add("Berg")
         range = HashSet<Int>()
         //        all = all(domain, range);
-        //        Assert.aequals(1, all.size());
-        //        Assert.azzert(all.iterator().next().domain().isEmpty());
-        //        Assert.azzert(all.iterator().next().range().isEmpty());
+        //        Assert.assertEquals(1, all.size());
+        //        Assert.assertFalse(all.iterator().next().domain().isEmpty());
+        //        Assert.assertFalse(all.iterator().next().range().isEmpty());
 
         //1, 1
         range.add(1)
         all = allFunctionsFromTo(domain, range)
-        Assert.aequals(1, all.size)
+        Assert.assertEquals(1, all.size)
         val f = all.iterator().next()
-        Assert.aequals(1, f.apply("Berg"))
+        Assert.assertEquals(1, f.invoke("Berg"))
 
         //1, 2
         range.add(2)
         all = allFunctionsFromTo(domain, range)
-        Assert.aequals(2, all.size)
-        Assert.azzert(all.contains(f<String, Int>("Berg", 1)))
-        Assert.azzert(all.contains(f<String, Int>("Berg", 2)))
+        Assert.assertEquals(2, all.size)
+        Assert.assertTrue(all.contains(f("Berg", 1)))
+        Assert.assertTrue(all.contains(f("Berg", 2)))
 
         //2, 2
         domain.add("Webern")
         all = allFunctionsFromTo(domain, range)
-        Assert.aequals(4, all.size)
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>("Berg", 1), "Webern", 1)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>("Berg", 1), "Webern", 2)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>("Berg", 2), "Webern", 1)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>("Berg", 2), "Webern", 2)))
+        Assert.assertEquals(4, all.size)
+        Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 1)))
+        Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 2)))
+        Assert.assertTrue(all.contains(f(f("Berg", 2), "Webern", 1)))
+        Assert.assertTrue(all.contains(f(f("Berg", 2), "Webern", 2)))
 
         //2, 3
         range.add(3)
         all = allFunctionsFromTo(domain, range)
-        Assert.aequals(9, all.size)
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>("Berg", 1), "Webern", 1)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>("Berg", 1), "Webern", 2)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>("Berg", 1), "Webern", 3)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>("Berg", 2), "Webern", 1)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>("Berg", 2), "Webern", 2)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>("Berg", 2), "Webern", 3)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>("Berg", 3), "Webern", 1)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>("Berg", 3), "Webern", 2)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>("Berg", 3), "Webern", 3)))
+        Assert.assertEquals(9, all.size)
+        Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 1)))
+        Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 2)))
+        Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 3)))
+        Assert.assertTrue(all.contains(f(f("Berg", 2), "Webern", 1)))
+        Assert.assertTrue(all.contains(f(f("Berg", 2), "Webern", 2)))
+        Assert.assertTrue(all.contains(f(f("Berg", 2), "Webern", 3)))
+        Assert.assertTrue(all.contains(f(f("Berg", 3), "Webern", 1)))
+        Assert.assertTrue(all.contains(f(f("Berg", 3), "Webern", 2)))
+        Assert.assertTrue(all.contains(f(f("Berg", 3), "Webern", 3)))
 
         //3, 3
         domain.add("Schoenberg")
         all = allFunctionsFromTo(domain, range)
-        Assert.aequals(27, all.size)
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 1), "Webern", 1), "Schoenberg", 1)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 1), "Webern", 1), "Schoenberg", 2)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 1), "Webern", 1), "Schoenberg", 3)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 1), "Webern", 2), "Schoenberg", 1)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 1), "Webern", 2), "Schoenberg", 2)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 1), "Webern", 2), "Schoenberg", 3)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 1), "Webern", 3), "Schoenberg", 1)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 1), "Webern", 3), "Schoenberg", 2)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 1), "Webern", 3), "Schoenberg", 3)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 2), "Webern", 1), "Schoenberg", 1)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 2), "Webern", 1), "Schoenberg", 2)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 2), "Webern", 1), "Schoenberg", 3)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 2), "Webern", 2), "Schoenberg", 1)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 2), "Webern", 2), "Schoenberg", 2)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 2), "Webern", 2), "Schoenberg", 3)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 2), "Webern", 3), "Schoenberg", 1)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 2), "Webern", 3), "Schoenberg", 2)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 2), "Webern", 3), "Schoenberg", 3)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 3), "Webern", 1), "Schoenberg", 1)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 3), "Webern", 1), "Schoenberg", 2)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 3), "Webern", 1), "Schoenberg", 3)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 3), "Webern", 2), "Schoenberg", 1)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 3), "Webern", 2), "Schoenberg", 2)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 3), "Webern", 2), "Schoenberg", 3)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 3), "Webern", 3), "Schoenberg", 1)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 3), "Webern", 3), "Schoenberg", 2)))
-        Assert.azzert(all.contains(f<String, Int>(f<String, Int>(f<String, Int>("Berg", 3), "Webern", 3), "Schoenberg", 3)))
+        Assert.assertEquals(27, all.size)
+        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 1), "Schoenberg", 1)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 1), "Schoenberg", 2)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 1), "Schoenberg", 3)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 2), "Schoenberg", 1)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 2), "Schoenberg", 2)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 2), "Schoenberg", 3)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 3), "Schoenberg", 1)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 3), "Schoenberg", 2)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 3), "Schoenberg", 3)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 1), "Schoenberg", 1)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 1), "Schoenberg", 2)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 1), "Schoenberg", 3)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 2), "Schoenberg", 1)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 2), "Schoenberg", 2)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 2), "Schoenberg", 3)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 3), "Schoenberg", 1)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 3), "Schoenberg", 2)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 3), "Schoenberg", 3)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 1), "Schoenberg", 1)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 1), "Schoenberg", 2)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 1), "Schoenberg", 3)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 2), "Schoenberg", 1)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 2), "Schoenberg", 2)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 2), "Schoenberg", 3)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 3), "Schoenberg", 1)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 3), "Schoenberg", 2)))
+        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 3), "Schoenberg", 3)))
     }
 
     internal fun <S, T> f(d: S, r: T): FiniteFunction<S, T> {
@@ -188,7 +188,7 @@ class FiniteFunctionTest : TestBase() {
 
     internal fun <S, T> f(f: FiniteFunction<S, T>, domainElement: S, rangeElement: T): FiniteFunction<S, T> {
         val data = HashMap<S, T>()
-        f.domain().forEach { d -> data.put(d, f.apply(d)) }
+        f.domain().forEach { d -> data.put(d, f.invoke(d)) }
         data.put(domainElement, rangeElement)
         return FiniteFunction(data)
     }

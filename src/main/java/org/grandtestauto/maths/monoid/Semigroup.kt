@@ -1,7 +1,6 @@
 package org.grandtestauto.maths.monoid
 
-import java.util.Collections
-import java.util.HashSet
+import java.util.*
 
 fun powerSetIntersection(rank_atLeast2: Int): Semigroup<IntSet> {
     val generators = HashSet<IntSet>()
@@ -61,8 +60,8 @@ fun <T, U> isHomomorphism(function: FiniteFunction<T, U>, domain: Semigroup<T>, 
         if (!result[0]) break
         for (t2 in domain.elements()) {
             val t1t2 = domain.composition()(t1, t2)
-            val t1t2f = function.apply(t1t2)
-            val t1ft2f = range.composition()(function.apply(t1), function.apply(t2))
+            val t1t2f = function.invoke(t1t2)
+            val t1ft2f = range.composition()(function.invoke(t1), function.invoke(t2))
             if (t1ft2f != t1t2f) {
                 result[0] = false
             }
@@ -76,7 +75,7 @@ fun rightZeroSemigroup(rank: Int): Semigroup<String> {
     for (i in 0..rank - 1) {
         elements.add("rz" + i)
     }
-    return Semigroup<String>(elements, { s, t -> t})
+    return Semigroup(elements, { s, t -> t})
 }
 
 fun leftZeroSemigroup(rank: Int): Semigroup<String> {
@@ -84,7 +83,7 @@ fun leftZeroSemigroup(rank: Int): Semigroup<String> {
     for (i in 0..rank - 1) {
         elements.add("lz" + i)
     }
-    return Semigroup<String>(elements, { s, t -> s})
+    return Semigroup(elements, { s, t -> s})
 }
 
 fun <T> leftIdeal(semigroup: Semigroup<T>, t: T): Set<T> {
@@ -209,7 +208,7 @@ fun <S,T> doubleProduct(left: Semigroup<S>,
             right.composition()(actionOfLeftOnRight(y.left())(x.right()),y.right()))
     }
 
-    return Semigroup(elements(), compose());
+    return Semigroup(elements(), compose())
 }
 
 fun <T> asMonoid(semigroup: Semigroup<T>,identity: T  ) : Monoid<T> {

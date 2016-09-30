@@ -86,7 +86,7 @@ class Transformation(private val map: IntArray) {
     }
 
     operator fun times(other : Transformation) : Transformation {
-        return compose(other);
+        return compose(other)
     }
 
     fun domain(): Set<Int> {

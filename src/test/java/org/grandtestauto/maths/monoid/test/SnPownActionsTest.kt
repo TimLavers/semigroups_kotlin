@@ -1,7 +1,6 @@
 package org.grandtestauto.maths.monoid.test
 
 import org.grandtestauto.maths.monoid.*
-import org.grandtestauto.test.tools.Waiting
 import org.junit.Assert
 import org.junit.Test
 
@@ -66,12 +65,12 @@ class SnPownActionsTest : TestBase() {
 //        System.out.println("Number of elements in product = " + product.elements().size());
 //        Stopwatch timer = new Stopwatch();
 //        timer.start();
-//        Assert.azzert(Semigroup.isAssociative(sdp.composition(), sdp.elements()));
+//        Assert.assertFalse(Semigroup.isAssociative(sdp.composition(), sdp.elements()));
 //        timer.stop();
 //        System.out.println("Time to check associativity: " + timer.times().get(0));
 //        timer = new Stopwatch();
 //        timer.start();
-//        Assert.azzert(Semigroup.isClosedUnderComposition(sdp.elements(), sdp.composition()));
+//        Assert.assertFalse(Semigroup.isClosedUnderComposition(sdp.elements(), sdp.composition()));
 //        timer.stop();
 //        System.out.println("Time to check commutativity: " + timer.times().get(0));
 //        GreensRelations<Tuple<IntSet, Transformation>> greens = new GreensRelations<>(sdp);

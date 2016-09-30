@@ -1,14 +1,9 @@
 package org.grandtestauto.maths.monoid.test
 
-import org.grandtestauto.assertion.Assert
 import org.grandtestauto.maths.monoid.*
-import org.grandtestauto.test.tools.Waiting
+import org.junit.Assert
 import org.junit.Test
-
-import java.util.HashSet
-import java.util.function.ToIntFunction
-import java.util.stream.Collectors
-import java.util.stream.Stream
+import java.util.*
 
 /**
 
@@ -35,11 +30,11 @@ class PO4PreserveTest : TestBase() {
         baseSet.add(3)
         baseSet.add(4)
         val relation = Relation(baseSet, tuples)
-        Assert.azzert(relation.isAPartialOrder)
+        Assert.assertTrue(relation.isAPartialOrder)
 
         val orderPreservers = orderPreservingTransformationMonoid(4)
-        Assert.azzert(isAssociative(TransformationComposition, orderPreservers.elements()))
-        Assert.azzert(isClosedUnderComposition(orderPreservers.elements(), TransformationComposition))
+        Assert.assertTrue(isAssociative(TransformationComposition, orderPreservers.elements()))
+        Assert.assertTrue(isClosedUnderComposition(orderPreservers.elements(), TransformationComposition))
 
         println("opt size: " + orderPreservers.elements().size)
 
@@ -47,7 +42,6 @@ class PO4PreserveTest : TestBase() {
         greens.lClasses()
 
         val lClasses = greens.lClasses()
-        Waiting.pause(2000)
         println("Number of lClasses = " + lClasses.subsets().size)
         val totalFixity = intArrayOf(0)
         lClasses.subsets().forEach { lClass ->
@@ -60,7 +54,6 @@ class PO4PreserveTest : TestBase() {
         }
         println("totalFixity = " + totalFixity[0])
 
-        Waiting.pause(2000)
         val rClasses = greens.rClasses()
         println("Number of rClasses = " + rClasses.subsets().size)
         totalFixity[0] = 0
@@ -72,7 +65,6 @@ class PO4PreserveTest : TestBase() {
             totalFixity[0] += fixity
             println("fixity = " + fixity)
         }
-        Waiting.pause(2000)
         println("totalFixity = " + totalFixity[0])
     }
 }

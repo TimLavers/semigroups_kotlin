@@ -4,10 +4,7 @@ import org.grandtestauto.maths.monoid.IntSet
 import org.grandtestauto.maths.monoid.Relation
 import org.grandtestauto.maths.monoid.Transformation
 import org.grandtestauto.maths.monoid.Tuple
-
-import java.util.Collections
-import java.util.HashSet
-import java.util.function.Consumer
+import java.util.*
 import java.util.stream.Stream
 
 fun tset(vararg transformations: Transformation): Set<Transformation> {
@@ -40,7 +37,7 @@ fun s(vararg elements: Int): IntSet {
 
 fun <T> set(vararg elements: T): Set<T> {
     val result = HashSet<T>()
-    Stream.of(*elements).forEach(Consumer<T> { result.add(it) })
+    Stream.of(*elements).forEach({ result.add(it) })
     return result
 }
 

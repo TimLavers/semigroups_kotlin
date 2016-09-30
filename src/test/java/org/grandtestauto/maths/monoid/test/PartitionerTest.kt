@@ -1,6 +1,6 @@
 package org.grandtestauto.maths.monoid.test
 
-import org.grandtestauto.assertion.Assert
+import org.junit.Assert
 import org.grandtestauto.maths.monoid.Partitioner
 import org.grandtestauto.maths.monoid.SetPartition
 import org.junit.Test
@@ -19,7 +19,7 @@ class PartitionerTest : TestBase() {
         for (i in 0..99) {
             ints.add(i)
         }
-        val partitioner = Partitioner<Int>(ints, BiPredicate<Int, Int> { t, u -> t % 5 == u % 5 })
+        val partitioner = Partitioner(ints, BiPredicate<Int, Int> { t, u -> t % 5 == u % 5 })
         val mod0 = HashSet<Int>()
         val mod1 = HashSet<Int>()
         val mod2 = HashSet<Int>()
@@ -38,6 +38,6 @@ class PartitionerTest : TestBase() {
         expected.addSubset(mod2)
         expected.addSubset(mod3)
         expected.addSubset(mod4)
-        Assert.aequals(expected, partitioner.equivalenceClasses())
+        Assert.assertEquals(expected, partitioner.equivalenceClasses())
     }
 }

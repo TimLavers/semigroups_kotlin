@@ -3,7 +3,7 @@ package org.grandtestauto.maths.monoid
 /**
  * @author Tim Lavers
  */
-class SubsetsOfSizeN<T>(private val originatingSet: Set<T>, cardinalityOfSubsets: Int) {
+class SubsetsOfSizeN<out T>(private val originatingSet: Set<T>, cardinalityOfSubsets: Int) {
     private val subsets = mutableSetOf<Set<T>>()
 
     init {
@@ -33,6 +33,6 @@ class SubsetsOfSizeN<T>(private val originatingSet: Set<T>, cardinalityOfSubsets
         originatingSet.forEach{t ->
             if (t != excluded) result.add(t)
         }
-        return result;
+        return result
     }
 }

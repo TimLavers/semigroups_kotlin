@@ -1,13 +1,13 @@
 package org.grandtestauto.maths.monoid.test
 
-import org.grandtestauto.assertion.Assert
 import org.grandtestauto.maths.monoid.*
+import org.junit.Assert
 import org.junit.Test
 
 /**
  * @author Tim Lavers
  */
-public class DoubleProductTest {
+class DoubleProductTest {
 
     private val s3: Semigroup<Transformation> = symmetricGroup(3)
     private val s4: Semigroup<Transformation> = symmetricGroup(4)
@@ -17,11 +17,11 @@ public class DoubleProductTest {
     @Test
     fun elementsTest() {
         val elements = product.elements()
-        Assert.aequals(6 * 24, elements.size)
+        Assert.assertEquals(6 * 24, elements.size)
         for (t3 in s3.elements()) {
             for (t4 in s4.elements()) {
                 val tuple = Tuple(t3, t4)
-                Assert.azzert(elements.contains(tuple))
+                Assert.assertTrue(elements.contains(tuple))
             }
         }
     }
@@ -32,8 +32,8 @@ public class DoubleProductTest {
         for (tupleA in elements) {
             for (tupleB in elements) {
                 val product = this.product.composition()(tupleA, tupleB)
-                Assert.aequals(s3.composition()(tupleA.left(), tupleB.left()), product.left())
-                Assert.aequals(s4.composition()(tupleA.right(), tupleB.right()), product.right())
+                Assert.assertEquals(s3.composition()(tupleA.left(), tupleB.left()), product.left())
+                Assert.assertEquals(s4.composition()(tupleA.right(), tupleB.right()), product.right())
             }
         }
     }

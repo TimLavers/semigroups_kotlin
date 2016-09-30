@@ -1,21 +1,22 @@
 package org.grandtestauto.maths.monoid.test
 
-import org.grandtestauto.assertion.Assert
 import org.grandtestauto.maths.monoid.*
+import org.junit.Assert
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
  * @author Tim Lavers
  */
-public class C5S4DoubleProduct {
+class C5S4DoubleProduct {
     private val c5 = cyclicGroup(5)
     //The generator of c5
     private val gamma = Transformation(intArrayOf(2,3,4,5,1))
     private val s4: Semigroup<Transformation>
 
-    private val actionOfSymOnCyc: ((Transformation) -> ((Transformation) -> (Transformation)));
-    private val actionOfCycOnSym: ((Transformation) -> ((Transformation) -> (Transformation)));
-    private val product : Semigroup<Tuple<Transformation, Transformation>>;
+    private val actionOfSymOnCyc: ((Transformation) -> ((Transformation) -> (Transformation)))
+    private val actionOfCycOnSym: ((Transformation) -> ((Transformation) -> (Transformation)))
+    private val product : Semigroup<Tuple<Transformation, Transformation>>
 
     init {
         //We want S4 embedded in S5.
@@ -39,12 +40,12 @@ public class C5S4DoubleProduct {
         //This decomposition is the basis of the double product decomposition.
         for (beta in s4) {
             for (theta in c5) {
-                val left = theta * beta;
+                val left = theta * beta
                 val n_theta_beta = beta.apply(theta.apply(5))
                 val gamma_inv = c5.powerOf(gamma,5 - n_theta_beta)
                 val gamma_pow = c5.powerOf(gamma, n_theta_beta)
                 val right = theta * (beta * gamma_inv * gamma_pow)
-                Assert.aequals(left, right)
+                Assert.assertEquals(left, right)
             }
         }
     }
@@ -52,11 +53,11 @@ public class C5S4DoubleProduct {
     @Test
     fun elementsTest() {
         val elements = product.elements()
-        Assert.aequals(24 * 5, elements.size);
+        Assert.assertEquals(24 * 5, elements.size)
         for (s in s4) {
             for (c in c5) {
-                val tuple = Tuple(s, c);
-                Assert.azzert(elements.contains(tuple));
+                val tuple = Tuple(s, c)
+                assertTrue(elements.contains(tuple))
             }
         }
     }
@@ -68,7 +69,7 @@ public class C5S4DoubleProduct {
                 val prod_eval = (m.left() * m.right()) * (n.left() * n.right())
                 val tuple = product.composition()(m , n)
                 val tuple_eval = tuple.left() * tuple.right()
-                Assert.aequals(prod_eval, tuple_eval)
+                Assert.assertEquals(prod_eval, tuple_eval)
             }
         }
     }

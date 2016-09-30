@@ -1,8 +1,6 @@
 package org.grandtestauto.maths.monoid
 
-import java.util.Collections
-import java.util.HashSet
-import java.util.stream.Collectors
+import java.util.*
 
 /**
  * A set of pairs of elements of the same set.
@@ -43,8 +41,8 @@ val isReflexive: Boolean
             elements.forEach({ ttTuple ->
                 elements.forEach({ ssTuple ->
                     if (ttTuple.right() == ssTuple.left()) {
-                        val composite = Tuple<T, T>(ttTuple.left(), ssTuple.right())
-                        if (!elements.contains(composite)) return false;
+                        val composite = Tuple(ttTuple.left(), ssTuple.right())
+                        if (!elements.contains(composite)) return false
                     }
 
                 })
