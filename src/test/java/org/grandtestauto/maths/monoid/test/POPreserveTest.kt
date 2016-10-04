@@ -5,6 +5,7 @@ import org.junit.Assert
 import org.junit.Test
 import java.util.*
 
+
 /**
  * @author Tim Lavers
  */
@@ -42,20 +43,8 @@ class POPreserveTest : TestBase() {
         val sgp = Semigroup(opt.elements(), TransformationComposition)
         val greens = GreensRelations(sgp)
 
-        val lClasses = greens.lClasses()
-        println("Number of lClasses = " + lClasses.subsets().size)
-        lClasses.subsets().forEach { lClass ->
-            println()
-            println("lClass with size: " + lClass.size)
-            lClass.forEach { tuple -> println(tuple.toString()) }
-        }
+        printLClasses(greens)
 
-        val rClasses = greens.rClasses()
-        println("NUmber of rClasses = " + rClasses.subsets().size)
-        rClasses.subsets().forEach { rClass ->
-            println()
-            println("rClass with size: " + rClass.size)
-            rClass.forEach { tuple -> println(tuple.toString()) }
-        }
+        printRClasses(greens)
     }
 }

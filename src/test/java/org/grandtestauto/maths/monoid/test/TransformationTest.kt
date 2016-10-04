@@ -1,16 +1,31 @@
 package org.grandtestauto.maths.monoid.test
 
-import org.grandtestauto.maths.monoid.Transformation
+import org.grandtestauto.maths.monoid.*
 import org.junit.Assert
-import org.grandtestauto.maths.monoid.cycle2_3___n_1
-import org.grandtestauto.maths.monoid.definesATransformation
-import org.grandtestauto.maths.monoid.unit
 import org.junit.Test
 
 /**
  * @author Tim Lavers
  */
 class TransformationTest {
+
+    @Test
+    fun subsemigroupOfOrderPreservingTransformationsTest() {
+        val filtered = subsemigroupOfOrderPreservingTransformations(transformationMonoid(5))
+        val expected = orderPreservingTransformationMonoid(5)
+        Assert.assertEquals(expected, filtered)
+    }
+
+    @Test
+    fun isOrderPreservingTest() {
+        Assert.assertFalse(isOrderPreserving(t(2,1)))
+        Assert.assertFalse(isOrderPreserving(t(1,2,1)))
+        Assert.assertFalse(isOrderPreserving(t(1,1,1,2,1)))
+        Assert.assertTrue(isOrderPreserving(t(1,1,1,1,1)))
+        Assert.assertTrue(isOrderPreserving(t(1,1,1,2,2)))
+        Assert.assertTrue(isOrderPreserving(t(1,1,1,2,3,4,4,4,6)))
+    }
+
     @Test
     fun cycle2_3___n_1Test() {
         Assert.assertEquals(t(2, 1), cycle2_3___n_1(2))

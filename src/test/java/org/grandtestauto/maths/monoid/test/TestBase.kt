@@ -1,11 +1,13 @@
 package org.grandtestauto.maths.monoid.test
 
-import org.grandtestauto.maths.monoid.IntSet
-import org.grandtestauto.maths.monoid.Relation
-import org.grandtestauto.maths.monoid.Transformation
-import org.grandtestauto.maths.monoid.Tuple
+import org.grandtestauto.maths.monoid.*
 import java.util.*
 import java.util.stream.Stream
+
+
+/**
+ * @author Tim Lavers
+ */
 
 fun tset(vararg transformations: Transformation): Set<Transformation> {
     val result = HashSet<Transformation>()
@@ -56,11 +58,25 @@ fun relation(vararg tuples: Tuple<Any, Any>): Relation<Any> {
     return Relation(baseSet, elements)
 }
 
-/**
- * @author Tim Lavers
- */
-open class TestBase {
-    companion object {
 
+fun printLClasses(greens: GreensRelations<Transformation>) {
+    val lClasses = greens.lClasses()
+    println("Number of lClasses = " + lClasses.subsets().size)
+    lClasses.subsets().forEach { lClass ->
+        println()
+        println("lClass with size: " + lClass.size)
+        lClass.forEach { tuple -> println(tuple.toString()) }
     }
+}
+
+fun printRClasses(greens: GreensRelations<Transformation>) {
+    val rClasses = greens.rClasses()
+    println("NUmber of rClasses = " + rClasses.subsets().size)
+    rClasses.subsets().forEach { rClass ->
+        println()
+        println("rClass with size: " + rClass.size)
+        rClass.forEach { tuple -> println(tuple.toString()) }
+    }
+}
+open class TestBase {
 }

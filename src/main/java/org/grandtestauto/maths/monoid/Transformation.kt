@@ -2,6 +2,19 @@ package org.grandtestauto.maths.monoid
 
 import java.util.*
 
+fun subsemigroupOfOrderPreservingTransformations(semigroup: Semigroup<Transformation>) : Semigroup<Transformation> {
+    return Semigroup(semigroup.filter { isOrderPreserving(it) }.toSet(),TransformationComposition)
+}
+
+fun isOrderPreserving(t: Transformation): Boolean {
+    t.domain().forEach {
+        if (it > 1) {
+            if (t.apply(it - 1) > t.apply(it)) return false
+        }
+    }
+    return true
+}
+
 fun definesATransformation(map: IntArray): Boolean {
     for (i in map) {
         if (i < 1) return false
@@ -123,8 +136,3 @@ object TransformationComposition : (Transformation, Transformation) -> Transform
         return p1 * p2
     }
 }
-//object TransformationComposition : Composition<Transformation> {
-//    override fun compose(x: Transformation, y: Transformation): Transformation {
-//        return x.compose(y)
-//    }
-//}

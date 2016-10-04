@@ -1,9 +1,6 @@
 package org.grandtestauto.maths.monoid.test
 
-import org.grandtestauto.maths.monoid.SubsetsOfSizeN
-import org.grandtestauto.maths.monoid.TransformationComposition
-import org.grandtestauto.maths.monoid.isClosedUnderComposition
-import org.grandtestauto.maths.monoid.transformationMonoid
+import org.grandtestauto.maths.monoid.*
 import org.junit.Test
 
 /**
@@ -22,5 +19,24 @@ class SmallSemigroupsTest : TestBase() {
 
         println("threeElementSemis.size() = " + threeElementSemis.size)
         threeElementSemis.forEach( {println(it)})
+    }
+
+    @Test
+    fun e1() {
+        val t1 = t(2,4,1,2,1)
+        val t2 = t(2,5,2,3,1)
+        val generators = set(t1, t2)
+        val semigroup = generateFrom(TransformationComposition, generators)
+
+        val size = semigroup.size()
+        println("size = ${size}")
+        val idempotents = semigroup.idempotents()
+        println("idempotents: ${idempotents.size}")
+        val greens = GreensRelations(semigroup)
+        printLClasses(greens)
+        printRClasses(greens)
+
+        val orderPreservers = subsemigroupOfOrderPreservingTransformations(semigroup)
+        println("orderPreservers = ${orderPreservers}")
     }
 }

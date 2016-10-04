@@ -230,14 +230,35 @@ open class Semigroup<T>(private val elements: Set<T>, private val composition: (
 
     open fun powerOf(t: T, r: Int): T {
         if (r < 1) throw IllegalArgumentException("Strictly positive indices here, please.")
-        var result = t
-        for (i in 1..r - 1) result = composition(result, t)
-        return result
+        if (r == 1) return t
+        return composition(t, powerOf(t, r-1));
     }
 
     fun elements(): Set<T> = elements
 
+    fun idempotents(): Set<T> {
+        return filter { composition(it , it) == it}.toSet()
+    }
+
     override fun iterator(): Iterator<T> = elements().iterator()
+
+    override fun equals(other: Any?): Boolean{
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+
+        other as Semigroup<*>
+
+        if (elements != other.elements) return false
+        if (composition != other.composition) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int{
+        var result = elements.hashCode()
+        result = 31 * result + composition.hashCode()
+        return result
+    }
 }
 
 class Monoid<T>(elements: Set<T>, composition: (T, T) -> T, val identity : T) : Semigroup<T>(elements, composition) {
