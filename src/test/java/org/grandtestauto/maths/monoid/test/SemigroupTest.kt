@@ -2,8 +2,7 @@ package org.grandtestauto.maths.monoid.test
 
 import org.junit.Assert
 import org.grandtestauto.maths.monoid.*
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
+import org.junit.Assert.*
 import org.junit.Test
 
 import java.util.HashSet
@@ -14,12 +13,25 @@ import java.util.HashSet
 class SemigroupTest : TestBase() {
 
     @Test
+    fun isCongruenceTest() {
+        val o3 = orderPreservingTransformationMonoid(3)
+
+    }
+
+    @Test
+    fun isGroupTest() {
+        assert(cyclicGroup(5).isGroup)
+        assert(symmetricGroup(5).isGroup)
+        assert(!orderPreservingTransformationMonoid(5).isGroup)
+    }
+
+    @Test
     fun idempotentsTest() {
         val cyc7 = cyclicGroup(7)
-        assertEquals(1, cyc7.idempotents().size)
+        assertEquals(1, cyc7.idempotents.size)
 
         val o2 = orderPreservingTransformationMonoid(2)
-        val idempotentsO2 = o2.idempotents()
+        val idempotentsO2 = o2.idempotents
         assertEquals(3, idempotentsO2.size)
         assertFalse(idempotentsO2.contains(t(2,1)))
     }
@@ -42,7 +54,7 @@ class SemigroupTest : TestBase() {
         val homomorphisms_o2_o2 = all_o2_o2.filter({ isHomomorphism(it, o2, o2) })
         all_o2_o2.forEach {
             if (it in homomorphisms_o2_o2) {
-                Assert.assertTrue(checkHomomorphism(it, o2))
+                assertTrue(checkHomomorphism(it, o2))
             } else {
                 assertFalse(checkHomomorphism(it, o2))
             }
@@ -68,8 +80,8 @@ class SemigroupTest : TestBase() {
     fun rightZeroSemigroupTest() {
         for (i in 1..9) {
             val sg = rightZeroSemigroup(i)
-            Assert.assertTrue(isAssociative(sg.composition(), sg.elements()))
-            Assert.assertTrue(isClosedUnderComposition(sg.elements(), sg.composition()))
+            assertTrue(isAssociative(sg.composition(), sg.elements()))
+            assertTrue(isClosedUnderComposition(sg.elements(), sg.composition()))
             sg.forEach { t -> sg.forEach { u -> assertEquals(u, sg.composition()(t, u)) } }
         }
     }
@@ -78,8 +90,8 @@ class SemigroupTest : TestBase() {
     fun leftZeroSemigroupTest() {
         for (i in 1..9) {
             val sg = leftZeroSemigroup(i)
-            Assert.assertTrue(isAssociative(sg.composition(), sg.elements()))
-            Assert.assertTrue(isClosedUnderComposition(sg.elements(), sg.composition()))
+            assertTrue(isAssociative(sg.composition(), sg.elements()))
+            assertTrue(isClosedUnderComposition(sg.elements(), sg.composition()))
             sg.forEach { t -> sg.forEach { u -> assertEquals(t, sg.composition()(t, u)) } }
         }
     }
@@ -88,35 +100,35 @@ class SemigroupTest : TestBase() {
     fun rightIdealTest() {
         val t3 = transformationMonoid(3)
         var expected = set(t(1, 1, 1), t(2, 2, 2), t(3, 3, 3))
-        assertEquals(expected, rightIdeal(t3, t(1, 1, 1)))
+        assertEquals(expected, t3.rightIdeal(t(1, 1, 1)))
 
         expected = set(t(2, 2, 1), t(1, 1, 2), t(2, 2, 3), t(3, 3, 2), t(3, 3, 1), t(1, 1, 3), t(1, 1, 1), t(2, 2, 2), t(3, 3, 3))
-        assertEquals(expected, rightIdeal(t3, t(2, 2, 1)))
+        assertEquals(expected, t3.rightIdeal(t(2, 2, 1)))
     }
 
     @Test
     fun leftIdealTest() {
         val t3 = transformationMonoid(3)
         var expected = set(t(1, 1, 1))
-        assertEquals(expected, leftIdeal(t3, t(1, 1, 1)))
+        assertEquals(expected, t3.leftIdeal(t(1, 1, 1)))
 
         expected = set(t(2, 2, 2), t(1, 1, 2), t(1, 2, 1), t(2, 1, 1), t(1, 2, 2), t(2, 1, 2), t(2, 2, 1), t(1, 1, 1))
-        assertEquals(expected, leftIdeal(t3, t(1, 1, 2)))
+        assertEquals(expected, t3.leftIdeal( t(1, 1, 2)))
 
         expected = set(t(1, 1, 3), t(1, 3, 1), t(3, 1, 1), t(1, 3, 3), t(3, 1, 3), t(3, 3, 1), t(1, 1, 1), t(3, 3, 3))
-        assertEquals(expected, leftIdeal(t3, t(1, 1, 3)))
+        assertEquals(expected, t3.leftIdeal( t(1, 1, 3)))
 
-        assertEquals(t3.elements(), leftIdeal(t3, t(2, 1, 3)))
+        assertEquals(t3.elements(), t3.leftIdeal(t(2, 1, 3)))
     }
 
     @Test
     fun powerSetIntersectionTest() {
         val p2 = powerSetIntersection(2)
         assertEquals(4, p2.size())
-        Assert.assertTrue(p2.contains(i(1, 2)))
-        Assert.assertTrue(p2.contains(i(2)))
-        Assert.assertTrue(p2.contains(i(1)))
-        Assert.assertTrue(p2.contains(i()))
+        assertTrue(p2.contains(i(1, 2)))
+        assertTrue(p2.contains(i(2)))
+        assertTrue(p2.contains(i(1)))
+        assertTrue(p2.contains(i()))
         assertEquals(p2.composition()(i(1, 2), i(1, 2)), i(1, 2))
         assertEquals(p2.composition()(i(1, 2), i(1)), i(1))
         assertEquals(p2.composition()(i(1, 2), i(2)), i(2))
@@ -124,14 +136,14 @@ class SemigroupTest : TestBase() {
 
         val p3 = powerSetIntersection(3)
         assertEquals(8, p3.size())
-        Assert.assertTrue(p3.contains(i(1, 2, 3)))
-        Assert.assertTrue(p3.contains(i(2, 3)))
-        Assert.assertTrue(p3.contains(i(1, 3)))
-        Assert.assertTrue(p3.contains(i(3)))
-        Assert.assertTrue(p3.contains(i(1, 2)))
-        Assert.assertTrue(p3.contains(i(2)))
-        Assert.assertTrue(p3.contains(i(1)))
-        Assert.assertTrue(p3.contains(i()))
+        assertTrue(p3.contains(i(1, 2, 3)))
+        assertTrue(p3.contains(i(2, 3)))
+        assertTrue(p3.contains(i(1, 3)))
+        assertTrue(p3.contains(i(3)))
+        assertTrue(p3.contains(i(1, 2)))
+        assertTrue(p3.contains(i(2)))
+        assertTrue(p3.contains(i(1)))
+        assertTrue(p3.contains(i()))
         assertEquals(p3.composition()(i(1, 2), i(1, 2)), i(1, 2))
         assertEquals(p3.composition()(i(1, 2), i(1)), i(1))
         assertEquals(p3.composition()(i(1, 2), i(2)), i(2))
@@ -140,26 +152,26 @@ class SemigroupTest : TestBase() {
         assertEquals(p3.composition()(i(1, 3), i(1)), i(1))
         assertEquals(p3.composition()(i(1, 3), i(3)), i(3))
         assertEquals(p3.composition()(i(1), i(3)), i())
-        Assert.assertTrue(isClosedUnderComposition(p3.elements(), p3.composition()))
+        assertTrue(isClosedUnderComposition(p3.elements(), p3.composition()))
 
         val p4 = powerSetIntersection(4)
         assertEquals(16, p4.size())
-        Assert.assertTrue(p4.contains(i(1, 2, 3, 4)))
-        Assert.assertTrue(p4.contains(i(2, 3, 4)))
-        Assert.assertTrue(p4.contains(i(1, 3, 4)))
-        Assert.assertTrue(p4.contains(i(3, 4)))
-        Assert.assertTrue(p4.contains(i(1, 2, 4)))
-        Assert.assertTrue(p4.contains(i(2, 4)))
-        Assert.assertTrue(p4.contains(i(1, 4)))
-        Assert.assertTrue(p4.contains(i(4)))
-        Assert.assertTrue(p4.contains(i(1, 2, 3)))
-        Assert.assertTrue(p4.contains(i(2, 3)))
-        Assert.assertTrue(p4.contains(i(1, 3)))
-        Assert.assertTrue(p4.contains(i(3)))
-        Assert.assertTrue(p4.contains(i(1, 2)))
-        Assert.assertTrue(p4.contains(i(2)))
-        Assert.assertTrue(p4.contains(i(1)))
-        Assert.assertTrue(p4.contains(i()))
+        assertTrue(p4.contains(i(1, 2, 3, 4)))
+        assertTrue(p4.contains(i(2, 3, 4)))
+        assertTrue(p4.contains(i(1, 3, 4)))
+        assertTrue(p4.contains(i(3, 4)))
+        assertTrue(p4.contains(i(1, 2, 4)))
+        assertTrue(p4.contains(i(2, 4)))
+        assertTrue(p4.contains(i(1, 4)))
+        assertTrue(p4.contains(i(4)))
+        assertTrue(p4.contains(i(1, 2, 3)))
+        assertTrue(p4.contains(i(2, 3)))
+        assertTrue(p4.contains(i(1, 3)))
+        assertTrue(p4.contains(i(3)))
+        assertTrue(p4.contains(i(1, 2)))
+        assertTrue(p4.contains(i(2)))
+        assertTrue(p4.contains(i(1)))
+        assertTrue(p4.contains(i()))
         assertEquals(p4.composition()(i(1, 2), i(1, 2)), i(1, 2))
         assertEquals(p4.composition()(i(1, 2), i(1)), i(1))
         assertEquals(p4.composition()(i(1, 2), i(2)), i(2))
@@ -174,37 +186,44 @@ class SemigroupTest : TestBase() {
         assertEquals(p4.composition()(i(1), i(4)), i())
         assertEquals(p4.composition()(i(1, 2, 3), i(1, 4, 3)), i(1, 3))
         assertEquals(p4.composition()(i(4, 3), i(4)), i(4))
-        Assert.assertTrue(isClosedUnderComposition(p4.elements(), p4.composition()))
+        assertTrue(isClosedUnderComposition(p4.elements(), p4.composition()))
+    }
+
+    @Test
+    fun toStringTest() {
+        val o3 = orderPreservingTransformationMonoid(3)
+        val toString = o3.toString()
+        o3.forEach { assert(toString.contains(it.toString())) }
     }
 
     @Test
     fun orderPreservingTransformationMonoidTest() {
         val o2 = orderPreservingTransformationMonoid(2)
         assertEquals(3, o2.size())
-        Assert.assertTrue(o2.contains(t(1, 1)))
-        Assert.assertTrue(o2.contains(t(2, 2)))
-        Assert.assertTrue(o2.contains(t(1, 2)))
+        assertTrue(o2.contains(t(1, 1)))
+        assertTrue(o2.contains(t(2, 2)))
+        assertTrue(o2.contains(t(1, 2)))
 
         val o3 = orderPreservingTransformationMonoid(3)
         assertEquals(10, o3.size())
-        Assert.assertTrue(o3.contains(t(1, 1, 1)))
-        Assert.assertTrue(o3.contains(t(2, 2, 2)))
-        Assert.assertTrue(o3.contains(t(3, 3, 3)))
+        assertTrue(o3.contains(t(1, 1, 1)))
+        assertTrue(o3.contains(t(2, 2, 2)))
+        assertTrue(o3.contains(t(3, 3, 3)))
 
-        Assert.assertTrue(o3.contains(t(1, 1, 2)))
-        Assert.assertTrue(o3.contains(t(1, 1, 3)))
-        Assert.assertTrue(o3.contains(t(2, 2, 3)))
+        assertTrue(o3.contains(t(1, 1, 2)))
+        assertTrue(o3.contains(t(1, 1, 3)))
+        assertTrue(o3.contains(t(2, 2, 3)))
 
-        Assert.assertTrue(o3.contains(t(1, 2, 2)))
-        Assert.assertTrue(o3.contains(t(1, 3, 3)))
-        Assert.assertTrue(o3.contains(t(2, 3, 3)))
+        assertTrue(o3.contains(t(1, 2, 2)))
+        assertTrue(o3.contains(t(1, 3, 3)))
+        assertTrue(o3.contains(t(2, 3, 3)))
 
-        Assert.assertTrue(o3.contains(t(1, 2, 3)))
-        o3.elements().forEach { t -> Assert.assertTrue("Not order-preserving: " + t,isOrderPreserving(t)) }
+        assertTrue(o3.contains(t(1, 2, 3)))
+        o3.elements().forEach { t -> assertTrue("Not order-preserving: " + t,isOrderPreserving(t)) }
 
         val o4 = orderPreservingTransformationMonoid(4)
         assertEquals(35, o4.size())
-        o4.elements().forEach { t -> Assert.assertTrue(isOrderPreserving(t)) }
+        o4.elements().forEach { t -> assertTrue(isOrderPreserving(t)) }
     }
 
     @Test
@@ -219,66 +238,66 @@ class SemigroupTest : TestBase() {
     fun symmetricGroupTest() {
         val s2 = symmetricGroup(2)
         assertEquals(2, s2.size())
-        Assert.assertTrue(s2.contains(t(1, 2)))
-        Assert.assertTrue(s2.contains(t(2, 1)))
+        assertTrue(s2.contains(t(1, 2)))
+        assertTrue(s2.contains(t(2, 1)))
 
         val s3 = symmetricGroup(3)
         assertEquals(6, s3.size())
-        Assert.assertTrue(s3.contains(t(1, 2, 3)))
-        Assert.assertTrue(s3.contains(t(2, 1, 3)))
-        Assert.assertTrue(s3.contains(t(1, 3, 2)))
-        Assert.assertTrue(s3.contains(t(3, 2, 1)))
-        Assert.assertTrue(s3.contains(t(2, 3, 1)))
-        Assert.assertTrue(s3.contains(t(3, 1, 2)))
+        assertTrue(s3.contains(t(1, 2, 3)))
+        assertTrue(s3.contains(t(2, 1, 3)))
+        assertTrue(s3.contains(t(1, 3, 2)))
+        assertTrue(s3.contains(t(3, 2, 1)))
+        assertTrue(s3.contains(t(2, 3, 1)))
+        assertTrue(s3.contains(t(3, 1, 2)))
 
         val s4 = symmetricGroup(4)
         assertEquals(24, s4.size())
-        Assert.assertTrue(s4.contains(t(1, 2, 3, 4)))
-        Assert.assertTrue(s4.contains(t(2, 1, 3, 4)))
-        Assert.assertTrue(s4.contains(t(1, 3, 2, 4)))
-        Assert.assertTrue(s4.contains(t(3, 2, 1, 4)))
-        Assert.assertTrue(s4.contains(t(2, 3, 1, 4)))
-        Assert.assertTrue(s4.contains(t(3, 1, 2, 4)))//6
+        assertTrue(s4.contains(t(1, 2, 3, 4)))
+        assertTrue(s4.contains(t(2, 1, 3, 4)))
+        assertTrue(s4.contains(t(1, 3, 2, 4)))
+        assertTrue(s4.contains(t(3, 2, 1, 4)))
+        assertTrue(s4.contains(t(2, 3, 1, 4)))
+        assertTrue(s4.contains(t(3, 1, 2, 4)))//6
 
-        Assert.assertTrue(s4.contains(t(1, 2, 4, 3)))
-        Assert.assertTrue(s4.contains(t(1, 2, 4, 3)))
-        Assert.assertTrue(s4.contains(t(1, 4, 3, 2)))
-        Assert.assertTrue(s4.contains(t(1, 3, 4, 2)))
-        Assert.assertTrue(s4.contains(t(1, 4, 2, 3)))//5
+        assertTrue(s4.contains(t(1, 2, 4, 3)))
+        assertTrue(s4.contains(t(1, 2, 4, 3)))
+        assertTrue(s4.contains(t(1, 4, 3, 2)))
+        assertTrue(s4.contains(t(1, 3, 4, 2)))
+        assertTrue(s4.contains(t(1, 4, 2, 3)))//5
 
-        Assert.assertTrue(s4.contains(t(3, 2, 1, 4)))
-        Assert.assertTrue(s4.contains(t(3, 2, 4, 1)))
-        Assert.assertTrue(s4.contains(t(4, 2, 3, 1)))
-        Assert.assertTrue(s4.contains(t(4, 2, 1, 3)))//4
+        assertTrue(s4.contains(t(3, 2, 1, 4)))
+        assertTrue(s4.contains(t(3, 2, 4, 1)))
+        assertTrue(s4.contains(t(4, 2, 3, 1)))
+        assertTrue(s4.contains(t(4, 2, 1, 3)))//4
 
-        Assert.assertTrue(s4.contains(t(4, 1, 3, 2)))
-        Assert.assertTrue(s4.contains(t(4, 2, 3, 1)))
-        Assert.assertTrue(s4.contains(t(2, 4, 3, 1)))//3
+        assertTrue(s4.contains(t(4, 1, 3, 2)))
+        assertTrue(s4.contains(t(4, 2, 3, 1)))
+        assertTrue(s4.contains(t(2, 4, 3, 1)))//3
 
-        Assert.assertTrue(s4.contains(t(2, 1, 4, 3)))
-        Assert.assertTrue(s4.contains(t(2, 4, 1, 3)))
-        Assert.assertTrue(s4.contains(t(2, 3, 4, 1)))
-        Assert.assertTrue(s4.contains(t(3, 1, 4, 2)))
-        Assert.assertTrue(s4.contains(t(3, 4, 1, 2)))
-        Assert.assertTrue(s4.contains(t(3, 4, 2, 1)))
-        Assert.assertTrue(s4.contains(t(4, 3, 2, 1)))
-        Assert.assertTrue(s4.contains(t(4, 1, 2, 3)))
-        Assert.assertTrue(s4.contains(t(4, 3, 1, 2)))
+        assertTrue(s4.contains(t(2, 1, 4, 3)))
+        assertTrue(s4.contains(t(2, 4, 1, 3)))
+        assertTrue(s4.contains(t(2, 3, 4, 1)))
+        assertTrue(s4.contains(t(3, 1, 4, 2)))
+        assertTrue(s4.contains(t(3, 4, 1, 2)))
+        assertTrue(s4.contains(t(3, 4, 2, 1)))
+        assertTrue(s4.contains(t(4, 3, 2, 1)))
+        assertTrue(s4.contains(t(4, 1, 2, 3)))
+        assertTrue(s4.contains(t(4, 3, 1, 2)))
 
         val s5 = symmetricGroup(5)
         assertEquals(120, s5.size())
         for (t in s5) {
             assertEquals(5, t.rank())
-            Assert.assertTrue(t.apply(1) != t.apply(2))
-            Assert.assertTrue(t.apply(1) != t.apply(3))
-            Assert.assertTrue(t.apply(1) != t.apply(4))
-            Assert.assertTrue(t.apply(1) != t.apply(5))
-            Assert.assertTrue(t.apply(2) != t.apply(3))
-            Assert.assertTrue(t.apply(2) != t.apply(4))
-            Assert.assertTrue(t.apply(2) != t.apply(5))
-            Assert.assertTrue(t.apply(3) != t.apply(4))
-            Assert.assertTrue(t.apply(3) != t.apply(5))
-            Assert.assertTrue(t.apply(4) != t.apply(5))
+            assertTrue(t.apply(1) != t.apply(2))
+            assertTrue(t.apply(1) != t.apply(3))
+            assertTrue(t.apply(1) != t.apply(4))
+            assertTrue(t.apply(1) != t.apply(5))
+            assertTrue(t.apply(2) != t.apply(3))
+            assertTrue(t.apply(2) != t.apply(4))
+            assertTrue(t.apply(2) != t.apply(5))
+            assertTrue(t.apply(3) != t.apply(4))
+            assertTrue(t.apply(3) != t.apply(5))
+            assertTrue(t.apply(4) != t.apply(5))
         }
     }
 
@@ -299,29 +318,29 @@ class SemigroupTest : TestBase() {
     fun cyclicGroupTest() {
         val c2 = cyclicGroup(2)
         assertEquals(2, c2.size())
-        Assert.assertTrue(c2.contains(t(1, 2)))
-        Assert.assertTrue(c2.contains(t(2, 1)))
+        assertTrue(c2.contains(t(1, 2)))
+        assertTrue(c2.contains(t(2, 1)))
 
         val c3 = cyclicGroup(3)
         assertEquals(3, c3.size())
-        Assert.assertTrue(c3.contains(t(1, 2, 3)))
-        Assert.assertTrue(c3.contains(t(2, 3, 1)))
-        Assert.assertTrue(c3.contains(t(3, 1, 2)))
+        assertTrue(c3.contains(t(1, 2, 3)))
+        assertTrue(c3.contains(t(2, 3, 1)))
+        assertTrue(c3.contains(t(3, 1, 2)))
 
         val c4 = cyclicGroup(4)
         assertEquals(4, c4.size())
-        Assert.assertTrue(c4.contains(t(1, 2, 3, 4)))
-        Assert.assertTrue(c4.contains(t(2, 3, 4, 1)))
-        Assert.assertTrue(c4.contains(t(3, 4, 1, 2)))
-        Assert.assertTrue(c4.contains(t(4, 1, 2, 3)))
+        assertTrue(c4.contains(t(1, 2, 3, 4)))
+        assertTrue(c4.contains(t(2, 3, 4, 1)))
+        assertTrue(c4.contains(t(3, 4, 1, 2)))
+        assertTrue(c4.contains(t(4, 1, 2, 3)))
     }
 
     @Test
     fun isClosedUnderCompositionTest() {
         val compo: (Transformation, Transformation) -> Transformation = { x, y -> x.compose(y) }
 
-        Assert.assertTrue(isClosedUnderComposition(tset(t(2, 3, 1), t(3, 1, 2), t(1, 2, 3)), compo))
-        Assert.assertTrue(isClosedUnderComposition(tset(t(2, 2, 2), t(1, 1, 1), t(1, 1, 2)), compo))
+        assertTrue(isClosedUnderComposition(tset(t(2, 3, 1), t(3, 1, 2), t(1, 2, 3)), compo))
+        assertTrue(isClosedUnderComposition(tset(t(2, 2, 2), t(1, 1, 1), t(1, 1, 2)), compo))
         fun dumb(x: Transformation, y: Transformation): Transformation {
             val dumb = IntArray(x.rank())
             for (i in 1..x.rank()) {
@@ -336,8 +355,8 @@ class SemigroupTest : TestBase() {
 
     @Test
     fun isAssociativeTest() {
-        Assert.assertTrue(isAssociative(TransformationComposition, tset(t(2, 3, 1), t(3, 1, 2), t(1, 2, 3))))
-        Assert.assertTrue(isAssociative(TransformationComposition, tset(t(2, 2, 2), t(1, 1, 1), t(1, 1, 2))))
+        assertTrue(isAssociative(TransformationComposition, tset(t(2, 3, 1), t(3, 1, 2), t(1, 2, 3))))
+        assertTrue(isAssociative(TransformationComposition, tset(t(2, 2, 2), t(1, 1, 1), t(1, 1, 2))))
         assertFalse(isClosedUnderComposition(tset(t(3, 1, 2), t(1, 2, 3)), TransformationComposition))
         assertFalse(isClosedUnderComposition(tset(t(2, 3, 1), t(3, 1, 2), t(1, 2, 3), t(1, 3, 2)), TransformationComposition))
     }
@@ -347,11 +366,11 @@ class SemigroupTest : TestBase() {
         val c5generator = tset(t(2, 3, 4, 5, 1))
         val generated = generateFrom(TransformationComposition, c5generator)
         assertEquals(5, generated.size())
-        Assert.assertTrue(generated.contains(t(1, 2, 3, 4, 5)))
-        Assert.assertTrue(generated.contains(t(2, 3, 4, 5, 1)))
-        Assert.assertTrue(generated.contains(t(3, 4, 5, 1, 2)))
-        Assert.assertTrue(generated.contains(t(4, 5, 1, 2, 3)))
-        Assert.assertTrue(generated.contains(t(5, 1, 2, 3, 4)))
+        assertTrue(generated.contains(t(1, 2, 3, 4, 5)))
+        assertTrue(generated.contains(t(2, 3, 4, 5, 1)))
+        assertTrue(generated.contains(t(3, 4, 5, 1, 2)))
+        assertTrue(generated.contains(t(4, 5, 1, 2, 3)))
+        assertTrue(generated.contains(t(5, 1, 2, 3, 4)))
     }
 
     @Test
@@ -367,9 +386,9 @@ class SemigroupTest : TestBase() {
         val semigroup = Semigroup(tset(t(2, 3, 1), t(3, 1, 2), t(1, 2, 3)), TransformationComposition)
         val elements = semigroup.elements()
         assertEquals(3, elements.size)
-        Assert.assertTrue(elements.contains(t(2, 3, 1)))
-        Assert.assertTrue(elements.contains(t(3, 1, 2)))
-        Assert.assertTrue(elements.contains(t(1, 2, 3)))
+        assertTrue(elements.contains(t(2, 3, 1)))
+        assertTrue(elements.contains(t(3, 1, 2)))
+        assertTrue(elements.contains(t(1, 2, 3)))
     }
 
     @Test
@@ -388,30 +407,30 @@ class SemigroupTest : TestBase() {
         val elements = HashSet<Transformation>()
         for (t in semigroup) elements.add(t)
         assertEquals(3, elements.size)
-        Assert.assertTrue(elements.contains(t(2, 3, 1)))
-        Assert.assertTrue(elements.contains(t(3, 1, 2)))
-        Assert.assertTrue(elements.contains(t(1, 2, 3)))
+        assertTrue(elements.contains(t(2, 3, 1)))
+        assertTrue(elements.contains(t(3, 1, 2)))
+        assertTrue(elements.contains(t(1, 2, 3)))
     }
 
     @Test
     fun compositionTest() {
         val semigroup = Semigroup(tset(t(2, 3, 1), t(3, 1, 2), t(1, 2, 3)), TransformationComposition)
-        Assert.assertTrue(TransformationComposition === semigroup.composition())
+        assertTrue(TransformationComposition === semigroup.composition())
     }
 
     @Test
     fun containsTest() {
         val semigroup = Semigroup(tset(t(2, 3, 1), t(3, 1, 2), t(1, 2, 3)), TransformationComposition)
-        Assert.assertTrue(semigroup.contains(t(2, 3, 1)))
-        Assert.assertTrue(semigroup.contains(t(3, 1, 2)))
-        Assert.assertTrue(semigroup.contains(t(1, 2, 3)))
+        assertTrue(semigroup.contains(t(2, 3, 1)))
+        assertTrue(semigroup.contains(t(3, 1, 2)))
+        assertTrue(semigroup.contains(t(1, 2, 3)))
         val semigroup2 = Semigroup(intsets(s(1), s(2), s(3), s(1, 2), s(1, 3), s(2, 3), s(1, 2, 3)), UnionComposition)
-        Assert.assertTrue(semigroup2.contains(s(1)))
-        Assert.assertTrue(semigroup2.contains(s(2)))
-        Assert.assertTrue(semigroup2.contains(s(3)))
-        Assert.assertTrue(semigroup2.contains(s(1, 2)))
-        Assert.assertTrue(semigroup2.contains(s(1, 3)))
-        Assert.assertTrue(semigroup2.contains(s(2, 3)))
-        Assert.assertTrue(semigroup2.contains(s(1, 2, 3)))
+        assertTrue(semigroup2.contains(s(1)))
+        assertTrue(semigroup2.contains(s(2)))
+        assertTrue(semigroup2.contains(s(3)))
+        assertTrue(semigroup2.contains(s(1, 2)))
+        assertTrue(semigroup2.contains(s(1, 3)))
+        assertTrue(semigroup2.contains(s(2, 3)))
+        assertTrue(semigroup2.contains(s(1, 2, 3)))
     }
 }

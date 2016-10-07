@@ -18,23 +18,34 @@ class SmallSemigroupsTest : TestBase() {
         val threeElementSemis = setsOf3Trannies.subsets().filter({ subset -> isClosedUnderComposition(subset, TransformationComposition) })
 
         println("threeElementSemis.size() = " + threeElementSemis.size)
-        threeElementSemis.forEach( {println(it)})
+        threeElementSemis.forEach({ println(it) })
     }
 
     @Test
     fun e1() {
-        val t1 = t(2,4,1,2,1)
-        val t2 = t(2,5,2,3,1)
+        val t1 = t(2, 4, 1, 2, 1)
+        val t2 = t(2, 5, 2, 3, 1)
         val generators = set(t1, t2)
         val semigroup = generateFrom(TransformationComposition, generators)
 
         val size = semigroup.size()
         println("size = ${size}")
-        val idempotents = semigroup.idempotents()
+        val idempotents = semigroup.idempotents
         println("idempotents: ${idempotents.size}")
-        val greens = GreensRelations(semigroup)
-        printLClasses(greens)
-        printRClasses(greens)
+//        val greens = GreensRelations(semigroup)
+//        printLClasses(greens)
+//        printRClasses(greens)
+        idempotents.forEach { it ->
+            val sub = semigroup.filter { t -> it.image == t.image && it.kernel == t.kernel }.toSet()
+            if (isClosedUnderComposition(sub, TransformationComposition)) {
+                val subsemigroup = Semigroup<Transformation>(sub, TransformationComposition)
+                if (subsemigroup.isGroup) {
+                    println("Subgroup: " + sub)
+                }
+
+            }
+        }
+
 
         val orderPreservers = subsemigroupOfOrderPreservingTransformations(semigroup)
         println("orderPreservers = ${orderPreservers}")

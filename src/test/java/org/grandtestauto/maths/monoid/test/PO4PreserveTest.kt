@@ -48,7 +48,7 @@ class PO4PreserveTest : TestBase() {
             println()
             println("lClass with size: " + lClass.size)
             lClass.forEach { tuple -> println(tuple.toString()) }
-            val fixity = lClass.sumBy { it.numberOfFixedPoints() }
+            val fixity = lClass.sumBy { it.numberOfFixedPoints }
             totalFixity[0] += fixity
             println("fixity = " + fixity)
         }
@@ -61,7 +61,7 @@ class PO4PreserveTest : TestBase() {
             println()
             println("rClass with size: " + rClass.size)
             rClass.forEach { tuple -> println(tuple.toString()) }
-            val fixity = rClass.sumBy { it.numberOfFixedPoints() }
+            val fixity = rClass.sumBy { it.numberOfFixedPoints }
             totalFixity[0] += fixity
             println("fixity = " + fixity)
         }

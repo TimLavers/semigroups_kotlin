@@ -2,12 +2,12 @@ package org.grandtestauto.maths.monoid
 
 import java.util.*
 
-fun subsemigroupOfOrderPreservingTransformations(semigroup: Semigroup<Transformation>) : Semigroup<Transformation> {
-    return Semigroup(semigroup.filter { isOrderPreserving(it) }.toSet(),TransformationComposition)
+fun subsemigroupOfOrderPreservingTransformations(semigroup: Semigroup<Transformation>): Semigroup<Transformation> {
+    return Semigroup(semigroup.filter { isOrderPreserving(it) }.toSet(), TransformationComposition)
 }
 
 fun isOrderPreserving(t: Transformation): Boolean {
-    t.domain().forEach {
+    t.domain.forEach {
         if (it > 1) {
             if (t.apply(it - 1) > t.apply(it)) return false
         }
@@ -22,6 +22,7 @@ fun definesATransformation(map: IntArray): Boolean {
     }
     return true
 }
+
 fun cycle2_3___n_1(rank_atLeast2: Int): Transformation {
     val generatorData = IntArray(rank_atLeast2)
     for (i in 0..rank_atLeast2 - 1 - 1) {
@@ -38,12 +39,35 @@ fun unit(rank: Int): Transformation {
     }
     return Transformation(map)
 }
+
 /**
  * An immutable function from the set of integers {1, 2, ... , n} to itself.
 
  * @author Tim Lavers
  */
 class Transformation(private val map: IntArray) {
+
+    val kernel: Relation<Int> by lazy {
+        val pairs = HashSet<Tuple<Int, Int>>()
+        for (i in 1..map.size) {
+            for (j in 1..map.size) {
+                if (apply(i) == apply(j)) pairs.add(Tuple(i, j))
+            }
+        }
+        Relation(domain, pairs)
+    }
+
+    val domain: Set<Int> by lazy {
+        (1..map.size).toSet()
+    }
+
+    val numberOfFixedPoints: Int by lazy {
+        (1..map.size).count { it == apply(it) }
+    }
+
+    val image: Set<Int> by lazy {
+        (1..map.size).map { it -> apply(it) }.toSet()
+    }
 
     init {
         assert(definesATransformation(map))
@@ -56,24 +80,6 @@ class Transformation(private val map: IntArray) {
     fun apply(i: Int): Int {
         assert(inDomain(i))
         return map[i - 1]
-    }
-
-    fun kernel(): Relation<Int> {
-        val pairs = HashSet<Tuple<Int, Int>>()
-        for (i in 1..map.size) {
-            for (j in 1..map.size) {
-                if (apply(i) == apply(j)) pairs.add(Tuple(i, j))
-            }
-        }
-        return Relation(domain(), pairs)
-    }
-
-    fun numberOfFixedPoints(): Int {
-        var result = 0
-        for (i in 1..map.size) {
-            if (i == apply(i)) result++
-        }
-        return result
     }
 
     fun embed(m_greaterThanRank: Int): Transformation {
@@ -98,14 +104,8 @@ class Transformation(private val map: IntArray) {
         return Transformation(compositeMap)
     }
 
-    operator fun times(other : Transformation) : Transformation {
+    operator fun times(other: Transformation): Transformation {
         return compose(other)
-    }
-
-    fun domain(): Set<Int> {
-        val result = HashSet<Int>(map.size)
-        for (i in 1..map.size) result.add(i)
-        return result
     }
 
     override fun hashCode(): Int {
@@ -131,6 +131,7 @@ class Transformation(private val map: IntArray) {
         return sb.toString()
     }
 }
+
 object TransformationComposition : (Transformation, Transformation) -> Transformation {
     override fun invoke(p1: Transformation, p2: Transformation): Transformation {
         return p1 * p2

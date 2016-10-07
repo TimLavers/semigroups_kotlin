@@ -10,6 +10,12 @@ import org.junit.Test
 class TransformationTest {
 
     @Test
+    fun imageTest(){
+        Assert.assertEquals(set(1,2,3), t(1,2,3).image)
+        Assert.assertEquals(set(1), t(1,1,1, 1).image)
+    }
+
+    @Test
     fun subsemigroupOfOrderPreservingTransformationsTest() {
         val filtered = subsemigroupOfOrderPreservingTransformations(transformationMonoid(5))
         val expected = orderPreservingTransformationMonoid(5)
@@ -35,44 +41,44 @@ class TransformationTest {
 
     @Test
     fun numberOfFixedPointsTest(){
-        Assert.assertEquals(1, Transformation(intArrayOf(1)).numberOfFixedPoints())
-        Assert.assertEquals(1, Transformation(intArrayOf(1, 1)).numberOfFixedPoints())
-        Assert.assertEquals(1, Transformation(intArrayOf(1, 1, 2)).numberOfFixedPoints())
-        Assert.assertEquals(1, Transformation(intArrayOf(1, 1, 2, 1)).numberOfFixedPoints())
-        Assert.assertEquals(2, Transformation(intArrayOf(1, 1, 2, 4)).numberOfFixedPoints())
-        Assert.assertEquals(2, Transformation(intArrayOf(1, 1, 3, 3)).numberOfFixedPoints())
-        Assert.assertEquals(3, Transformation(intArrayOf(1, 2, 3, 3)).numberOfFixedPoints())
-        Assert.assertEquals(0, Transformation(intArrayOf(2, 3, 4, 1)).numberOfFixedPoints())
+        Assert.assertEquals(1, Transformation(intArrayOf(1)).numberOfFixedPoints)
+        Assert.assertEquals(1, Transformation(intArrayOf(1, 1)).numberOfFixedPoints)
+        Assert.assertEquals(1, Transformation(intArrayOf(1, 1, 2)).numberOfFixedPoints)
+        Assert.assertEquals(1, Transformation(intArrayOf(1, 1, 2, 1)).numberOfFixedPoints)
+        Assert.assertEquals(2, Transformation(intArrayOf(1, 1, 2, 4)).numberOfFixedPoints)
+        Assert.assertEquals(2, Transformation(intArrayOf(1, 1, 3, 3)).numberOfFixedPoints)
+        Assert.assertEquals(3, Transformation(intArrayOf(1, 2, 3, 3)).numberOfFixedPoints)
+        Assert.assertEquals(0, Transformation(intArrayOf(2, 3, 4, 1)).numberOfFixedPoints)
     }
 
     @Test
     fun kernelTest(){
         var t = Transformation(intArrayOf(1))
-        Assert.assertEquals(relation(tu(1, 1)), t.kernel())
+        Assert.assertEquals(relation(tu(1, 1)), t.kernel)
 
         t = Transformation(intArrayOf(1, 2))
-        Assert.assertEquals(relation(tu(1, 1), tu(2, 2)), t.kernel())
+        Assert.assertEquals(relation(tu(1, 1), tu(2, 2)), t.kernel)
 
         t = Transformation(intArrayOf(1, 1))
-        Assert.assertEquals(relation(tu(1, 1), tu(2, 2), tu(1, 2), tu(2, 1)), t.kernel())
+        Assert.assertEquals(relation(tu(1, 1), tu(2, 2), tu(1, 2), tu(2, 1)), t.kernel)
 
         t = Transformation(intArrayOf(1, 1, 2))
-        Assert.assertEquals(relation(tu(1, 1), tu(2, 2), tu(1, 2), tu(2, 1), tu(3, 3)), t.kernel())
+        Assert.assertEquals(relation(tu(1, 1), tu(2, 2), tu(1, 2), tu(2, 1), tu(3, 3)), t.kernel)
 
         t = Transformation(intArrayOf(2, 1, 2))
-        Assert.assertEquals(relation(tu(1, 1), tu(2, 2), tu(1, 3), tu(3, 1), tu(3, 3)), t.kernel())
+        Assert.assertEquals(relation(tu(1, 1), tu(2, 2), tu(1, 3), tu(3, 1), tu(3, 3)), t.kernel)
 
         t = Transformation(intArrayOf(2, 2, 2))
-        Assert.assertEquals(relation(tu(1, 1), tu(1, 2), tu(1, 3), tu(2, 1), tu(2, 2), tu(2, 3), tu(3, 1), tu(3, 2), tu(3, 3)), t.kernel())
+        Assert.assertEquals(relation(tu(1, 1), tu(1, 2), tu(1, 3), tu(2, 1), tu(2, 2), tu(2, 3), tu(3, 1), tu(3, 2), tu(3, 3)), t.kernel)
 
         t = Transformation(intArrayOf(2, 2, 1, 1))
-        Assert.assertEquals(relation(tu(1, 1), tu(1, 2), tu(2, 1), tu(2, 2), tu(3, 3), tu(3, 4), tu(4, 3), tu(4, 4)), t.kernel())
+        Assert.assertEquals(relation(tu(1, 1), tu(1, 2), tu(2, 1), tu(2, 2), tu(3, 3), tu(3, 4), tu(4, 3), tu(4, 4)), t.kernel)
 
         t = Transformation(intArrayOf(1, 2, 1, 1))
-        Assert.assertEquals(relation(tu(1, 1), tu(1, 3), tu(1, 4), tu(3, 1), tu(3, 3), tu(3, 4), tu(4, 1), tu(4, 3), tu(4, 4), tu(2, 2)), t.kernel())
+        Assert.assertEquals(relation(tu(1, 1), tu(1, 3), tu(1, 4), tu(3, 1), tu(3, 3), tu(3, 4), tu(4, 1), tu(4, 3), tu(4, 4), tu(2, 2)), t.kernel)
 
         t = Transformation(intArrayOf(1, 2, 3, 4))
-        Assert.assertEquals(relation(tu(1, 1), tu(2, 2), tu(3, 3), tu(4, 4)), t.kernel())
+        Assert.assertEquals(relation(tu(1, 1), tu(2, 2), tu(3, 3), tu(4, 4)), t.kernel)
     }
 
     @Test
@@ -211,9 +217,9 @@ class TransformationTest {
 
     @Test
     fun domainTest(){
-        Assert.assertEquals(3, t(1, 2, 1).domain().size)
-        Assert.assertTrue(t(1, 2, 1).domain().contains(1))
-        Assert.assertTrue(t(1, 2, 1).domain().contains(2))
-        Assert.assertTrue(t(1, 2, 1).domain().contains(3))
+        Assert.assertEquals(3, t(1, 2, 1).domain.size)
+        Assert.assertTrue(t(1, 2, 1).domain.contains(1))
+        Assert.assertTrue(t(1, 2, 1).domain.contains(2))
+        Assert.assertTrue(t(1, 2, 1).domain.contains(3))
     }
 }

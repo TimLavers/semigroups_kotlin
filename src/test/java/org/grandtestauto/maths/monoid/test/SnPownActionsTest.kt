@@ -14,7 +14,7 @@ class SnPownActionsTest : TestBase() {
     private val n = 3//5: <1s, 6: 45s
     private val symn_n = symmetricGroup(n)
     private val pow_n = powerSetIntersection(n)
-    private val rho: (Transformation) -> ((IntSet) -> (IntSet)) = {
+    private val rho: (Transformation) -> ((Set<Int>) -> (Set<Int>)) = {
         transformation -> { intSet -> intSet.transform(transformation) }
     }
     private var errorsFound = false

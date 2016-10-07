@@ -15,8 +15,8 @@ fun tset(vararg transformations: Transformation): Set<Transformation> {
     return result
 }
 
-fun intsets(vararg sets: IntSet): Set<IntSet> {
-    val result = HashSet<IntSet>()
+fun intsets(vararg sets: Set<Int>): Set<Set<Int>> {
+    val result = HashSet<Set<Int>>()
     Collections.addAll(result, *sets)
     return result
 }
@@ -25,16 +25,12 @@ fun t(vararg image: Int): Transformation {
     return Transformation(image)
 }
 
-fun i(vararg elements: Int): IntSet {
-    val set = HashSet<Int>()
-    for (i in elements) set.add(i)
-    return IntSet(set)
+fun i(vararg elements: Int): Set<Int> {
+    return elements.toHashSet()
 }
 
-fun s(vararg elements: Int): IntSet {
-    val elementSet = HashSet<Int>()
-    for (i in elements) elementSet.add(i)
-    return IntSet(elementSet)
+fun s(vararg elements: Int): Set<Int> {
+    return elements.toHashSet()
 }
 
 fun <T> set(vararg elements: T): Set<T> {

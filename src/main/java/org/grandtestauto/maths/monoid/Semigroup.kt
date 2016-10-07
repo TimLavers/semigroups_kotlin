@@ -2,19 +2,19 @@ package org.grandtestauto.maths.monoid
 
 import java.util.*
 
-fun powerSetIntersection(rank_atLeast2: Int): Semigroup<IntSet> {
-    val generators = HashSet<IntSet>()
+fun powerSetIntersection(rank_atLeast2: Int): Semigroup<Set<Int>> {
+    val generators = HashSet<Set<Int>>()
     val dataForId = HashSet<Int>()
     for (i in 1..rank_atLeast2) {
         val data = HashSet<Int>()
         for (j in 1..rank_atLeast2) {
             if (j != i) data.add(j)
         }
-        generators.add(IntSet(data))
+        generators.add(HashSet<Int>(data))
         dataForId.add(i)
     }
-    generators.add(IntSet(dataForId))
-    return generateFrom({ s, t -> s.intersection(t)}, generators)
+    generators.add(HashSet<Int>(dataForId))
+    return generateFrom({ s, t -> s intersect t}, generators)
 }
 
 fun <T> isClosedUnderComposition(elements: Set<T>, composition: ((T,T) -> (T))): Boolean {
@@ -84,22 +84,6 @@ fun leftZeroSemigroup(rank: Int): Semigroup<String> {
         elements.add("lz" + i)
     }
     return Semigroup(elements, { s, t -> s})
-}
-
-fun <T> leftIdeal(semigroup: Semigroup<T>, t: T): Set<T> {
-    val result = mutableSetOf<T>()
-    for (s in semigroup) {
-        result.add(semigroup.composition()(s, t))
-    }
-    return result
-}
-
-fun <T> rightIdeal(semigroup: Semigroup<T>, t: T): Set<T> {
-    val result = mutableSetOf<T>()
-    for (s in semigroup) {
-        result.add(semigroup.composition()(t, s))
-    }
-    return result
 }
 
 fun <T> generateFrom(composition: ((T,T) -> T), generators: Set<T>): Semigroup<T> {
@@ -220,7 +204,15 @@ fun <T> asMonoid(semigroup: Semigroup<T>,identity: T  ) : Monoid<T> {
 
  * @author Tim Lavers
  */
-open class Semigroup<T>(private val elements: Set<T>, private val composition: ((T, T) -> T)) : Iterable<T> {
+open class Semigroup<T>(private val elements: Set<T>, val composition: ((T, T) -> T)) : Iterable<T> {
+
+    val isGroup : Boolean by lazy {
+        find { leftIdeal(it) != elements || rightIdeal(it) != elements } == null
+    }
+
+    val idempotents : Set<T> by lazy {
+        filter { composition(it , it) == it}.toSet()
+    }
 
     fun size() : Int = elements.size
 
@@ -236,8 +228,12 @@ open class Semigroup<T>(private val elements: Set<T>, private val composition: (
 
     fun elements(): Set<T> = elements
 
-    fun idempotents(): Set<T> {
-        return filter { composition(it , it) == it}.toSet()
+    fun leftIdeal(t: T): Set<T> {
+        return map{ composition(it, t) }.toSet()
+    }
+
+    fun rightIdeal(t: T): Set<T> {
+        return map { composition(t, it) }.toSet()
     }
 
     override fun iterator(): Iterator<T> = elements().iterator()
@@ -258,6 +254,14 @@ open class Semigroup<T>(private val elements: Set<T>, private val composition: (
         var result = elements.hashCode()
         result = 31 * result + composition.hashCode()
         return result
+    }
+
+    override fun toString() : String {
+        return elements.toString()
+    }
+
+    fun isCongruence(equivalenceRelation : Relation<T>) : Boolean {
+        return false
     }
 }
 

@@ -30,7 +30,7 @@ class GreensRelationsTest : TestBase() {
         rClasses.subsets().forEach { rClass ->
             rClass.forEach { s ->
                 rClass.forEach { t ->
-                    if (s.kernel() != t.kernel()) {
+                    if (s.kernel != t.kernel) {
                         problems.add(s)
                         problems.add(t)
                     }
@@ -44,7 +44,7 @@ class GreensRelationsTest : TestBase() {
         rClasses.subsets().forEach { rClass -> rClass.forEach { t -> transformationToRClass.put(t, rClass) } }
         semigroup.elements().forEach { s ->
             semigroup.forEach { t ->
-                if (s.kernel() == t.kernel()) {
+                if (s.kernel == t.kernel) {
                     if (transformationToRClass[s] != transformationToRClass[t]) {
                         problems.add(s)
                         problems.add(t)
