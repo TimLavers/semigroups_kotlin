@@ -2,6 +2,18 @@ package org.grandtestauto.maths.monoid
 
 import java.util.*
 
+fun <T> createRelation(baseSet: Set<T>, criterion: ((T, T) -> Boolean)): Relation<T> {
+    val resultBase = mutableSetOf<Tuple<T, T>>()
+    baseSet.forEach { s ->
+        baseSet.forEach { t ->
+            if (criterion(s, t)) {
+                resultBase.add(Tuple<T, T>(s, t))
+            }
+        }
+    }
+    return Relation<T>(baseSet, resultBase)
+}
+
 /**
  * A set of pairs of elements of the same set.
 
@@ -21,20 +33,20 @@ class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Tuple<T
     }
 
     val isSymmetric: Boolean
-    get() {
-        for (t in elements) {
-            if (!elements.contains(t.flip())) return false
+        get() {
+            for (t in elements) {
+                if (!elements.contains(t.flip())) return false
+            }
+            return true
         }
-        return true
-    }
 
-val isReflexive: Boolean
-    get() {
-        for (x in baseSet) {
-            if (!elements.contains(Tuple(x,x))) return false
+    val isReflexive: Boolean
+        get() {
+            for (x in baseSet) {
+                if (!elements.contains(Tuple(x, x))) return false
+            }
+            return true
         }
-        return true
-    }
 
     val isTransitive: Boolean
         get() {
@@ -110,7 +122,7 @@ val isReflexive: Boolean
         return "{${elements.toString()}}"
     }
 
-    override fun equals(other: Any?): Boolean{
+    override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other?.javaClass != javaClass) return false
 
@@ -122,7 +134,7 @@ val isReflexive: Boolean
         return true
     }
 
-    override fun hashCode(): Int{
+    override fun hashCode(): Int {
         var result = baseSet.hashCode()
         result += 31 * result + elements.hashCode()
         return result

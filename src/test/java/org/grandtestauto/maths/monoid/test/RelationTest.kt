@@ -1,10 +1,7 @@
 package org.grandtestauto.maths.monoid.test
 
+import org.grandtestauto.maths.monoid.*
 import org.junit.Assert
-import org.grandtestauto.maths.monoid.IntSet
-import org.grandtestauto.maths.monoid.Relation
-import org.grandtestauto.maths.monoid.Tuple
-import org.grandtestauto.maths.monoid.powerSet
 import org.junit.Test
 
 import java.util.HashSet
@@ -13,6 +10,24 @@ import java.util.HashSet
  * @author Tim Lavers
  */
 class RelationTest : TestBase() {
+
+    @Test
+    fun createRelationTest() {
+        val ints = s(1,2,3,4,5)
+        val gt : ((Int), (Int)) -> (Boolean) = {a, b -> a > b }
+        val created = createRelation(ints, gt)
+        Assert.assertEquals(10, created.size())
+        assert(created.contains(tu(2, 1)))
+        assert(created.contains(tu(3, 1)))
+        assert(created.contains(tu(4, 1)))
+        assert(created.contains(tu(5, 1)))
+        assert(created.contains(tu(3, 2)))
+        assert(created.contains(tu(4, 2)))
+        assert(created.contains(tu(5, 2)))
+        assert(created.contains(tu(4, 3)))
+        assert(created.contains(tu(5, 3)))
+        assert(created.contains(tu(5, 4)))
+    }
 
     @Test
     fun transitiveClosureTest() {
@@ -338,12 +353,12 @@ class RelationTest : TestBase() {
     @Test
     fun isAPartialOrderPowerSetTest() {
         val powerSet = powerSet(6)
-        val tuples = mutableSetOf<Tuple<IntSet, IntSet>>()
-        val baseSet = mutableSetOf<IntSet>()
+        val tuples = mutableSetOf<Tuple<Set<Int>, Set<Int>>>()
+        val baseSet = mutableSetOf<Set<Int>>()
         powerSet.forEach { intSetLeft ->
             baseSet.add(intSetLeft)
             powerSet.forEach { intSetRight ->
-                if (intSetLeft.isASubsetOf(intSetRight)) {
+                if (intSetLeft isASubsetOf intSetRight) {
                     tuples.add(Tuple(intSetLeft, intSetRight))
                 }
             }
