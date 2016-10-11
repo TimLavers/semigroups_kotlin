@@ -2,6 +2,15 @@ package org.grandtestauto.maths.monoid
 
 import java.util.*
 
+/**
+ * The numbers 1..n with i*j = max(i, j).
+ */
+fun chainSemigroup(n_atLeast1: Int) : Semigroup<Int> {
+    val ints = mutableSetOf<Int>()
+    for (i in 1..n_atLeast1) ints.add(i)
+    return Semigroup(ints, {s, t -> Math.max(s, t)})
+}
+
 fun powerSetIntersection(rank_atLeast2: Int): Semigroup<Set<Int>> {
     val generators = HashSet<Set<Int>>()
     val dataForId = HashSet<Int>()
@@ -261,6 +270,7 @@ open class Semigroup<T>(private val elements: Set<T>, val composition: ((T, T) -
     }
 
     fun isCongruence(equivalenceRelation : Relation<T>) : Boolean {
+//        equivalenceRelation.
         return false
     }
 }

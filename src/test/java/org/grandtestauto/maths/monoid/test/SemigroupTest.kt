@@ -13,9 +13,38 @@ import java.util.HashSet
 class SemigroupTest : TestBase() {
 
     @Test
+    fun chainSemigroupTest() {
+        val i5 = chainSemigroup(5)
+        assert(i5.size() == 5)
+        assert(i5.idempotents.size == 5)
+        for (i in 1..5) {
+            assert(i5.contains(i))
+        }
+        assert(isClosedUnderComposition(i5.elements(), i5.composition))
+        assert(isAssociative(i5.composition, i5.elements()))
+        i5.forEach { s ->
+            i5.forEach { t -> assert(i5.composition(s, t) == Math.max(s, t)) }
+         }
+    }
+
+    @Test
     fun isCongruenceTest() {
         val o3 = orderPreservingTransformationMonoid(3)
+        val silly = createRelation(o3.elements(),{a, b -> a.apply(1) == b.apply(1)})
+        assert(!o3.isCongruence(silly))
 
+        val closer = createRelation(o3.elements(),{a, b -> a.image == b.image})
+        assert(!o3.isCongruence(closer))
+
+        val o5 = orderPreservingTransformationMonoid(5)
+        val almost = createRelation(o5.elements(),{a, b -> a.kernel == b.kernel})
+        assert(!o5.isCongruence(almost))
+
+        val t4 = transformationMonoid(4)
+        val congruence = createRelation(t4.elements(), {a, b -> a.kernel == b.kernel && a.image == b.image})
+        assert(t4.isCongruence(congruence))
+
+        //todo non-trivial positive examples
     }
 
     @Test
