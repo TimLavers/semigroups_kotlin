@@ -20,6 +20,16 @@ class IntSetTest : TestBase() {
     }
 
     @Test
+    fun intsFrom1ToTest() {
+        val ints0 = intsFrom1To(0)
+        assert(ints0.isEmpty())
+
+        val ints1 = intsFrom1To(1)
+        assert(ints1.size == 1)
+        assert(ints1.contains(1))
+    }
+
+    @Test
     fun powerSetTest() {
         var powerSet = powerSet(1)
         assertEquals(2, powerSet.size)

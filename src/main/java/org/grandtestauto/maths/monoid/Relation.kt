@@ -19,7 +19,7 @@ fun <T> createRelation(baseSet: Set<T>, criterion: ((T, T) -> Boolean)): Relatio
 
  * @author Tim Lavers
  */
-class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Tuple<T, T>>) {
+class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Tuple<T, T>>) : Iterable<Tuple<T, T>> {
 
     init {
         this.elements.forEach { ttTuple ->
@@ -40,6 +40,10 @@ class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Tuple<T
 
     fun transitiveClosure(): Relation<T> {
         return generate(TransitiveClosureGenerator())
+    }
+
+    override fun iterator() : Iterator<Tuple<T, T>> {
+        return elements.iterator()
     }
 
     fun size(): Int {

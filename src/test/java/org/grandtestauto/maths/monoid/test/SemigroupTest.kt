@@ -24,27 +24,33 @@ class SemigroupTest : TestBase() {
         assert(isAssociative(i5.composition, i5.elements()))
         i5.forEach { s ->
             i5.forEach { t -> assert(i5.composition(s, t) == Math.max(s, t)) }
-         }
+        }
     }
 
     @Test
     fun isCongruenceTest() {
         val o3 = orderPreservingTransformationMonoid(3)
-        val silly = createRelation(o3.elements(),{a, b -> a.apply(1) == b.apply(1)})
+        val silly = createRelation(o3.elements(), { a, b -> a.apply(1) == b.apply(1) })
         assert(!o3.isCongruence(silly))
 
-        val closer = createRelation(o3.elements(),{a, b -> a.image == b.image})
+        val closer = createRelation(o3.elements(), { a, b -> a.image == b.image })
         assert(!o3.isCongruence(closer))
 
         val o5 = orderPreservingTransformationMonoid(5)
-        val almost = createRelation(o5.elements(),{a, b -> a.kernel == b.kernel})
+        val almost = createRelation(o5.elements(), { a, b -> a.kernel == b.kernel })
         assert(!o5.isCongruence(almost))
 
-        val t4 = transformationMonoid(4)
-        val congruence = createRelation(t4.elements(), {a, b -> a.kernel == b.kernel && a.image == b.image})
-        assert(t4.isCongruence(congruence))
+        val identityCongruence = createRelation(o5.elements(), { a, b -> a.kernel == b.kernel && a.image == b.image })
+        assert(o5.isCongruence(identityCongruence))
 
-        //todo non-trivial positive examples
+        /*
+        If we map On to {0, 1} by id -> 1 and all other elements -> 0, we shold
+        get a homomorphism with kernel equivalent to the following congruence.
+         */
+        val zeroOrId = createRelation(o5.elements(), { a, b -> (a.image.size < 5 && b.image.size < 5) || (a.image.size == 5 && b.image.size == 5) })
+        assert(o5.isCongruence(zeroOrId))
+
+        //todo tn examples
     }
 
     @Test
@@ -62,7 +68,7 @@ class SemigroupTest : TestBase() {
         val o2 = orderPreservingTransformationMonoid(2)
         val idempotentsO2 = o2.idempotents
         assertEquals(3, idempotentsO2.size)
-        assertFalse(idempotentsO2.contains(t(2,1)))
+        assertFalse(idempotentsO2.contains(t(2, 1)))
     }
 
     @Test
@@ -90,7 +96,7 @@ class SemigroupTest : TestBase() {
         }
     }
 
-    fun checkHomomorphism(function: FiniteFunction<Transformation, Transformation>, o2: Semigroup<Transformation>) : Boolean  {
+    fun checkHomomorphism(function: FiniteFunction<Transformation, Transformation>, o2: Semigroup<Transformation>): Boolean {
         o2.forEach({
             s ->
             o2.forEach { t ->
@@ -142,10 +148,10 @@ class SemigroupTest : TestBase() {
         assertEquals(expected, t3.leftIdeal(t(1, 1, 1)))
 
         expected = set(t(2, 2, 2), t(1, 1, 2), t(1, 2, 1), t(2, 1, 1), t(1, 2, 2), t(2, 1, 2), t(2, 2, 1), t(1, 1, 1))
-        assertEquals(expected, t3.leftIdeal( t(1, 1, 2)))
+        assertEquals(expected, t3.leftIdeal(t(1, 1, 2)))
 
         expected = set(t(1, 1, 3), t(1, 3, 1), t(3, 1, 1), t(1, 3, 3), t(3, 1, 3), t(3, 3, 1), t(1, 1, 1), t(3, 3, 3))
-        assertEquals(expected, t3.leftIdeal( t(1, 1, 3)))
+        assertEquals(expected, t3.leftIdeal(t(1, 1, 3)))
 
         assertEquals(t3.elements(), t3.leftIdeal(t(2, 1, 3)))
     }
@@ -248,7 +254,7 @@ class SemigroupTest : TestBase() {
         assertTrue(o3.contains(t(2, 3, 3)))
 
         assertTrue(o3.contains(t(1, 2, 3)))
-        o3.elements().forEach { t -> assertTrue("Not order-preserving: " + t,isOrderPreserving(t)) }
+        o3.elements().forEach { t -> assertTrue("Not order-preserving: " + t, isOrderPreserving(t)) }
 
         val o4 = orderPreservingTransformationMonoid(4)
         assertEquals(35, o4.size())

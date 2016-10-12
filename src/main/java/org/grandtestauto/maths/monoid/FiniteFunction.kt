@@ -23,6 +23,30 @@ fun <S, T> allFunctionsFromTo(domain: Set<S>, range: Set<T>): Set<FiniteFunction
     return result
 }
 
+fun <S, T> allFunctionsFromToccc(domain: Set<S>, range: Set<T>): Set<FiniteFunction<S, T>> {
+    val result = HashSet<FiniteFunction<S, T>>()
+    val mapsSoFar = HashSet<Map<S, T>>()
+    //Get all potential ranges.
+    val possibleImages = powerSetF(range)
+    //For each non-empty image, work out the possible functions.
+    possibleImages.
+    mapsSoFar.add(HashMap<S, T>())
+    domain.forEach { d ->
+        val mapsWith_d_InDomain = HashSet<Map<S, T>>()
+        mapsSoFar.forEach { m ->
+            range.forEach { r ->
+                val newMap = HashMap(m)
+                newMap.put(d, r)
+                mapsWith_d_InDomain.add(newMap)
+            }
+        }
+        mapsSoFar.clear()
+        mapsSoFar.addAll(mapsWith_d_InDomain)
+    }
+    mapsSoFar.forEach { m -> result.add(FiniteFunction(m)) }
+    return result
+}
+
 /**
  * A function between two finite sets.
  */

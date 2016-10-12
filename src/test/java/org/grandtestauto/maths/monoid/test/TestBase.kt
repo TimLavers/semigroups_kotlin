@@ -43,9 +43,9 @@ fun <S,T> tu(i: S, j: T): Tuple<S, T> {
     return Tuple(i, j)
 }
 
-fun relation(vararg tuples: Tuple<Any, Any>): Relation<Any> {
-    val elements = mutableSetOf<Tuple<Any, Any>>()
-    val baseSet = HashSet<Any>()
+fun <T> relation(vararg tuples: Tuple<T, T>): Relation<T> {
+    val elements = mutableSetOf<Tuple<T, T>>()
+    val baseSet = mutableSetOf<T>()
     for (tuple in tuples) {
         elements.add(tuple)
         baseSet.add(tuple.left())

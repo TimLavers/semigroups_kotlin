@@ -5,10 +5,10 @@ import java.util.*
 /**
  * The numbers 1..n with i*j = max(i, j).
  */
-fun chainSemigroup(n_atLeast1: Int) : Semigroup<Int> {
+fun chainSemigroup(n_atLeast1: Int): Semigroup<Int> {
     val ints = mutableSetOf<Int>()
     for (i in 1..n_atLeast1) ints.add(i)
-    return Semigroup(ints, {s, t -> Math.max(s, t)})
+    return Semigroup(ints, { s, t -> Math.max(s, t) })
 }
 
 fun powerSetIntersection(rank_atLeast2: Int): Semigroup<Set<Int>> {
@@ -23,10 +23,10 @@ fun powerSetIntersection(rank_atLeast2: Int): Semigroup<Set<Int>> {
         dataForId.add(i)
     }
     generators.add(HashSet<Int>(dataForId))
-    return generateFrom({ s, t -> s intersect t}, generators)
+    return generateFrom({ s, t -> s intersect t }, generators)
 }
 
-fun <T> isClosedUnderComposition(elements: Set<T>, composition: ((T,T) -> (T))): Boolean {
+fun <T> isClosedUnderComposition(elements: Set<T>, composition: ((T, T) -> (T))): Boolean {
     val result = booleanArrayOf(true)
     for (t in elements) {
         if (!result[0]) break
@@ -42,7 +42,7 @@ fun <T> isClosedUnderComposition(elements: Set<T>, composition: ((T,T) -> (T))):
     return result[0]
 }
 
-fun <T> isAssociative(composition: ((T,T) -> (T)), elements: Set<T>): Boolean {
+fun <T> isAssociative(composition: ((T, T) -> (T)), elements: Set<T>): Boolean {
     val result = booleanArrayOf(true)
     for (t in elements) {
         if (!result[0]) break
@@ -84,7 +84,7 @@ fun rightZeroSemigroup(rank: Int): Semigroup<String> {
     for (i in 0..rank - 1) {
         elements.add("rz" + i)
     }
-    return Semigroup(elements, { s, t -> t})
+    return Semigroup(elements, { s, t -> t })
 }
 
 fun leftZeroSemigroup(rank: Int): Semigroup<String> {
@@ -92,10 +92,10 @@ fun leftZeroSemigroup(rank: Int): Semigroup<String> {
     for (i in 0..rank - 1) {
         elements.add("lz" + i)
     }
-    return Semigroup(elements, { s, t -> s})
+    return Semigroup(elements, { s, t -> s })
 }
 
-fun <T> generateFrom(composition: ((T,T) -> T), generators: Set<T>): Semigroup<T> {
+fun <T> generateFrom(composition: ((T, T) -> T), generators: Set<T>): Semigroup<T> {
     val generation = Generation(generators, object : Generation.CreateNew<T> {
         override fun createNew(s: T, t: T): T {
             return composition(s, t)
@@ -186,25 +186,26 @@ fun cyclicGroup(rank_atLeast2: Int): Monoid<Transformation> {
     return asMonoid(generateFrom(TransformationComposition, generators), unit(rank_atLeast2))
 }
 
-fun <S,T> doubleProduct(left: Semigroup<S>,
-                        right: Semigroup<T>,
-                        actionOfLeftOnRight: ((S) -> ((T) -> T)),
-                        actionOfRightOnLeft: ((T) -> ((S) -> S))) : Semigroup<Tuple<S,T>> {
+fun <S, T> doubleProduct(left: Semigroup<S>,
+                         right: Semigroup<T>,
+                         actionOfLeftOnRight: ((S) -> ((T) -> T)),
+                         actionOfRightOnLeft: ((T) -> ((S) -> S))): Semigroup<Tuple<S, T>> {
     fun elements(): Set<Tuple<S, T>> {
         val result = HashSet<Tuple<S, T>>()
         left.forEach { s -> right.forEach { t -> result.add(Tuple(s, t)) } }
         return result
     }
 
-    fun compose() : ((Tuple<S,T>, Tuple<S,T>) -> (Tuple<S,T>)) = {
-        x, y -> Tuple(left.composition()(x.left(), actionOfRightOnLeft(x.right())(y.left())),
-            right.composition()(actionOfLeftOnRight(y.left())(x.right()),y.right()))
+    fun compose(): ((Tuple<S, T>, Tuple<S, T>) -> (Tuple<S, T>)) = {
+        x, y ->
+        Tuple(left.composition()(x.left(), actionOfRightOnLeft(x.right())(y.left())),
+                right.composition()(actionOfLeftOnRight(y.left())(x.right()), y.right()))
     }
 
     return Semigroup(elements(), compose())
 }
 
-fun <T> asMonoid(semigroup: Semigroup<T>,identity: T  ) : Monoid<T> {
+fun <T> asMonoid(semigroup: Semigroup<T>, identity: T): Monoid<T> {
     return Monoid(semigroup.elements(), semigroup.composition(), identity)
 }
 
@@ -215,15 +216,15 @@ fun <T> asMonoid(semigroup: Semigroup<T>,identity: T  ) : Monoid<T> {
  */
 open class Semigroup<T>(private val elements: Set<T>, val composition: ((T, T) -> T)) : Iterable<T> {
 
-    val isGroup : Boolean by lazy {
+    val isGroup: Boolean by lazy {
         find { leftIdeal(it) != elements || rightIdeal(it) != elements } == null
     }
 
-    val idempotents : Set<T> by lazy {
-        filter { composition(it , it) == it}.toSet()
+    val idempotents: Set<T> by lazy {
+        filter { composition(it, it) == it }.toSet()
     }
 
-    fun size() : Int = elements.size
+    fun size(): Int = elements.size
 
     operator fun contains(t: T): Boolean = elements.contains(t)
 
@@ -232,13 +233,13 @@ open class Semigroup<T>(private val elements: Set<T>, val composition: ((T, T) -
     open fun powerOf(t: T, r: Int): T {
         if (r < 1) throw IllegalArgumentException("Strictly positive indices here, please.")
         if (r == 1) return t
-        return composition(t, powerOf(t, r-1));
+        return composition(t, powerOf(t, r - 1));
     }
 
     fun elements(): Set<T> = elements
 
     fun leftIdeal(t: T): Set<T> {
-        return map{ composition(it, t) }.toSet()
+        return map { composition(it, t) }.toSet()
     }
 
     fun rightIdeal(t: T): Set<T> {
@@ -247,7 +248,7 @@ open class Semigroup<T>(private val elements: Set<T>, val composition: ((T, T) -
 
     override fun iterator(): Iterator<T> = elements().iterator()
 
-    override fun equals(other: Any?): Boolean{
+    override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other?.javaClass != javaClass) return false
 
@@ -259,23 +260,30 @@ open class Semigroup<T>(private val elements: Set<T>, val composition: ((T, T) -
         return true
     }
 
-    override fun hashCode(): Int{
+    override fun hashCode(): Int {
         var result = elements.hashCode()
         result = 31 * result + composition.hashCode()
         return result
     }
 
-    override fun toString() : String {
+    override fun toString(): String {
         return elements.toString()
     }
 
-    fun isCongruence(equivalenceRelation : Relation<T>) : Boolean {
-//        equivalenceRelation.
-        return false
+    fun isCongruence(equivalenceRelation: Relation<T>): Boolean {
+        equivalenceRelation.forEach { tuple ->
+            forEach { s ->
+                val leftMultiple = Tuple(composition(s, tuple.left()), composition(s, tuple.right()))
+                if (!equivalenceRelation.contains(leftMultiple)) return false
+                val rightMultiple = Tuple(composition(tuple.left(), s), composition(tuple.right(), s))
+                if (!equivalenceRelation.contains(rightMultiple)) return false
+            }
+        }
+        return true
     }
 }
 
-class Monoid<T>(elements: Set<T>, composition: (T, T) -> T, val identity : T) : Semigroup<T>(elements, composition) {
+class Monoid<T>(elements: Set<T>, composition: (T, T) -> T, val identity: T) : Semigroup<T>(elements, composition) {
     override fun powerOf(t: T, r: Int): T {
         if (r == 0) return identity
         return super.powerOf(t, r)

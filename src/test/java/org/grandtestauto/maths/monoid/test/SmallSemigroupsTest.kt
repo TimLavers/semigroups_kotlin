@@ -50,4 +50,16 @@ class SmallSemigroupsTest : TestBase() {
         val orderPreservers = subsemigroupOfOrderPreservingTransformations(semigroup)
         println("orderPreservers = ${orderPreservers}")
     }
+
+    @Test
+    fun o4() {
+        val o4 = orderPreservingTransformationMonoid(4)
+        val o3 = orderPreservingTransformationMonoid(3)
+        val allFunctions = allFunctionsFromTo(o4.elements(), o3.elements())
+        val allHomomorphisms = allFunctions.filter { isHomomorphism(it, o4, o3) }
+        val nonTrivial = allHomomorphisms.filter { it.range().size > 2 }
+        println("allHomomorphisms = ${allHomomorphisms.size}")
+        println("non trivials: ${nonTrivial.size}")
+        nonTrivial.forEach { println("it = ${it}") }
+    }
 }

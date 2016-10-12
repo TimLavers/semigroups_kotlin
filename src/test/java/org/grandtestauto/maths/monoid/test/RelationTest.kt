@@ -12,6 +12,17 @@ import java.util.HashSet
 class RelationTest : TestBase() {
 
     @Test
+    fun iteratorTest() {
+        val relation = relation(tu(1,1), tu(1,2), tu(2,1))
+        val iterator = relation.iterator()
+        val expectedElements = set(tu(1,1), tu(1,2), tu(2,1))
+        assert(expectedElements.contains(iterator.next()))
+        assert(expectedElements.contains(iterator.next()))
+        assert(expectedElements.contains(iterator.next()))
+        assert(!iterator.hasNext())
+    }
+
+    @Test
     fun createRelationTest() {
         val ints = s(1,2,3,4,5)
         val gt : ((Int), (Int)) -> (Boolean) = {a, b -> a > b }
@@ -31,7 +42,7 @@ class RelationTest : TestBase() {
 
     @Test
     fun transitiveClosureTest() {
-        val empty = relation()
+        val empty = relation<Int>()
         Assert.assertEquals(0, empty.transitiveClosure().size())
 
         var generators = relation(tu(1, 1))
@@ -90,7 +101,7 @@ class RelationTest : TestBase() {
 
     @Test
     fun sizeTest() {
-        Assert.assertEquals(0, relation().size())
+        Assert.assertEquals(0, relation<Int>().size())
         Assert.assertEquals(1, relation(tu(2, 2)).size())
         Assert.assertEquals(2, relation(tu(1, 1), tu(2, 2)).size())
         Assert.assertEquals(3, relation(tu(1, 1), tu(2, 2), tu(1, 2)).size())
@@ -99,7 +110,7 @@ class RelationTest : TestBase() {
 
     @Test
     fun isAnEquivalenceTest() {
-        var r = relation()
+        var r = relation<Int>()
         Assert.assertTrue(r.isAnEquivalence)
 
         r = relation(tu(1, 1))
@@ -126,7 +137,7 @@ class RelationTest : TestBase() {
 
     @Test
     fun generateEquivalenceRelationTest() {
-        var r = relation()
+        var r = relation<Int>()
         Assert.assertEquals(r, r.generateEquivalenceRelation())
 
         r = relation(tu(1, 1))
@@ -167,7 +178,7 @@ class RelationTest : TestBase() {
 
     @Test
     fun toStringTest() {
-        var r = relation()
+        var r = relation<Int>()
         Assert.assertEquals("{[]}", r.toString())
 
         r = relation(tu(1, 1))
@@ -181,8 +192,8 @@ class RelationTest : TestBase() {
 
     @Test
     fun equalsTest() {
-        var r = relation()
-        var s = relation()
+        var r = relation<Int>()
+        var s = relation<Int>()
         Assert.assertTrue(r == s)
 
         r = relation(tu(1, 1))
@@ -215,8 +226,8 @@ class RelationTest : TestBase() {
 
     @Test
     fun hashCodeTest() {
-        var r = relation()
-        var s = relation()
+        var r = relation<Int>()
+        var s = relation<Int>()
         Assert.assertEquals(r.hashCode(), s.hashCode())
 
         r = relation(tu(1, 1))
@@ -230,7 +241,7 @@ class RelationTest : TestBase() {
 
     @Test
     fun containsTest() {
-        var relation = relation()
+        var relation = relation<Int>()
         Assert.assertFalse(relation.contains(tu(1, 1)))
         Assert.assertFalse(relation.contains(tu(1, 2)))
 
@@ -241,7 +252,7 @@ class RelationTest : TestBase() {
 
     @Test
     fun isSymmetricTest() {
-        var relation = relation()
+        var relation = relation<Int>()
         Assert.assertTrue(relation.isSymmetric)
 
         relation = relation(tu(1, 2), tu(1, 3))
@@ -265,7 +276,7 @@ class RelationTest : TestBase() {
 
     @Test
     fun isReflexiveTest() {
-        var relation = relation()
+        var relation = relation<Int>()
         Assert.assertTrue(relation.isReflexive)
 
         relation = relation(tu(1, 1))
@@ -280,7 +291,7 @@ class RelationTest : TestBase() {
 
     @Test
     fun isTransitiveTest() {
-        var relation = relation()
+        var relation = relation<Int>()
         Assert.assertTrue(relation.isTransitive)
 
         relation = relation(tu(1, 1))
