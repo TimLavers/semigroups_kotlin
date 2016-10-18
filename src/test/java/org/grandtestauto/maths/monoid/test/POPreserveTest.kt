@@ -35,12 +35,12 @@ class POPreserveTest : TestBase() {
         Assert.assertTrue(relation.isAPartialOrder)
 
         val opt = orderPreservingTransformationMonoid(5)
-        Assert.assertTrue(isAssociative(TransformationComposition, opt.elements()))
-        Assert.assertTrue(isClosedUnderComposition(opt.elements(), TransformationComposition))
+        Assert.assertTrue(isAssociative(TransformationComposition, opt.elements))
+        Assert.assertTrue(isClosedUnderComposition(opt.elements, TransformationComposition))
 
-        println("opt size: " + opt.size())
+        println("opt size: " + opt.size)
 
-        val sgp = Semigroup(opt.elements(), TransformationComposition)
+        val sgp = Semigroup(opt.elements, TransformationComposition)
         val greens = GreensRelations(sgp)
 
         printLClasses(greens)

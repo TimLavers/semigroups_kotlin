@@ -10,6 +10,14 @@ import org.junit.Test
 class TransformationTest {
 
     @Test
+    fun isRightZeroTest() {
+     assert(t(1,1,1).isRightZero)
+     assert(t(5,5,5,5,5,5,5).isRightZero)
+     assert(!t(1,1,2).isRightZero)
+     assert(!t(6,6,6,6,6,6,6,1).isRightZero)
+    }
+
+    @Test
     fun imageTest(){
         Assert.assertEquals(set(1,2,3), t(1,2,3).image)
         Assert.assertEquals(set(1), t(1,1,1, 1).image)

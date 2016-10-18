@@ -47,6 +47,14 @@ fun unit(rank: Int): Transformation {
  */
 class Transformation(private val map: IntArray) {
 
+    val isRightZero: Boolean by lazy {
+        val val0 = map[0]
+        for (i in 0..map.size - 1) {
+            if (map[i] != val0) return@lazy false
+        }
+        return@lazy true
+    }
+
     val kernel: Relation<Int> by lazy {
         val pairs = HashSet<Tuple<Int, Int>>()
         for (i in 1..map.size) {
@@ -97,9 +105,10 @@ class Transformation(private val map: IntArray) {
 
     fun compose(t: Transformation): Transformation {
         assert(t.rank() == rank())
+        if (t.isRightZero) return t
         val compositeMap = IntArray(map.size)
         for (i in 1..map.size) {
-            compositeMap[i - 1] = t.apply(map[i - 1])
+            compositeMap[i - 1] = t.map[map[i - 1] -1]
         }
         return Transformation(compositeMap)
     }

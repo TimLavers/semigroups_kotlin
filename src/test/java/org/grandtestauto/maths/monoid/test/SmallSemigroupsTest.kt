@@ -11,7 +11,7 @@ import org.junit.Test
 class SmallSemigroupsTest : TestBase() {
     @Test
     fun size3Test() {
-        val transformationsOf3 = transformationMonoid(3).elements()
+        val transformationsOf3 = transformationMonoid(3).elements
         println("transformationsOf3.size() = " + transformationsOf3.size)
 
         val setsOf3Trannies = SubsetsOfSizeN(transformationsOf3, 3)
@@ -28,7 +28,7 @@ class SmallSemigroupsTest : TestBase() {
         val generators = set(t1, t2)
         val semigroup = generateFrom(TransformationComposition, generators)
 
-        val size = semigroup.size()
+        val size = semigroup.size
         println("size = ${size}")
         val idempotents = semigroup.idempotents
         println("idempotents: ${idempotents.size}")
@@ -54,9 +54,11 @@ class SmallSemigroupsTest : TestBase() {
     @Test
     fun o4() {
         val o4 = orderPreservingTransformationMonoid(4)
+        println("o4.size = ${o4.size}")
         val o3 = orderPreservingTransformationMonoid(3)
-        val allFunctions = allFunctionsFromTo(o4.elements(), o3.elements())
-        val allHomomorphisms = allFunctions.filter { isHomomorphism(it, o4, o3) }
+        println("o3.size = ${o3.size}")
+//        val allFunctions = allFunctionsFromTo(o4.elements, o3.elements)
+        val allHomomorphisms = allHomomorphisms(o4, o3)
         val nonTrivial = allHomomorphisms.filter { it.range().size > 2 }
         println("allHomomorphisms = ${allHomomorphisms.size}")
         println("non trivials: ${nonTrivial.size}")

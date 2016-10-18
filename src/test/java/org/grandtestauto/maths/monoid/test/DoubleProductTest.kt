@@ -16,24 +16,22 @@ class DoubleProductTest {
 
     @Test
     fun elementsTest() {
-        val elements = product.elements()
-        Assert.assertEquals(6 * 24, elements.size)
-        for (t3 in s3.elements()) {
-            for (t4 in s4.elements()) {
+        Assert.assertEquals(6 * 24, product.size)
+        for (t3 in s3) {
+            for (t4 in s4) {
                 val tuple = Tuple(t3, t4)
-                Assert.assertTrue(elements.contains(tuple))
+                Assert.assertTrue(product.contains(tuple))
             }
         }
     }
 
     @Test
     fun compositionTest() {
-        val elements = product.elements()
-        for (tupleA in elements) {
-            for (tupleB in elements) {
-                val product = this.product.composition()(tupleA, tupleB)
-                Assert.assertEquals(s3.composition()(tupleA.left(), tupleB.left()), product.left())
-                Assert.assertEquals(s4.composition()(tupleA.right(), tupleB.right()), product.right())
+        for (tupleA in product) {
+            for (tupleB in product) {
+                val product = this.product.composition(tupleA, tupleB)
+                Assert.assertEquals(s3.composition(tupleA.left(), tupleB.left()), product.left())
+                Assert.assertEquals(s4.composition(tupleA.right(), tupleB.right()), product.right())
             }
         }
     }

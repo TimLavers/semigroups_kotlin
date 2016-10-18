@@ -52,12 +52,11 @@ class C5S4DoubleProduct {
 
     @Test
     fun elementsTest() {
-        val elements = product.elements()
-        Assert.assertEquals(24 * 5, elements.size)
+        Assert.assertEquals(24 * 5, product.size)
         for (s in s4) {
             for (c in c5) {
                 val tuple = Tuple(s, c)
-                assertTrue(elements.contains(tuple))
+                assertTrue(product.contains(tuple))
             }
         }
     }
@@ -67,7 +66,7 @@ class C5S4DoubleProduct {
         for (m in product) {
             for (n in product) {
                 val prod_eval = (m.left() * m.right()) * (n.left() * n.right())
-                val tuple = product.composition()(m , n)
+                val tuple = product.composition(m , n)
                 val tuple_eval = tuple.left() * tuple.right()
                 Assert.assertEquals(prod_eval, tuple_eval)
             }

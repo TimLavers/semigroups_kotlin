@@ -62,23 +62,33 @@ fun <T> isAssociative(composition: ((T, T) -> (T)), elements: Set<T>): Boolean {
 }
 
 fun <T, U> isHomomorphism(function: FiniteFunction<T, U>, domain: Semigroup<T>, range: Semigroup<U>): Boolean {
-    assert(function.domain() == domain.elements())
-    assert(range.elements().containsAll(function.range()))
+    assert(function.domain() == domain.elements)
+    assert(range.elements.containsAll(function.range()))
+    return isPartialHomomorphism(function, domain, range)
+}
+
+/**
+ * Returns true if the given function, which is defined on perhaps a subset of the elements of the domain semigroup,
+ * is not inconsistent with being a homomorphism.
+ */
+private fun <T, U> isPartialHomomorphism(function: FiniteFunction<T, U>, domain: Semigroup<T>, range: Semigroup<U>) : Boolean {
     val result = booleanArrayOf(true)
-    for (t1 in domain.elements()) {
+    for (t1 in function.domain()) {
         if (!result[0]) break
-        for (t2 in domain.elements()) {
-            val t1t2 = domain.composition()(t1, t2)
-            val t1t2f = function.invoke(t1t2)
-            val t1ft2f = range.composition()(function.invoke(t1), function.invoke(t2))
-            if (t1ft2f != t1t2f) {
-                result[0] = false
+        for (t2 in function.domain()) {
+            val t1t2 = domain.composition(t1, t2)
+            if (t1t2 in function.domain()) {
+                val t1t2f = function.invoke(t1t2)
+                val t1ft2f = range.composition(function.invoke(t1), function.invoke(t2))
+                if (t1ft2f != t1t2f) {
+                    result[0] = false
+                }
             }
         }
     }
     return result[0]
-}
 
+}
 fun rightZeroSemigroup(rank: Int): Semigroup<String> {
     val elements = HashSet<String>()
     for (i in 0..rank - 1) {
@@ -106,8 +116,8 @@ fun <T> generateFrom(composition: ((T, T) -> T), generators: Set<T>): Semigroup<
 
 fun transformationMonoid(rank_atLeast2: Int): Semigroup<Transformation> {
     val elements = HashSet<Transformation>()
-    val symn = symmetricGroup(rank_atLeast2).elements()
-    val on = orderPreservingTransformationMonoid(rank_atLeast2).elements()
+    val symn = symmetricGroup(rank_atLeast2)
+    val on = orderPreservingTransformationMonoid(rank_atLeast2)
     for (s in symn) {
         for (o in on) {
             elements.add(s.compose(o))
@@ -198,15 +208,48 @@ fun <S, T> doubleProduct(left: Semigroup<S>,
 
     fun compose(): ((Tuple<S, T>, Tuple<S, T>) -> (Tuple<S, T>)) = {
         x, y ->
-        Tuple(left.composition()(x.left(), actionOfRightOnLeft(x.right())(y.left())),
-                right.composition()(actionOfLeftOnRight(y.left())(x.right()), y.right()))
+        Tuple(left.composition(x.left(), actionOfRightOnLeft(x.right())(y.left())),
+                right.composition(actionOfLeftOnRight(y.left())(x.right()), y.right()))
     }
 
     return Semigroup(elements(), compose())
 }
 
 fun <T> asMonoid(semigroup: Semigroup<T>, identity: T): Monoid<T> {
-    return Monoid(semigroup.elements(), semigroup.composition(), identity)
+    return Monoid(semigroup.elements, semigroup.composition, identity)
+}
+
+fun <S,T> allHomomorphisms(s: Semigroup<S>, t: Semigroup<T>) : Set<FiniteFunction<S,T>> {
+    var result = mutableSetOf<FiniteFunction<S,T>>()
+
+    //Start with the single empty partial map from s.elements to t.elements
+    val seed = FiniteFunction(mapOf<S,T>())
+
+    //Add this to a set of all partial maps of s.elements to t.elements
+    result.add(seed)
+
+    //For each element x of s:
+    s.forEach { x ->
+        //Create a new result set
+        var newResults = mutableSetOf<FiniteFunction<S,T>>()
+        //For each partial map p in the result set
+        result.forEach {
+            p ->
+            //For each element y of t form a new map by extending p with the pair (x,y)
+            t.forEach {
+                y ->
+                val newMap = p + Tuple(x, y)
+                if (isPartialHomomorphism(newMap, s, t)) {
+                    //For each of these possible partial maps,
+                    //add those that respect composition to the new result set
+                    newResults.add(newMap)
+                }
+            }
+        }
+        //Replace the new result set with the old
+        result = newResults
+    }
+    return result
 }
 
 /**
@@ -214,7 +257,7 @@ fun <T> asMonoid(semigroup: Semigroup<T>, identity: T): Monoid<T> {
 
  * @author Tim Lavers
  */
-open class Semigroup<T>(private val elements: Set<T>, val composition: ((T, T) -> T)) : Iterable<T> {
+open class Semigroup<T>(val elements: Set<T>, val composition: ((T, T) -> T)) : Iterable<T> {
 
     val isGroup: Boolean by lazy {
         find { leftIdeal(it) != elements || rightIdeal(it) != elements } == null
@@ -224,19 +267,15 @@ open class Semigroup<T>(private val elements: Set<T>, val composition: ((T, T) -
         filter { composition(it, it) == it }.toSet()
     }
 
-    fun size(): Int = elements.size
+    val size: Int get() = elements.size//todo use set delegate for size, contains, iterator?
 
     operator fun contains(t: T): Boolean = elements.contains(t)
-
-    fun composition(): ((T, T) -> T) = composition
 
     open fun powerOf(t: T, r: Int): T {
         if (r < 1) throw IllegalArgumentException("Strictly positive indices here, please.")
         if (r == 1) return t
         return composition(t, powerOf(t, r - 1));
     }
-
-    fun elements(): Set<T> = elements
 
     fun leftIdeal(t: T): Set<T> {
         return map { composition(it, t) }.toSet()
@@ -246,7 +285,7 @@ open class Semigroup<T>(private val elements: Set<T>, val composition: ((T, T) -
         return map { composition(t, it) }.toSet()
     }
 
-    override fun iterator(): Iterator<T> = elements().iterator()
+    override fun iterator(): Iterator<T> = elements.iterator()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

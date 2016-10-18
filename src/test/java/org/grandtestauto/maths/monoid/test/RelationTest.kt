@@ -363,7 +363,7 @@ class RelationTest : TestBase() {
 
     @Test
     fun isAPartialOrderPowerSetTest() {
-        val powerSet = powerSet(6)
+        val powerSet = intsFrom1To(6).powerSet()
         val tuples = mutableSetOf<Tuple<Set<Int>, Set<Int>>>()
         val baseSet = mutableSetOf<Set<Int>>()
         powerSet.forEach { intSetLeft ->

@@ -12,7 +12,7 @@ fun <T> are_R_Related(semigroup: Semigroup<T>, a: T, b: T): Boolean {
 class GreensRelations<T>(private val semigroup: Semigroup<T>) {
 
     fun lClasses(): SetPartition<T> {
-        val result = SetPartition(semigroup.elements())
+        val result = SetPartition(semigroup.elements)
         val leftIdealsToElementsThatProduceThem = mutableMapOf<Set<T>, MutableSet<T>>()
         semigroup.forEach { t ->
             val leftIdeal = semigroup.leftIdeal(t)
@@ -28,7 +28,7 @@ class GreensRelations<T>(private val semigroup: Semigroup<T>) {
     }
 
     fun rClasses(): SetPartition<T> {
-        val result = SetPartition(semigroup.elements())
+        val result = SetPartition(semigroup.elements)
         val rightIdealsToElementsThatProduceThem = mutableMapOf<Set<T>, MutableSet<T>>()
         semigroup.forEach { t ->
             val rightIdeal = semigroup.rightIdeal(t)

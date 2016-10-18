@@ -1,8 +1,10 @@
 package org.grandtestauto.maths.monoid.test
 
 import org.grandtestauto.maths.monoid.FiniteFunction
+import org.grandtestauto.maths.monoid.Tuple
 import org.grandtestauto.maths.monoid.allFunctionsFromTo
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 import java.util.HashMap
@@ -13,30 +15,48 @@ import java.util.HashSet
  */
 class FiniteFunctionTest : TestBase() {
 
-    private val _f = FiniteFunction.Builder<String, Int>().add("one", 1).add("uno", 1).add("eins", 1).add("satu", 1).add("two", 2).add("dos", 2).add("zwei", 2).add("dua", 2).add("three", 3).add("tres", 3).add("drei", 3).add("tiga", 3).build()
-    private val f: FiniteFunction<String, Int>
-        get() = _f
+    private val f = FiniteFunction.Builder<String, Int>().add("one", 1).add("uno", 1).add("eins", 1).add("satu", 1).add("two", 2).add("dos", 2).add("zwei", 2).add("dua", 2).add("three", 3).add("tres", 3).add("drei", 3).add("tiga", 3).build()
+
+    @Test
+    fun plusTest() {
+        //Add to empty.
+        val empty = FiniteFunction<String, Int>(mapOf())
+        val withEins1 = empty + Tuple("eins", 1)
+        assertEquals(1, withEins1.data.size)
+        assertEquals(1, withEins1.invoke("eins"))
+
+        //Add to one already there.
+        val withEins1Again = withEins1 + Tuple("eins", 1)
+        assertEquals(1, withEins1Again.data.size)
+        assertEquals(1, withEins1Again.invoke("eins"))
+
+        //Add another
+        val withEins1Uno1 = withEins1 + Tuple("uno", 1)
+        assertEquals(2, withEins1Uno1.data.size)
+        assertEquals(1, withEins1Uno1.invoke("eins"))
+        assertEquals(1, withEins1Uno1.invoke("uno"))
+    }
 
     @Test
     fun applyTest(){
-        Assert.assertEquals(1, f.invoke("one"))
-        Assert.assertEquals(1, f.invoke("uno"))
-        Assert.assertEquals(1, f.invoke("eins"))
-        Assert.assertEquals(1, f.invoke("satu"))
-        Assert.assertEquals(2, f.invoke("two"))
-        Assert.assertEquals(2, f.invoke("zwei"))
-        Assert.assertEquals(2, f.invoke("dos"))
-        Assert.assertEquals(2, f.invoke("dua"))
-        Assert.assertEquals(3, f.invoke("three"))
-        Assert.assertEquals(3, f.invoke("tres"))
-        Assert.assertEquals(3, f.invoke("drei"))
-        Assert.assertEquals(3, f.invoke("tiga"))
+        assertEquals(1, f.invoke("one"))
+        assertEquals(1, f.invoke("uno"))
+        assertEquals(1, f.invoke("eins"))
+        assertEquals(1, f.invoke("satu"))
+        assertEquals(2, f.invoke("two"))
+        assertEquals(2, f.invoke("zwei"))
+        assertEquals(2, f.invoke("dos"))
+        assertEquals(2, f.invoke("dua"))
+        assertEquals(3, f.invoke("three"))
+        assertEquals(3, f.invoke("tres"))
+        assertEquals(3, f.invoke("drei"))
+        assertEquals(3, f.invoke("tiga"))
     }
 
     @Test
     fun domainTest(){
         val d = f.domain()
-        Assert.assertEquals(12, d.size)
+        assertEquals(12, d.size)
         Assert.assertTrue(d.contains("one"))
         Assert.assertTrue(d.contains("uno"))
         Assert.assertTrue(d.contains("satu"))
@@ -54,7 +74,7 @@ class FiniteFunctionTest : TestBase() {
     @Test
     fun rangeTest(){
         val range = f.range()
-        Assert.assertEquals(3, range.size)
+        assertEquals(3, range.size)
         Assert.assertTrue(range.contains(1))
         Assert.assertTrue(range.contains(2))
         Assert.assertTrue(range.contains(3))
@@ -78,7 +98,7 @@ class FiniteFunctionTest : TestBase() {
     @Test
     fun hashCodeTest(){
         val same = FiniteFunction.Builder<String, Int>().add("one", 1).add("uno", 1).add("eins", 1).add("satu", 1).add("two", 2).add("dos", 2).add("zwei", 2).add("dua", 2).add("three", 3).add("tres", 3).add("drei", 3).add("tiga", 3).build()
-        Assert.assertEquals(same.hashCode(), f.hashCode())
+        assertEquals(same.hashCode(), f.hashCode())
     }
 
     @Test
@@ -93,14 +113,14 @@ class FiniteFunctionTest : TestBase() {
         val domain = HashSet<String>()
         var range: MutableSet<Int> = HashSet()
         var all = allFunctionsFromTo(domain, range)
-        Assert.assertEquals(1, all.size)
+        assertEquals(1, all.size)
         Assert.assertTrue(all.iterator().next().domain().isEmpty())
         Assert.assertTrue(all.iterator().next().range().isEmpty())
 
         //Empty not empty.
         range.add(1)
         all = allFunctionsFromTo(domain, range)
-        Assert.assertEquals(1, all.size)
+        assertEquals(1, all.size)
         Assert.assertTrue(all.iterator().next().domain().isEmpty())
         Assert.assertTrue(all.iterator().next().range().isEmpty())
 
@@ -115,21 +135,21 @@ class FiniteFunctionTest : TestBase() {
         //1, 1
         range.add(1)
         all = allFunctionsFromTo(domain, range)
-        Assert.assertEquals(1, all.size)
+        assertEquals(1, all.size)
         val f = all.iterator().next()
-        Assert.assertEquals(1, f.invoke("Berg"))
+        assertEquals(1, f.invoke("Berg"))
 
         //1, 2
         range.add(2)
         all = allFunctionsFromTo(domain, range)
-        Assert.assertEquals(2, all.size)
+        assertEquals(2, all.size)
         Assert.assertTrue(all.contains(f("Berg", 1)))
         Assert.assertTrue(all.contains(f("Berg", 2)))
 
         //2, 2
         domain.add("Webern")
         all = allFunctionsFromTo(domain, range)
-        Assert.assertEquals(4, all.size)
+        assertEquals(4, all.size)
         Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 1)))
         Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 2)))
         Assert.assertTrue(all.contains(f(f("Berg", 2), "Webern", 1)))
@@ -138,7 +158,7 @@ class FiniteFunctionTest : TestBase() {
         //2, 3
         range.add(3)
         all = allFunctionsFromTo(domain, range)
-        Assert.assertEquals(9, all.size)
+        assertEquals(9, all.size)
         Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 1)))
         Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 2)))
         Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 3)))
@@ -152,7 +172,7 @@ class FiniteFunctionTest : TestBase() {
         //3, 3
         domain.add("Schoenberg")
         all = allFunctionsFromTo(domain, range)
-        Assert.assertEquals(27, all.size)
+        assertEquals(27, all.size)
         Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 1), "Schoenberg", 1)))
         Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 1), "Schoenberg", 2)))
         Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 1), "Schoenberg", 3)))

@@ -27,23 +27,28 @@ class IntSetTest : TestBase() {
         val ints1 = intsFrom1To(1)
         assert(ints1.size == 1)
         assert(ints1.contains(1))
+
+        val ints2 = intsFrom1To(2)
+        assert(ints2.size == 2)
+        assert(ints2.contains(1))
+        assert(ints2.contains(2))
     }
 
     @Test
     fun powerSetTest() {
-        var powerSet = powerSet(1)
+        var powerSet = intsFrom1To(1).powerSet()
         assertEquals(2, powerSet.size)
         assertTrue(powerSet.contains(s(1)))
         assertTrue(powerSet.contains(s()))
 
-        powerSet = powerSet(2)
+        powerSet = intsFrom1To(2).powerSet()
         assertEquals(4, powerSet.size)
         assertTrue(powerSet.contains(s()))
         assertTrue(powerSet.contains(s(1)))
         assertTrue(powerSet.contains(s(2)))
         assertTrue(powerSet.contains(s(1, 2)))
 
-        powerSet = powerSet(4)
+        powerSet = intsFrom1To(4).powerSet()
         assertEquals(16, powerSet.size)
         assertTrue(powerSet.contains(s()))
         assertTrue(powerSet.contains(s(1)))
@@ -66,13 +71,13 @@ class IntSetTest : TestBase() {
     @Test
     fun unionCompositionTest() {
         val semigroup2 = Semigroup(intsets( s(1, 2), s(1,4), s(1, 2, 4)), UnionComposition)
-        assertEquals(3, semigroup2.size())
+        assertEquals(3, semigroup2.size)
     }
 
     @Test
     fun intersectionCompositionTest() {
         val semigroup2 = Semigroup(intsets( s(1), s(1, 2), s(1,4), s(1, 2, 4)), IntersectionComposition)
-        assertEquals(4, semigroup2.size())
+        assertEquals(4, semigroup2.size)
     }
 
     @Test

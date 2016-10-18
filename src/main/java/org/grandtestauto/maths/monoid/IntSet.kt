@@ -18,14 +18,14 @@ fun intsFrom1To(n: Int): Set<Int> {
     return result
 }
 
-fun <T> Set<T>.powerSet(set: Set<T>): Set<Set<T>> {
+fun <T> Set<T>.powerSet(): Set<Set<T>> {
     val result = HashSet<Set<T>>()
-    if (set.size == 0) {
+    if (this.size == 0) {
         result.add(HashSet<T>())
     } else {
-        val anElement = set.iterator().next()
-        val withoutTheElement = set.minusElement(anElement)
-        val recurse = powerSet(withoutTheElement)
+        val anElement = this.iterator().next()
+        val withoutTheElement = this.minusElement(anElement)
+        val recurse = withoutTheElement.powerSet()
         recurse.forEach {
                 result.add(it)
                 result.add(it + anElement)

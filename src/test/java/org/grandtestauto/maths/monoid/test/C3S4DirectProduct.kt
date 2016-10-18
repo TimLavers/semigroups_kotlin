@@ -16,24 +16,22 @@ class C3S4DirectProduct {
 
     @Test
     fun elementsTest() {
-        val elements = product.elements()
-        assertEquals(3 * 24, elements.size)
-        for (t3 in c3.elements()) {
-            for (t4 in s4.elements()) {
+        assertEquals(3 * 24, product.size)
+        for (t3 in c3) {
+            for (t4 in s4) {
                 val tuple = Tuple(t3, t4)
-                assertTrue(elements.contains(tuple))
+                assertTrue(product.contains(tuple))
             }
         }
     }
 
     @Test
     fun compositionTest() {
-        val elements = product.elements()
-        for (tupleA in elements) {
-            for (tupleB in elements) {
-                val product = product.composition()(tupleA, tupleB)
-                assertEquals(c3.composition()(tupleA.left(), tupleB.left()), product.left())
-                assertEquals(s4.composition()(tupleA.right(), tupleB.right()), product.right())
+        for (tupleA in product) {
+            for (tupleB in product) {
+                val product = product.composition(tupleA, tupleB)
+                assertEquals(c3.composition(tupleA.left(), tupleB.left()), product.left())
+                assertEquals(s4.composition(tupleA.right(), tupleB.right()), product.right())
             }
         }
     }

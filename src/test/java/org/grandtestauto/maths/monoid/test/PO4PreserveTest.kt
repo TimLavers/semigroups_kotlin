@@ -33,10 +33,10 @@ class PO4PreserveTest : TestBase() {
         Assert.assertTrue(relation.isAPartialOrder)
 
         val orderPreservers = orderPreservingTransformationMonoid(4)
-        Assert.assertTrue(isAssociative(TransformationComposition, orderPreservers.elements()))
-        Assert.assertTrue(isClosedUnderComposition(orderPreservers.elements(), TransformationComposition))
+        Assert.assertTrue(isAssociative(TransformationComposition, orderPreservers.elements))
+        Assert.assertTrue(isClosedUnderComposition(orderPreservers.elements, TransformationComposition))
 
-        println("opt size: " + orderPreservers.elements().size)
+        println("opt size: " + orderPreservers.size)
 
         val greens = GreensRelations(orderPreservers)
         greens.lClasses()
