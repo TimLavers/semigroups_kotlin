@@ -199,16 +199,16 @@ fun cyclicGroup(rank_atLeast2: Int): Monoid<Transformation> {
 fun <S, T> doubleProduct(left: Semigroup<S>,
                          right: Semigroup<T>,
                          actionOfLeftOnRight: ((S) -> ((T) -> T)),
-                         actionOfRightOnLeft: ((T) -> ((S) -> S))): Semigroup<Tuple<S, T>> {
-    fun elements(): Set<Tuple<S, T>> {
-        val result = HashSet<Tuple<S, T>>()
-        left.forEach { s -> right.forEach { t -> result.add(Tuple(s, t)) } }
+                         actionOfRightOnLeft: ((T) -> ((S) -> S))): Semigroup<Pair<S, T>> {
+    fun elements(): Set<Pair<S, T>> {
+        val result = HashSet<Pair<S, T>>()
+        left.forEach { s -> right.forEach { t -> result.add(Pair(s, t)) } }
         return result
     }
 
-    fun compose(): ((Tuple<S, T>, Tuple<S, T>) -> (Tuple<S, T>)) = {
+    fun compose(): ((Pair<S, T>, Pair<S, T>) -> (Pair<S, T>)) = {
         x, y ->
-        Tuple(left.composition(x.left(), actionOfRightOnLeft(x.right())(y.left())),
+        Pair(left.composition(x.left(), actionOfRightOnLeft(x.right())(y.left())),
                 right.composition(actionOfLeftOnRight(y.left())(x.right()), y.right()))
     }
 
@@ -238,7 +238,7 @@ fun <S,T> allHomomorphisms(s: Semigroup<S>, t: Semigroup<T>) : Set<FiniteFunctio
             //For each element y of t form a new map by extending p with the pair (x,y)
             t.forEach {
                 y ->
-                val newMap = p + Tuple(x, y)
+                val newMap = p + Pair(x, y)
                 if (isPartialHomomorphism(newMap, s, t)) {
                     //For each of these possible partial maps,
                     //add those that respect composition to the new result set
@@ -312,9 +312,9 @@ open class Semigroup<T>(val elements: Set<T>, val composition: ((T, T) -> T)) : 
     fun isCongruence(equivalenceRelation: Relation<T>): Boolean {
         equivalenceRelation.forEach { tuple ->
             forEach { s ->
-                val leftMultiple = Tuple(composition(s, tuple.left()), composition(s, tuple.right()))
+                val leftMultiple = Pair(composition(s, tuple.left()), composition(s, tuple.right()))
                 if (!equivalenceRelation.contains(leftMultiple)) return false
-                val rightMultiple = Tuple(composition(tuple.left(), s), composition(tuple.right(), s))
+                val rightMultiple = Pair(composition(tuple.left(), s), composition(tuple.right(), s))
                 if (!equivalenceRelation.contains(rightMultiple)) return false
             }
         }

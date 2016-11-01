@@ -12,7 +12,7 @@ import java.util.*
 class POPreserveTest : TestBase() {
     @Test
     fun runTest() {
-        val tuples = HashSet<Tuple<Int, Int>>()
+        val tuples = HashSet<Pair<Int, Int>>()
         tuples.add(tu(1, 2))
         tuples.add(tu(1, 3))
         tuples.add(tu(1, 4))

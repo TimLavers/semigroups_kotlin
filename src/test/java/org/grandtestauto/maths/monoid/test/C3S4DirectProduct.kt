@@ -19,7 +19,7 @@ class C3S4DirectProduct {
         assertEquals(3 * 24, product.size)
         for (t3 in c3) {
             for (t4 in s4) {
-                val tuple = Tuple(t3, t4)
+                val tuple = Pair(t3, t4)
                 assertTrue(product.contains(tuple))
             }
         }

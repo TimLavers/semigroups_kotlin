@@ -12,6 +12,24 @@ import java.util.HashSet
 class RelationTest : TestBase() {
 
     @Test
+    fun leftTest() {
+        val t = Pair("left", 99)
+        Assert.assertEquals("left", t.left())
+    }
+
+    @Test
+    fun rightTest() {
+        val t = Pair("left", 99)
+        Assert.assertEquals(99, t.right())
+    }
+
+    @Test
+    fun flipTest() {
+        val t = Pair("left", 99)
+        Assert.assertEquals(Pair(99, "left"), t.flip())
+    }
+
+    @Test
     fun iteratorTest() {
         val relation = relation(tu(1,1), tu(1,2), tu(2,1))
         val iterator = relation.iterator()
@@ -157,7 +175,7 @@ class RelationTest : TestBase() {
 
         r = relation(tu(1, 2), tu(1, 3), tu(1, 4), tu(1, 5), tu(1, 6), tu(1, 7), tu(1, 8), tu(1, 9), tu(1, 10))
         generated = r.generateEquivalenceRelation()
-        val tuples = mutableSetOf<Tuple<Int, Int>>()
+        val tuples = mutableSetOf<Pair<Int, Int>>()
         val baseSet = mutableSetOf<Int>()
         for (i in 1..10) {
             baseSet.add(i)
@@ -182,7 +200,7 @@ class RelationTest : TestBase() {
         Assert.assertEquals("{[]}", r.toString())
 
         r = relation(tu(1, 1))
-        Assert.assertEquals("{[<1, 1>]}", r.toString())
+        Assert.assertEquals("{[(1, 1)]}", r.toString())
 
         r = relation(tu(1, 1), tu(1, 3), tu(2, 3))
         Assert.assertTrue(r.toString().contains(tu(1, 1).toString()))
@@ -214,7 +232,7 @@ class RelationTest : TestBase() {
 
         //Now with the same pairs but different base sets.
         r = relation(tu(1, 1))
-        val elements = mutableSetOf<Tuple<Int, Int>>()
+        val elements = mutableSetOf<Pair<Int, Int>>()
         val baseSet = mutableSetOf<Int>()
         elements.add(tu(1, 1))
         baseSet.add(1)
@@ -322,7 +340,7 @@ class RelationTest : TestBase() {
     @Test
     fun isTransitiveUsingLessThanTest() {
         val n = 10
-        val pairs = HashSet<Tuple<Int, Int>>()
+        val pairs = HashSet<Pair<Int, Int>>()
         val baseSet = HashSet<Int>()
         for (i in 1..n) {
             baseSet.add(i)
@@ -343,7 +361,7 @@ class RelationTest : TestBase() {
     @Test
     fun isAPartialOrderTest() {
         val n = 20
-        val pairs = HashSet<Tuple<Int, Int>>()
+        val pairs = HashSet<Pair<Int, Int>>()
         val baseSet = HashSet<Int>()
         for (i in 1..n) {
             baseSet.add(i)
@@ -364,13 +382,13 @@ class RelationTest : TestBase() {
     @Test
     fun isAPartialOrderPowerSetTest() {
         val powerSet = intsFrom1To(6).powerSet()
-        val tuples = mutableSetOf<Tuple<Set<Int>, Set<Int>>>()
+        val tuples = mutableSetOf<Pair<Set<Int>, Set<Int>>>()
         val baseSet = mutableSetOf<Set<Int>>()
         powerSet.forEach { intSetLeft ->
             baseSet.add(intSetLeft)
             powerSet.forEach { intSetRight ->
                 if (intSetLeft isASubsetOf intSetRight) {
-                    tuples.add(Tuple(intSetLeft, intSetRight))
+                    tuples.add(Pair(intSetLeft, intSetRight))
                 }
             }
         }

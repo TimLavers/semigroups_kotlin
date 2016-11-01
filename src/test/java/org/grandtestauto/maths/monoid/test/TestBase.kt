@@ -39,12 +39,12 @@ fun <T> set(vararg elements: T): Set<T> {
     return result
 }
 
-fun <S,T> tu(i: S, j: T): Tuple<S, T> {
-    return Tuple(i, j)
+fun <S,T> tu(i: S, j: T): Pair<S, T> {
+    return Pair(i, j)
 }
 
-fun <T> relation(vararg tuples: Tuple<T, T>): Relation<T> {
-    val elements = mutableSetOf<Tuple<T, T>>()
+fun <T> relation(vararg tuples: Pair<T, T>): Relation<T> {
+    val elements = mutableSetOf<Pair<T, T>>()
     val baseSet = mutableSetOf<T>()
     for (tuple in tuples) {
         elements.add(tuple)

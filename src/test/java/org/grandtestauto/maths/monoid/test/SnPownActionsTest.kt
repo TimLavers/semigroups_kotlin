@@ -54,7 +54,7 @@ class SnPownActionsTest : TestBase() {
 //        val product = DoubleProduct(pow_n, symn_n, { intSet -> { transformation -> transformation } }, rho)
 //        val sdp = Semigroup(product.elements(), product.composition())
 //
-//        val t1 = Tuple<S, T>(i(1), t(3, 2, 1))
+//        val t1 = Pair<S, T>(i(1), t(3, 2, 1))
 //        val ideal = rightIdeal(sdp, t1)
 //        Waiting.pause(2000)
 //        println("ideal = " + ideal)
@@ -73,8 +73,8 @@ class SnPownActionsTest : TestBase() {
 //        Assert.assertFalse(Semigroup.isClosedUnderComposition(sdp.elements(), sdp.composition()));
 //        timer.stop();
 //        System.out.println("Time to check commutativity: " + timer.times().get(0));
-//        GreensRelations<Tuple<IntSet, Transformation>> greens = new GreensRelations<>(sdp);
-//        SetPartition<Tuple<IntSet, Transformation>> lClasses = greens.lClasses();
+//        GreensRelations<Pair<IntSet, Transformation>> greens = new GreensRelations<>(sdp);
+//        SetPartition<Pair<IntSet, Transformation>> lClasses = greens.lClasses();
 //        Waiting.pause(2000);
 //        System.out.println("Number of lClasses = " + lClasses.subsets().size());
 //        lClasses.subsets().forEach(lClass -> {
@@ -84,7 +84,7 @@ class SnPownActionsTest : TestBase() {
 //        });
 //
 //        Waiting.pause(2000);
-//        SetPartition<Tuple<IntSet, Transformation>> rClasses = greens.rClasses();
+//        SetPartition<Pair<IntSet, Transformation>> rClasses = greens.rClasses();
 //        System.out.println("NUmber of rClasses = " + rClasses.subsets().size());
 //        rClasses.subsets().forEach(rClass -> {
 //            System.out.println();

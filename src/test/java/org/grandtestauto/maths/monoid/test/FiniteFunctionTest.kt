@@ -1,7 +1,6 @@
 package org.grandtestauto.maths.monoid.test
 
 import org.grandtestauto.maths.monoid.FiniteFunction
-import org.grandtestauto.maths.monoid.Tuple
 import org.grandtestauto.maths.monoid.allFunctionsFromTo
 import org.junit.Assert
 import org.junit.Assert.assertEquals
@@ -21,17 +20,17 @@ class FiniteFunctionTest : TestBase() {
     fun plusTest() {
         //Add to empty.
         val empty = FiniteFunction<String, Int>(mapOf())
-        val withEins1 = empty + Tuple("eins", 1)
+        val withEins1 = empty + Pair("eins", 1)
         assertEquals(1, withEins1.data.size)
         assertEquals(1, withEins1.invoke("eins"))
 
         //Add to one already there.
-        val withEins1Again = withEins1 + Tuple("eins", 1)
+        val withEins1Again = withEins1 + Pair("eins", 1)
         assertEquals(1, withEins1Again.data.size)
         assertEquals(1, withEins1Again.invoke("eins"))
 
         //Add another
-        val withEins1Uno1 = withEins1 + Tuple("uno", 1)
+        val withEins1Uno1 = withEins1 + Pair("uno", 1)
         assertEquals(2, withEins1Uno1.data.size)
         assertEquals(1, withEins1Uno1.invoke("eins"))
         assertEquals(1, withEins1Uno1.invoke("uno"))

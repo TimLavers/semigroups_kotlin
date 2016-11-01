@@ -28,7 +28,7 @@ fun <S, T> allFunctionsFromTo(domain: Set<S>, range: Set<T>): Set<FiniteFunction
  */
 class FiniteFunction<S, T>(val data: Map<S, T>) : (S)->(T) {
 
-    operator fun plus(other: Tuple<S,T>) : FiniteFunction<S,T> {
+    operator fun plus(other: Pair<S,T>) : FiniteFunction<S,T> {
         val map =mutableMapOf<S,T>()
         map.putAll(data)
         map.put(other.left(), other.right())

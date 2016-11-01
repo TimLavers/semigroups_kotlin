@@ -2,12 +2,25 @@ package org.grandtestauto.maths.monoid
 
 import java.util.*
 
+
+fun <S,T> Pair<S,T>.left() : S {
+    return this.first;
+}
+
+fun <S,T> Pair<S,T>.right() : T {
+    return this.second;
+}
+
+fun <S,T> Pair<S,T>.flip() : Pair<T,S> {
+    return Pair(second, first)
+}
+
 fun <T> createRelation(baseSet: Set<T>, criterion: ((T, T) -> Boolean)): Relation<T> {
-    val resultBase = mutableSetOf<Tuple<T, T>>()
+    val resultBase = mutableSetOf<Pair<T, T>>()
     baseSet.forEach { s ->
         baseSet.forEach { t ->
             if (criterion(s, t)) {
-                resultBase.add(Tuple<T, T>(s, t))
+                resultBase.add(Pair<T, T>(s, t))
             }
         }
     }
@@ -19,7 +32,7 @@ fun <T> createRelation(baseSet: Set<T>, criterion: ((T, T) -> Boolean)): Relatio
 
  * @author Tim Lavers
  */
-class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Tuple<T, T>>) : Iterable<Tuple<T, T>> {
+class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Pair<T, T>>) : Iterable<Pair<T, T>> {
 
     init {
         this.elements.forEach { ttTuple ->
@@ -34,7 +47,7 @@ class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Tuple<T
     val isAnEquivalence: Boolean by lazy { _isAnEquivalence() }
     val isTransitive: Boolean by lazy { _isTransitive() }
 
-    operator fun contains(element: Tuple<T, T>): Boolean {
+    operator fun contains(element: Pair<T, T>): Boolean {
         return elements.contains(element)
     }
 
@@ -42,7 +55,7 @@ class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Tuple<T
         return generate(TransitiveClosureGenerator())
     }
 
-    override fun iterator() : Iterator<Tuple<T, T>> {
+    override fun iterator() : Iterator<Pair<T, T>> {
         return elements.iterator()
     }
 
@@ -74,22 +87,22 @@ class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Tuple<T
 
     fun generateEquivalenceRelation(): Relation<T> {
         return generate(object : TransitiveClosureGenerator() {
-            override fun createNew(t: Tuple<T, T>): Tuple<T, T>? {
+            override fun createNew(t: Pair<T, T>): Pair<T, T>? {
                 return t.flip()
             }
         })
     }
 
-    private open inner class TransitiveClosureGenerator : Generation.CreateNew<Tuple<T, T>> {
-        override fun createNew(s: Tuple<T, T>, t: Tuple<T, T>): Tuple<T, T>? {
+    private open inner class TransitiveClosureGenerator : Generation.CreateNew<Pair<T, T>> {
+        override fun createNew(s: Pair<T, T>, t: Pair<T, T>): Pair<T, T>? {
             if (s.right() == t.left()) {
-                return Tuple(s.left(), t.right())
+                return Pair(s.left(), t.right())
             }
             return null
         }
     }
 
-    private fun generate(tupleGenerator: Generation.CreateNew<Tuple<T, T>>): Relation<T> {
+    private fun generate(tupleGenerator: Generation.CreateNew<Pair<T, T>>): Relation<T> {
         val generation = Generation(elements, tupleGenerator)
         val generated = generation.generate()
         val base = HashSet<T>()
@@ -102,7 +115,7 @@ class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Tuple<T
 
     private fun _isReflexive(): Boolean {
         for (x in baseSet) {
-            if (!elements.contains(Tuple(x, x))) return false
+            if (!elements.contains(Pair(x, x))) return false
         }
         return true
     }
@@ -136,7 +149,7 @@ class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Tuple<T
         elements.forEach{ ttTuple ->
             elements.forEach{ ssTuple ->
                 if (ttTuple.right() == ssTuple.left()) {
-                    val composite = Tuple(ttTuple.left(), ssTuple.right())
+                    val composite = Pair(ttTuple.left(), ssTuple.right())
                     if (!elements.contains(composite)) return false
                 }
             }

@@ -56,10 +56,10 @@ class Transformation(private val map: IntArray) {
     }
 
     val kernel: Relation<Int> by lazy {
-        val pairs = HashSet<Tuple<Int, Int>>()
+        val pairs = HashSet<Pair<Int, Int>>()
         for (i in 1..map.size) {
             for (j in 1..map.size) {
-                if (apply(i) == apply(j)) pairs.add(Tuple(i, j))
+                if (apply(i) == apply(j)) pairs.add(Pair(i, j))
             }
         }
         Relation(domain, pairs)

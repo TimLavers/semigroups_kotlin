@@ -19,7 +19,7 @@ class DoubleProductTest {
         Assert.assertEquals(6 * 24, product.size)
         for (t3 in s3) {
             for (t4 in s4) {
-                val tuple = Tuple(t3, t4)
+                val tuple = Pair(t3, t4)
                 Assert.assertTrue(product.contains(tuple))
             }
         }

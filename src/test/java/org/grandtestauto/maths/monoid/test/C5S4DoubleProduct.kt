@@ -16,7 +16,7 @@ class C5S4DoubleProduct {
 
     private val actionOfSymOnCyc: ((Transformation) -> ((Transformation) -> (Transformation)))
     private val actionOfCycOnSym: ((Transformation) -> ((Transformation) -> (Transformation)))
-    private val product : Semigroup<Tuple<Transformation, Transformation>>
+    private val product : Semigroup<Pair<Transformation, Transformation>>
 
     init {
         //We want S4 embedded in S5.
@@ -55,7 +55,7 @@ class C5S4DoubleProduct {
         Assert.assertEquals(24 * 5, product.size)
         for (s in s4) {
             for (c in c5) {
-                val tuple = Tuple(s, c)
+                val tuple = Pair(s, c)
                 assertTrue(product.contains(tuple))
             }
         }
