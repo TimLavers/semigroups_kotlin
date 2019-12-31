@@ -35,7 +35,7 @@ class FiniteFunction<S, T>(val data: Map<S, T>) : (S)->(T) {
     }
 
     override fun invoke(s: S): T {
-        return data[s] ?: error("$s ∉ domain") //todo test
+        return data[s] ?: error("$s ∉ domain")
     }
 
     fun domain(): Set<S> {
