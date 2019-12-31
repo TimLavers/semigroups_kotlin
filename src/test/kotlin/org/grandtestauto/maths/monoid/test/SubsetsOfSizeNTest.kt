@@ -16,11 +16,11 @@ class SubsetsOfSizeNTest : TestBase() {
         val original = set("a", "b", "c", "d")
         var subsetsOfSizeN = SubsetsOfSizeN(original, 0)
         var expected: MutableSet<Set<String>> = HashSet()
-        expected.add(HashSet<String>())
+        expected.add(HashSet())
         Assert.assertEquals(expected, subsetsOfSizeN.subsets())
 
         subsetsOfSizeN = SubsetsOfSizeN(original, 1)
-        expected = HashSet<Set<String>>()
+        expected = HashSet()
         expected.add(set("a"))
         expected.add(set("b"))
         expected.add(set("c"))
@@ -28,7 +28,7 @@ class SubsetsOfSizeNTest : TestBase() {
         Assert.assertEquals(expected, subsetsOfSizeN.subsets())
 
         subsetsOfSizeN = SubsetsOfSizeN(original, 2)
-        expected = HashSet<Set<String>>()
+        expected = HashSet()
         expected.add(set("a", "b"))
         expected.add(set("a", "c"))
         expected.add(set("a", "d"))
@@ -38,7 +38,7 @@ class SubsetsOfSizeNTest : TestBase() {
         Assert.assertEquals(expected, subsetsOfSizeN.subsets())
 
         subsetsOfSizeN = SubsetsOfSizeN(original, 3)
-        expected = HashSet<Set<String>>()
+        expected = HashSet()
         expected.add(set("a", "b", "c"))
         expected.add(set("a", "b", "d"))
         expected.add(set("a", "c", "d"))
@@ -46,7 +46,7 @@ class SubsetsOfSizeNTest : TestBase() {
         Assert.assertEquals(expected, subsetsOfSizeN.subsets())
 
         subsetsOfSizeN = SubsetsOfSizeN(original, 4)
-        expected = HashSet<Set<String>>()
+        expected = HashSet()
         expected.add(set("a", "b", "c", "d"))
         Assert.assertEquals(expected, subsetsOfSizeN.subsets())
     }

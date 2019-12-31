@@ -34,11 +34,11 @@ class SnPownActionsTest : TestBase() {
                     val x_i = rho(x)(i)
                     val x_y_i = rho(y)(x_i)
                     if (xy_i != x_y_i) {
-                        println("x = " + x)
-                        println("y = " + y)
-                        println("i = " + i)
-                        println("xy_i = " + xy_i)
-                        println("x_y_i = " + x_y_i)
+                        println("x = $x")
+                        println("y = $y")
+                        println("i = $i")
+                        println("xy_i = $xy_i")
+                        println("x_y_i = $x_y_i")
                         errorsFound = true
                         println("Error found, as shown.")
                     }

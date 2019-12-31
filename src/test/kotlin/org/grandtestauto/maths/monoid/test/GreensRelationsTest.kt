@@ -37,11 +37,11 @@ class GreensRelationsTest : TestBase() {
                 }
             }
         }
-        Assert.assertTrue("Found these problem elements: " + problems, problems.isEmpty())
+        Assert.assertTrue("Found these problem elements: $problems", problems.isEmpty())
         //Now check that if two transformations have the same kernel,
         //then they are contained in the same r-class.
         val transformationToRClass = Collections.synchronizedMap(HashMap<Transformation, Set<Transformation>>())
-        rClasses.subsets().forEach { rClass -> rClass.forEach { t -> transformationToRClass.put(t, rClass) } }
+        rClasses.subsets().forEach { rClass -> rClass.forEach { t -> transformationToRClass[t] = rClass } }
         semigroup.forEach { s ->
             semigroup.forEach { t ->
                 if (s.kernel == t.kernel) {
@@ -52,7 +52,7 @@ class GreensRelationsTest : TestBase() {
                 }
             }
         }
-        Assert.assertTrue("Found these problem elements: " + problems, problems.isEmpty())
+        Assert.assertTrue("Found these problem elements: $problems", problems.isEmpty())
     }
 
     @Test

@@ -15,10 +15,10 @@ class SmallSemigroupsTest : TestBase() {
         println("transformationsOf3.size() = " + transformationsOf3.size)
 
         val setsOf3Trannies = SubsetsOfSizeN(transformationsOf3, 3)
-        val threeElementSemis = setsOf3Trannies.subsets().filter({ subset -> isClosedUnderComposition(subset, TransformationComposition) })
+        val threeElementSemis = setsOf3Trannies.subsets().filter { subset -> isClosedUnderComposition(subset, TransformationComposition) }
 
         println("threeElementSemis.size() = " + threeElementSemis.size)
-        threeElementSemis.forEach({ println(it) })
+        threeElementSemis.forEach { println(it) }
     }
 
     @Test
@@ -29,18 +29,18 @@ class SmallSemigroupsTest : TestBase() {
         val semigroup = generateFrom(TransformationComposition, generators)
 
         val size = semigroup.size
-        println("size = ${size}")
+        println("size = $size")
         val idempotents = semigroup.idempotents
         println("idempotents: ${idempotents.size}")
 //        val greens = GreensRelations(semigroup)
 //        printLClasses(greens)
 //        printRClasses(greens)
-        idempotents.forEach { it ->
+        idempotents.forEach {
             val sub = semigroup.filter { t -> it.image == t.image && it.kernel == t.kernel }.toSet()
             if (isClosedUnderComposition(sub, TransformationComposition)) {
-                val subsemigroup = Semigroup<Transformation>(sub, TransformationComposition)
+                val subsemigroup = Semigroup(sub, TransformationComposition)
                 if (subsemigroup.isGroup) {
-                    println("Subgroup: " + sub)
+                    println("Subgroup: $sub")
                 }
 
             }
@@ -48,7 +48,7 @@ class SmallSemigroupsTest : TestBase() {
 
 
         val orderPreservers = subsemigroupOfOrderPreservingTransformations(semigroup)
-        println("orderPreservers = ${orderPreservers}")
+        println("orderPreservers = $orderPreservers")
     }
 
     @Test
@@ -62,6 +62,6 @@ class SmallSemigroupsTest : TestBase() {
         val nonTrivial = allHomomorphisms.filter { it.range().size > 2 }
         println("allHomomorphisms = ${allHomomorphisms.size}")
         println("non trivials: ${nonTrivial.size}")
-        nonTrivial.forEach { println("it = ${it}") }
+        nonTrivial.forEach { println("it = $it") }
     }
 }

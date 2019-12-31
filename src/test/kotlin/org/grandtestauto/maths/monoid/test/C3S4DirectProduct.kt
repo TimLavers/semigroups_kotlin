@@ -11,7 +11,7 @@ import org.junit.Test
 class C3S4DirectProduct {
     private val c3 = cyclicGroup(3)
     private val s4 = symmetricGroup(4)
-    private val unit: ((Transformation) -> ((Transformation) -> Transformation)) = { t -> { s -> s } }
+    private val unit: ((Transformation) -> ((Transformation) -> Transformation)) = { _ -> { s -> s } }
     private val product = doubleProduct(c3, s4, unit, unit)
 
     @Test

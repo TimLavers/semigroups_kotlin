@@ -34,7 +34,7 @@ class SetPartitionTest : TestBase() {
 
     @Test
     fun areDistinctTest(){
-        Assert.assertTrue(areDistinct(HashSet<Any>(), HashSet<Any>()))
+        Assert.assertTrue(areDistinct(HashSet<Any>(), HashSet()))
         Assert.assertTrue(areDistinct(set("a"), HashSet<Any>()))
         Assert.assertTrue(areDistinct(HashSet<Any>(), set("a")))
         Assert.assertTrue(areDistinct(set("a"), set("b")))

@@ -74,5 +74,4 @@ fun printRClasses(greens: GreensRelations<Transformation>) {
         rClass.forEach { tuple -> println(tuple.toString()) }
     }
 }
-open class TestBase {
-}
+open class TestBase

@@ -11,7 +11,7 @@ class DoubleProductTest {
 
     private val s3: Semigroup<Transformation> = symmetricGroup(3)
     private val s4: Semigroup<Transformation> = symmetricGroup(4)
-    private val unit: ((Transformation) -> ((Transformation) -> Transformation)) = {t -> {s -> s}}
+    private val unit: ((Transformation) -> ((Transformation) -> Transformation)) = { _ -> { s -> s}}
     private val product = doubleProduct(s3, s4, unit, unit)
 
     @Test

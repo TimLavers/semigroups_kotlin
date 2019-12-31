@@ -1,11 +1,9 @@
 package org.grandtestauto.maths.monoid.test
 
-import org.junit.Assert
 import org.grandtestauto.maths.monoid.*
 import org.junit.Assert.*
 import org.junit.Test
-
-import java.util.HashSet
+import java.util.*
 
 /**
  * @author Tim Lavers
@@ -23,7 +21,7 @@ class SemigroupTest : TestBase() {
         assert(isClosedUnderComposition(i5.elements, i5.composition))
         assert(isAssociative(i5.composition, i5.elements))
         i5.forEach { s ->
-            i5.forEach { t -> assert(i5.composition(s, t) == Math.max(s, t)) }
+            i5.forEach { t -> assert(i5.composition(s, t) == s.coerceAtLeast(t)) }
         }
     }
 

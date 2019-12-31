@@ -55,11 +55,11 @@ class FiniteFunctionTest : TestBase() {
 
     @Test
     fun applyErrorTest() {
-        var gotException = false;
+        var gotException = false
         try {
             f.invoke("many")
         } catch (e: IllegalStateException) {
-            gotException = true;
+            gotException = true
             assertEquals("many ∉ domain", e.message)
         }
         assert(gotException)
@@ -214,7 +214,7 @@ class FiniteFunctionTest : TestBase() {
         Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 3), "Schoenberg", 3)))
     }
 
-    internal fun <S, T> f(d: S, r: T): FiniteFunction<S, T> {
+    private fun <S, T> f(d: S, r: T): FiniteFunction<S, T> {
         return FiniteFunction.Builder<S, T>().add(d, r).build()
     }
 

@@ -19,7 +19,7 @@ class PartitionerTest : TestBase() {
         for (i in 0..99) {
             ints.add(i)
         }
-        val partitioner = Partitioner(ints, BiPredicate<Int, Int> { t, u -> t % 5 == u % 5 })
+        val partitioner = Partitioner(ints, BiPredicate { t, u -> t % 5 == u % 5 })
         val mod0 = HashSet<Int>()
         val mod1 = HashSet<Int>()
         val mod2 = HashSet<Int>()
