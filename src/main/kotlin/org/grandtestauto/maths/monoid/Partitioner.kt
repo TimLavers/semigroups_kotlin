@@ -26,7 +26,7 @@ class Partitioner<T>(private val baseSet: Set<T>, private val predicate: BiPredi
             if (!classified[0]) {
                 val equivalenceClass = HashSet<T>()
                 equivalenceClass.add(t)
-                exemplarToEquivalenceClass.put(t, equivalenceClass)
+                exemplarToEquivalenceClass[t] = equivalenceClass
             }
         }
         exemplarToEquivalenceClass.values.forEach { e -> result.addSubset(e) }

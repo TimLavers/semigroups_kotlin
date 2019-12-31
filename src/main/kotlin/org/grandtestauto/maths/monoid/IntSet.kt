@@ -20,8 +20,8 @@ fun intsFrom1To(n: Int): Set<Int> {
 
 fun <T> Set<T>.powerSet(): Set<Set<T>> {
     val result = HashSet<Set<T>>()
-    if (this.size == 0) {
-        result.add(HashSet<T>())
+    if (this.isEmpty()) {
+        result.add(HashSet())
     } else {
         val anElement = this.iterator().next()
         val withoutTheElement = this.minusElement(anElement)

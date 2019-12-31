@@ -4,11 +4,11 @@ import java.util.*
 
 
 fun <S,T> Pair<S,T>.left() : S {
-    return this.first;
+    return this.first
 }
 
 fun <S,T> Pair<S,T>.right() : T {
-    return this.second;
+    return this.second
 }
 
 fun <S,T> Pair<S,T>.flip() : Pair<T,S> {
@@ -20,11 +20,11 @@ fun <T> createRelation(baseSet: Set<T>, criterion: ((T, T) -> Boolean)): Relatio
     baseSet.forEach { s ->
         baseSet.forEach { t ->
             if (criterion(s, t)) {
-                resultBase.add(Pair<T, T>(s, t))
+                resultBase.add(Pair(s, t))
             }
         }
     }
-    return Relation<T>(baseSet, resultBase)
+    return Relation(baseSet, resultBase)
 }
 
 /**
@@ -82,7 +82,7 @@ class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Pair<T,
     }
 
     override fun toString(): String {
-        return "{${elements.toString()}}"
+        return "{$elements}"
     }
 
     fun generateEquivalenceRelation(): Relation<T> {

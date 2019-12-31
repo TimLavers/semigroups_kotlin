@@ -3,11 +3,11 @@ package org.grandtestauto.maths.monoid
 import java.util.*
 
 fun <T> are_L_Related(semigroup: Semigroup<T>, a: T, b: T): Boolean {
-    return semigroup.leftIdeal(a).equals(semigroup.leftIdeal(b))
+    return semigroup.leftIdeal(a) == semigroup.leftIdeal(b)
 }
 
 fun <T> are_R_Related(semigroup: Semigroup<T>, a: T, b: T): Boolean {
-    return semigroup.rightIdeal(a).equals(semigroup.rightIdeal(b))
+    return semigroup.rightIdeal(a) == semigroup.rightIdeal(b)
 }
 class GreensRelations<T>(private val semigroup: Semigroup<T>) {
 
@@ -18,10 +18,10 @@ class GreensRelations<T>(private val semigroup: Semigroup<T>) {
             val leftIdeal = semigroup.leftIdeal(t)
             var producers: MutableSet<T>? = leftIdealsToElementsThatProduceThem.remove(leftIdeal)
             if (producers == null) {
-                producers = HashSet<T>()
+                producers = HashSet()
             }
             producers.add(t)
-            leftIdealsToElementsThatProduceThem.put(leftIdeal, producers)
+            leftIdealsToElementsThatProduceThem[leftIdeal] = producers
         }
         leftIdealsToElementsThatProduceThem.entries.forEach { e -> result.addSubset(e.value) }
         return result
@@ -34,10 +34,10 @@ class GreensRelations<T>(private val semigroup: Semigroup<T>) {
             val rightIdeal = semigroup.rightIdeal(t)
             var producers: MutableSet<T>? = rightIdealsToElementsThatProduceThem.remove(rightIdeal)
             if (producers == null) {
-                producers = HashSet<T>()
+                producers = HashSet()
             }
             producers.add(t)
-            rightIdealsToElementsThatProduceThem.put(rightIdeal, producers)
+            rightIdealsToElementsThatProduceThem[rightIdeal] = producers
         }
         rightIdealsToElementsThatProduceThem.entries.forEach { e -> result.addSubset(e.value) }
         return result

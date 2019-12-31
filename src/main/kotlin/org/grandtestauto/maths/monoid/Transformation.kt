@@ -25,7 +25,7 @@ fun definesATransformation(map: IntArray): Boolean {
 
 fun cycle2_3___n_1(rank_atLeast2: Int): Transformation {
     val generatorData = IntArray(rank_atLeast2)
-    for (i in 0..rank_atLeast2 - 1 - 1) {
+    for (i in 0 until rank_atLeast2 - 1) {
         generatorData[i] = i + 2
     }
     generatorData[rank_atLeast2 - 1] = 1
@@ -49,8 +49,8 @@ class Transformation(private val map: IntArray) {
 
     val isRightZero: Boolean by lazy {
         val val0 = map[0]
-        for (i in 0..map.size - 1) {
-            if (map[i] != val0) return@lazy false
+        for (element in map) {
+            if (element != val0) return@lazy false
         }
         return@lazy true
     }
@@ -74,7 +74,7 @@ class Transformation(private val map: IntArray) {
     }
 
     val image: Set<Int> by lazy {
-        (1..map.size).map { it -> apply(it) }.toSet()
+        (1..map.size).map { apply(it) }.toSet()
     }
 
     init {
@@ -93,7 +93,7 @@ class Transformation(private val map: IntArray) {
     fun embed(m_greaterThanRank: Int): Transformation {
         val newMap = IntArray(m_greaterThanRank)
         System.arraycopy(map, 0, newMap, 0, map.size)
-        for (i in map.size..m_greaterThanRank - 1) {
+        for (i in map.size until m_greaterThanRank) {
             newMap[i] = i + 1
         }
         return Transformation(newMap)
@@ -118,11 +118,11 @@ class Transformation(private val map: IntArray) {
     }
 
     override fun hashCode(): Int {
-        return Arrays.hashCode(map)
+        return map.contentHashCode()
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is Transformation && Arrays.equals(map, other.map)
+        return other is Transformation && map.contentEquals(other.map)
     }
 
     override fun toString(): String {

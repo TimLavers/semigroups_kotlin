@@ -8,10 +8,10 @@ class SubsetsOfSizeN<out T>(private val originatingSet: Set<T>, cardinalityOfSub
 
     init {
         if (cardinalityOfSubsets == 0) {
-            subsets.add(mutableSetOf<T>())
+            subsets.add(mutableSetOf())
         } else {
             val recursionMap = mutableMapOf<T, SubsetsOfSizeN<T>>()
-            originatingSet.forEach { t -> recursionMap.put(t, SubsetsOfSizeN(without(t), cardinalityOfSubsets - 1)) }
+            originatingSet.forEach { t -> recursionMap[t] = SubsetsOfSizeN(without(t), cardinalityOfSubsets - 1) }
             recursionMap.entries.forEach { k ->
                 val recursiveSubsets = k.value.subsets()
                 recursiveSubsets.forEach { subset ->

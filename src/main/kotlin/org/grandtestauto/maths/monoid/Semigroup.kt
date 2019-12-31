@@ -8,7 +8,7 @@ import java.util.*
 fun chainSemigroup(n_atLeast1: Int): Semigroup<Int> {
     val ints = mutableSetOf<Int>()
     for (i in 1..n_atLeast1) ints.add(i)
-    return Semigroup(ints, { s, t -> Math.max(s, t) })
+    return Semigroup(ints) { s, t -> s.coerceAtLeast(t) }
 }
 
 fun powerSetIntersection(rank_atLeast2: Int): Semigroup<Set<Int>> {
@@ -91,18 +91,18 @@ private fun <T, U> isPartialHomomorphism(function: FiniteFunction<T, U>, domain:
 }
 fun rightZeroSemigroup(rank: Int): Semigroup<String> {
     val elements = HashSet<String>()
-    for (i in 0..rank - 1) {
-        elements.add("rz" + i)
+    for (i in 0 until rank) {
+        elements.add("rz$i")
     }
-    return Semigroup(elements, { s, t -> t })
+    return Semigroup(elements) { _, t -> t }
 }
 
 fun leftZeroSemigroup(rank: Int): Semigroup<String> {
     val elements = HashSet<String>()
-    for (i in 0..rank - 1) {
-        elements.add("lz" + i)
+    for (i in 0 until rank) {
+        elements.add("lz$i")
     }
-    return Semigroup(elements, { s, t -> s })
+    return Semigroup(elements) { s, _ -> s }
 }
 
 fun <T> generateFrom(composition: ((T, T) -> T), generators: Set<T>): Semigroup<T> {
@@ -116,9 +116,9 @@ fun <T> generateFrom(composition: ((T, T) -> T), generators: Set<T>): Semigroup<
 
 fun transformationMonoid(rank_atLeast2: Int): Semigroup<Transformation> {
     val elements = HashSet<Transformation>()
-    val symn = symmetricGroup(rank_atLeast2)
+    val symN = symmetricGroup(rank_atLeast2)
     val on = orderPreservingTransformationMonoid(rank_atLeast2)
-    for (s in symn) {
+    for (s in symN) {
         for (o in on) {
             elements.add(s.compose(o))
         }
@@ -129,10 +129,10 @@ fun transformationMonoid(rank_atLeast2: Int): Semigroup<Transformation> {
 fun orderPreservingTransformationMonoid(rank_atLeast2: Int): Semigroup<Transformation> {
     val generators = HashSet<Transformation>()
     generators.add(unit(rank_atLeast2))
-    for (i in 1..rank_atLeast2 - 1) {
+    for (i in 1 until rank_atLeast2) {
         val generatorLeftData = IntArray(rank_atLeast2)
         val generatorRightData = IntArray(rank_atLeast2)
-        for (j in 1..i - 1) {
+        for (j in 1 until i) {
             generatorLeftData[j - 1] = j
             generatorRightData[j - 1] = j
         }
@@ -140,7 +140,7 @@ fun orderPreservingTransformationMonoid(rank_atLeast2: Int): Semigroup<Transform
         generatorRightData[i - 1] = i + 1
         generatorLeftData[i] = i
         generatorRightData[i] = i + 1
-        for (j in i + 1..rank_atLeast2 - 1) {
+        for (j in i + 1 until rank_atLeast2) {
             generatorLeftData[j] = j + 1
             generatorRightData[j] = j + 1
         }
@@ -174,14 +174,14 @@ fun symmetricGroup(rank_atLeast2: Int): Monoid<Transformation> {
 
 private fun generateSymmetricGroup(rank_atLeast2: Int): Semigroup<Transformation> {
     val generators = HashSet<Transformation>()
-    for (i in 1..rank_atLeast2 - 1) {
+    for (i in 1 until rank_atLeast2) {
         val generatorData = IntArray(rank_atLeast2)
-        for (j in 1..i - 1) {
+        for (j in 1 until i) {
             generatorData[j - 1] = j
         }
         generatorData[i - 1] = i + 1
         generatorData[i] = i
-        for (j in i + 1..rank_atLeast2 - 1) {
+        for (j in i + 1 until rank_atLeast2) {
             generatorData[j] = j + 1
         }
         generators.add(Transformation(generatorData))
@@ -231,7 +231,7 @@ fun <S,T> allHomomorphisms(s: Semigroup<S>, t: Semigroup<T>) : Set<FiniteFunctio
     //For each element x of s:
     s.forEach { x ->
         //Create a new result set
-        var newResults = mutableSetOf<FiniteFunction<S,T>>()
+        val newResults = mutableSetOf<FiniteFunction<S,T>>()
         //For each partial map p in the result set
         result.forEach {
             p ->
@@ -274,7 +274,7 @@ open class Semigroup<T>(val elements: Set<T>, val composition: ((T, T) -> T)) : 
     open fun powerOf(t: T, r: Int): T {
         if (r < 1) throw IllegalArgumentException("Strictly positive indices here, please.")
         if (r == 1) return t
-        return composition(t, powerOf(t, r - 1));
+        return composition(t, powerOf(t, r - 1))
     }
 
     fun leftIdeal(t: T): Set<T> {
@@ -322,7 +322,7 @@ open class Semigroup<T>(val elements: Set<T>, val composition: ((T, T) -> T)) : 
     }
 }
 
-class Monoid<T>(elements: Set<T>, composition: (T, T) -> T, val identity: T) : Semigroup<T>(elements, composition) {
+class Monoid<T>(elements: Set<T>, composition: (T, T) -> T, private val identity: T) : Semigroup<T>(elements, composition) {
     override fun powerOf(t: T, r: Int): T {
         if (r == 0) return identity
         return super.powerOf(t, r)

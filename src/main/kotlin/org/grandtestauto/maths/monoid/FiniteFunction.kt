@@ -1,18 +1,17 @@
 package org.grandtestauto.maths.monoid
 
 import java.util.*
-import java.util.function.Function
 
 fun <S, T> allFunctionsFromTo(domain: Set<S>, range: Set<T>): Set<FiniteFunction<S, T>> {
     val result = HashSet<FiniteFunction<S, T>>()
     val mapsSoFar = HashSet<Map<S, T>>()
-    mapsSoFar.add(HashMap<S, T>())
+    mapsSoFar.add(HashMap())
     domain.forEach { d ->
         val mapsWith_d_InDomain = HashSet<Map<S, T>>()
         mapsSoFar.forEach { m ->
             range.forEach { r ->
                 val newMap = HashMap(m)
-                newMap.put(d, r)
+                newMap[d] = r
                 mapsWith_d_InDomain.add(newMap)
             }
         }
@@ -31,12 +30,12 @@ class FiniteFunction<S, T>(val data: Map<S, T>) : (S)->(T) {
     operator fun plus(other: Pair<S,T>) : FiniteFunction<S,T> {
         val map =mutableMapOf<S,T>()
         map.putAll(data)
-        map.put(other.left(), other.right())
+        map[other.left()] = other.right()
         return FiniteFunction(map)
     }
 
     override fun invoke(s: S): T {
-        return data[s]!!
+        return data[s] ?: error("$s ∉ domain") //todo test
     }
 
     fun domain(): Set<S> {
@@ -70,7 +69,7 @@ class FiniteFunction<S, T>(val data: Map<S, T>) : (S)->(T) {
         private val beingAddedTo = HashMap<S, T>()
 
         fun add(domainElement: S, rangeElement: T): Builder<S, T> {
-            beingAddedTo.put(domainElement, rangeElement)
+            beingAddedTo[domainElement] = rangeElement
             return this
         }
 

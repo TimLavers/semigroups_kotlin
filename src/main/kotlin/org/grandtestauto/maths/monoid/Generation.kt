@@ -7,7 +7,7 @@ import java.util.HashSet
 
  * @author Tim Lavers
  */
-internal class Generation<out T>(private val generators: Set<T>, private val creator: Generation.CreateNew<T>) {
+internal class Generation<out T>(private val generators: Set<T>, private val creator: CreateNew<T>) {
     interface CreateNew<T> {
         fun createNew(t: T): T? {
             return null

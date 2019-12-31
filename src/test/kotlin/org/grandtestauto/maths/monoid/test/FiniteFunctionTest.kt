@@ -5,6 +5,7 @@ import org.grandtestauto.maths.monoid.allFunctionsFromTo
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.lang.IllegalStateException
 
 import java.util.HashMap
 import java.util.HashSet
@@ -50,6 +51,18 @@ class FiniteFunctionTest : TestBase() {
         assertEquals(3, f.invoke("tres"))
         assertEquals(3, f.invoke("drei"))
         assertEquals(3, f.invoke("tiga"))
+    }
+
+    @Test
+    fun applyErrorTest() {
+        var gotException = false;
+        try {
+            f.invoke("many")
+        } catch (e: IllegalStateException) {
+            gotException = true;
+            assertEquals("many ∉ domain", e.message)
+        }
+        assert(gotException)
     }
 
     @Test

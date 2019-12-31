@@ -4,7 +4,7 @@ import java.util.HashSet
 
 
 fun <S> areDistinct(set1: Set<S>, set2: Set<S>): Boolean {
-    set1.forEach({e -> if  (set2.contains(e)) return false })
+    set1.forEach { e -> if  (set2.contains(e)) return false }
     return true
 }
 /**
