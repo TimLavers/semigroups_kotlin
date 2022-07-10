@@ -12,10 +12,10 @@ compileTestKotlin.kotlinOptions {
     jvmTarget = "1.8"
 }
 repositories {
-    jcenter() 
+    mavenCentral()
 }
 
 dependencies {
     implementation(kotlin("stdlib")) 
-	testImplementation("junit:junit:4.12")
+	testImplementation("junit:junit:4.13.1")
 }
