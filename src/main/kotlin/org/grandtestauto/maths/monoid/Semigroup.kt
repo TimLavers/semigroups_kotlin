@@ -257,7 +257,7 @@ fun <S,T> allHomomorphisms(s: Semigroup<S>, t: Semigroup<T>) : Set<FiniteFunctio
 
  * @author Tim Lavers
  */
-open class Semigroup<T>(val elements: Set<T>, val composition: ((T, T) -> T)) : Iterable<T> {
+open class Semigroup<T>(val elements: Set<T>, val composition: ((T, T) -> T)) : Set<T> by elements {
 
     val isGroup: Boolean by lazy {
         find { leftIdeal(it) != elements || rightIdeal(it) != elements } == null
@@ -266,10 +266,6 @@ open class Semigroup<T>(val elements: Set<T>, val composition: ((T, T) -> T)) : 
     val idempotents: Set<T> by lazy {
         filter { composition(it, it) == it }.toSet()
     }
-
-    val size: Int get() = elements.size//todo use set delegate for size, contains, iterator?
-
-    operator fun contains(t: T): Boolean = elements.contains(t)
 
     open fun powerOf(t: T, r: Int): T {
         if (r < 1) throw IllegalArgumentException("Strictly positive indices here, please.")
@@ -284,8 +280,6 @@ open class Semigroup<T>(val elements: Set<T>, val composition: ((T, T) -> T)) : 
     fun rightIdeal(t: T): Set<T> {
         return map { composition(t, it) }.toSet()
     }
-
-    override fun iterator(): Iterator<T> = elements.iterator()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
