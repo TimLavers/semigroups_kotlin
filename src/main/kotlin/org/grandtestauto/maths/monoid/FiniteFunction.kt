@@ -56,9 +56,7 @@ class FiniteFunction<S, T>(val data: Map<S, T>) : (S)->(T) {
 
         other as FiniteFunction<*, *>
 
-        if (data != other.data) return false
-
-        return true
+        return data == other.data
     }
 
     override fun hashCode(): Int{

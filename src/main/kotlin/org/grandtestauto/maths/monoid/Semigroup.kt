@@ -6,8 +6,7 @@ import java.util.*
  * The numbers 1..n with i*j = max(i, j).
  */
 fun chainSemigroup(n_atLeast1: Int): Semigroup<Int> {
-    val ints = mutableSetOf<Int>()
-    for (i in 1..n_atLeast1) ints.add(i)
+    val ints = (1..n_atLeast1).toSet()
     return Semigroup(ints) { s, t -> s.coerceAtLeast(t) }
 }
 
@@ -19,10 +18,10 @@ fun powerSetIntersection(rank_atLeast2: Int): Semigroup<Set<Int>> {
         for (j in 1..rank_atLeast2) {
             if (j != i) data.add(j)
         }
-        generators.add(HashSet<Int>(data))
+        generators.add(HashSet(data))
         dataForId.add(i)
     }
-    generators.add(HashSet<Int>(dataForId))
+    generators.add(HashSet(dataForId))
     return generateFrom({ s, t -> s intersect t }, generators)
 }
 
@@ -68,7 +67,8 @@ fun <T, U> isHomomorphism(function: FiniteFunction<T, U>, domain: Semigroup<T>, 
 }
 
 /**
- * Returns true if the given function, which is defined on perhaps a subset of the elements of the domain semigroup,
+ * Returns true if the given function, which is defined on perhaps
+ * a subset of the elements of the domain semigroup,
  * is not inconsistent with being a homomorphism.
  */
 private fun <T, U> isPartialHomomorphism(function: FiniteFunction<T, U>, domain: Semigroup<T>, range: Semigroup<U>) : Boolean {
@@ -90,18 +90,12 @@ private fun <T, U> isPartialHomomorphism(function: FiniteFunction<T, U>, domain:
 
 }
 fun rightZeroSemigroup(rank: Int): Semigroup<String> {
-    val elements = HashSet<String>()
-    for (i in 0 until rank) {
-        elements.add("rz$i")
-    }
+    val elements = (1..rank).map { "rz$it" }.toSet()
     return Semigroup(elements) { _, t -> t }
 }
 
 fun leftZeroSemigroup(rank: Int): Semigroup<String> {
-    val elements = HashSet<String>()
-    for (i in 0 until rank) {
-        elements.add("lz$i")
-    }
+    val elements = (1..rank).map { "lz$it" }.toSet()
     return Semigroup(elements) { s, _ -> s }
 }
 

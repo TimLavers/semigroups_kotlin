@@ -2,9 +2,8 @@ package org.grandtestauto.maths.monoid
 
 import java.util.HashSet
 
-
 fun <S> areDistinct(set1: Set<S>, set2: Set<S>): Boolean {
-    set1.forEach { e -> if  (set2.contains(e)) return false }
+    set1.forEach { e -> if (set2.contains(e)) return false }
     return true
 }
 /**
@@ -33,9 +32,7 @@ class SetPartition<T>(private val originatingSet: Set<T>) {
         other as SetPartition<*>
 
         if (originatingSet != other.originatingSet) return false
-        if (subsets != other.subsets) return false
-
-        return true
+        return subsets == other.subsets
     }
 
     override fun hashCode(): Int{

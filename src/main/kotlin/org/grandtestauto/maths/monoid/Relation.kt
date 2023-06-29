@@ -2,18 +2,11 @@ package org.grandtestauto.maths.monoid
 
 import java.util.*
 
+fun <S,T> Pair<S,T>.left() = this.first
 
-fun <S,T> Pair<S,T>.left() : S {
-    return this.first
-}
+fun <S,T> Pair<S,T>.right() =  this.second
 
-fun <S,T> Pair<S,T>.right() : T {
-    return this.second
-}
-
-fun <S,T> Pair<S,T>.flip() : Pair<T,S> {
-    return Pair(second, first)
-}
+fun <S,T> Pair<S,T>.flip() = Pair(second, first)
 
 fun <T> createRelation(baseSet: Set<T>, criterion: ((T, T) -> Boolean)): Relation<T> {
     val resultBase = mutableSetOf<Pair<T, T>>()
@@ -33,35 +26,26 @@ fun <T> createRelation(baseSet: Set<T>, criterion: ((T, T) -> Boolean)): Relatio
  * @author Tim Lavers
  */
 class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Pair<T, T>>) : Iterable<Pair<T, T>> {
-
     init {
-        this.elements.forEach { ttTuple ->
-            assert(baseSet.contains(ttTuple.left())) { "Not in base set: " + ttTuple.left() }
-            assert(baseSet.contains(ttTuple.right())) { "Not in base set: " + ttTuple.right() }
+        this.elements.forEach {
+            assert(baseSet.contains(it.left())) { "Not in base set: " + it.left() }
+            assert(baseSet.contains(it.right())) { "Not in base set: " + it.right() }
         }
     }
 
-    val isSymmetric: Boolean by lazy { _isSymmetric() }
-    val isReflexive: Boolean by lazy { _isReflexive() }
-    val isAPartialOrder: Boolean by lazy { _isAPartialOrder() }
-    val isAnEquivalence: Boolean by lazy { _isAnEquivalence() }
-    val isTransitive: Boolean by lazy { _isTransitive() }
+    val isSymmetric: Boolean by lazy { calculateIsSymmetric() }
+    val isReflexive: Boolean by lazy { calculateIsReflexive() }
+    val isAPartialOrder: Boolean by lazy { calculateIsAPartialOrder() }
+    val isAnEquivalence: Boolean by lazy { calculateIsAnEquivalence() }
+    val isTransitive: Boolean by lazy { calculateIsTransitive() }
 
-    operator fun contains(element: Pair<T, T>): Boolean {
-        return elements.contains(element)
-    }
+    operator fun contains(element: Pair<T, T>) = elements.contains(element)
 
-    fun transitiveClosure(): Relation<T> {
-        return generate(TransitiveClosureGenerator())
-    }
+    fun transitiveClosure() = generate(TransitiveClosureGenerator())
 
-    override fun iterator() : Iterator<Pair<T, T>> {
-        return elements.iterator()
-    }
+    override fun iterator() = elements.iterator()
 
-    fun size(): Int {
-        return elements.size
-    }
+    fun size() = elements.size
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -70,9 +54,7 @@ class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Pair<T,
         other as Relation<*>
 
         if (baseSet != other.baseSet) return false
-        if (elements != other.elements) return false
-
-        return true
+        return elements == other.elements
     }
 
     override fun hashCode(): Int {
@@ -81,17 +63,13 @@ class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Pair<T,
         return result
     }
 
-    override fun toString(): String {
-        return "{$elements}"
-    }
+    override fun toString() = "{$elements}"
 
-    fun generateEquivalenceRelation(): Relation<T> {
-        return generate(object : TransitiveClosureGenerator() {
-            override fun createNew(t: Pair<T, T>): Pair<T, T>? {
+    fun generateEquivalenceRelation() =  generate(object : TransitiveClosureGenerator() {
+            override fun createNew(t: Pair<T, T>): Pair<T, T> {
                 return t.flip()
             }
         })
-    }
 
     private open inner class TransitiveClosureGenerator : Generation.CreateNew<Pair<T, T>> {
         override fun createNew(s: Pair<T, T>, t: Pair<T, T>): Pair<T, T>? {
@@ -113,39 +91,38 @@ class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Pair<T,
         return Relation(base, generated)
     }
 
-    private fun _isReflexive(): Boolean {
+    private fun calculateIsReflexive(): Boolean {
         for (x in baseSet) {
             if (!elements.contains(Pair(x, x))) return false
         }
         return true
     }
 
-    private fun _isSymmetric(): Boolean {
+    private fun calculateIsSymmetric(): Boolean {
         for (t in elements) {
             if (!elements.contains(t.flip())) return false
         }
         return true
     }
 
-    private fun _isAPartialOrder(): Boolean {
+    private fun calculateIsAPartialOrder(): Boolean {
         if (!isReflexive) return false
         if (!isTransitive) return false
-        elements.forEach{ ttTuple ->
-            if (elements.contains(ttTuple.flip())) {
-                if (ttTuple.right() != ttTuple.left()) return false
+        elements.forEach{
+            if (elements.contains(it.flip())) {
+                if (it.right() != it.left()) return false
             }
         }
         return true
     }
 
-    private fun _isAnEquivalence(): Boolean {
+    private fun calculateIsAnEquivalence(): Boolean {
         if (!isReflexive) return false
         if (!isSymmetric) return false
-        if (!isTransitive) return false
-        return true
+        return isTransitive
     }
 
-    private fun _isTransitive(): Boolean {
+    private fun calculateIsTransitive(): Boolean {
         elements.forEach{ ttTuple ->
             elements.forEach{ ssTuple ->
                 if (ttTuple.right() == ssTuple.left()) {
