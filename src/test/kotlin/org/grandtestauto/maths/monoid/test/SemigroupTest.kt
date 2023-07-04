@@ -94,18 +94,14 @@ class SemigroupTest : TestBase() {
         }
     }
 
-    fun checkHomomorphism(function: FiniteFunction<Transformation, Transformation>, o2: Semigroup<Transformation>): Boolean {
-        o2.forEach({
-            s ->
+    private fun checkHomomorphism(f: FiniteFunction<Transformation, Transformation>, o2: Semigroup<Transformation>): Boolean {
+        o2.forEach { s ->
             o2.forEach { t ->
-                val st = o2.composition(s, t)
-                val fsft = o2.composition(function.invoke(s), function.invoke(t))
-                val fst = function.invoke(st)
-                if (fst != fsft) {
+                if (f(s * t) != f(s) * f(t)) {
                     return false
                 }
             }
-        })
+        }
         return true
     }
 

@@ -23,34 +23,34 @@ class FiniteFunctionTest : TestBase() {
         val empty = FiniteFunction<String, Int>(mapOf())
         val withEins1 = empty + Pair("eins", 1)
         assertEquals(1, withEins1.data.size)
-        assertEquals(1, withEins1.invoke("eins"))
+        assertEquals(1, withEins1("eins"))
 
         //Add to one already there.
         val withEins1Again = withEins1 + Pair("eins", 1)
         assertEquals(1, withEins1Again.data.size)
-        assertEquals(1, withEins1Again.invoke("eins"))
+        assertEquals(1, withEins1Again("eins"))
 
         //Add another
         val withEins1Uno1 = withEins1 + Pair("uno", 1)
         assertEquals(2, withEins1Uno1.data.size)
-        assertEquals(1, withEins1Uno1.invoke("eins"))
-        assertEquals(1, withEins1Uno1.invoke("uno"))
+        assertEquals(1, withEins1Uno1("eins"))
+        assertEquals(1, withEins1Uno1("uno"))
     }
 
     @Test
-    fun applyTest(){
-        assertEquals(1, f.invoke("one"))
-        assertEquals(1, f.invoke("uno"))
-        assertEquals(1, f.invoke("eins"))
-        assertEquals(1, f.invoke("satu"))
-        assertEquals(2, f.invoke("two"))
-        assertEquals(2, f.invoke("zwei"))
-        assertEquals(2, f.invoke("dos"))
-        assertEquals(2, f.invoke("dua"))
-        assertEquals(3, f.invoke("three"))
-        assertEquals(3, f.invoke("tres"))
-        assertEquals(3, f.invoke("drei"))
-        assertEquals(3, f.invoke("tiga"))
+    fun invokeTest(){
+        assertEquals(1, f("one"))
+        assertEquals(1, f("uno"))
+        assertEquals(1, f("eins"))
+        assertEquals(1, f("satu"))
+        assertEquals(2, f("two"))
+        assertEquals(2, f("zwei"))
+        assertEquals(2, f("dos"))
+        assertEquals(2, f("dua"))
+        assertEquals(3, f("three"))
+        assertEquals(3, f("tres"))
+        assertEquals(3, f("drei"))
+        assertEquals(3, f("tiga"))
     }
 
     @Test
@@ -218,10 +218,10 @@ class FiniteFunctionTest : TestBase() {
         return FiniteFunction.Builder<S, T>().add(d, r).build()
     }
 
-    internal fun <S, T> f(f: FiniteFunction<S, T>, domainElement: S, rangeElement: T): FiniteFunction<S, T> {
+    private fun <S, T> f(f: FiniteFunction<S, T>, domainElement: S, rangeElement: T): FiniteFunction<S, T> {
         val data = HashMap<S, T>()
-        f.domain().forEach { d -> data.put(d, f.invoke(d)) }
-        data.put(domainElement, rangeElement)
+        f.domain().forEach { d -> data[d] = f.invoke(d) }
+        data[domainElement] = rangeElement
         return FiniteFunction(data)
     }
 }

@@ -90,6 +90,8 @@ class Transformation(private val map: IntArray) {
         return map[i - 1]
     }
 
+    operator fun invoke(i: Int) = apply(i)
+
     fun embed(m_greaterThanRank: Int): Transformation {
         val newMap = IntArray(m_greaterThanRank)
         System.arraycopy(map, 0, newMap, 0, map.size)

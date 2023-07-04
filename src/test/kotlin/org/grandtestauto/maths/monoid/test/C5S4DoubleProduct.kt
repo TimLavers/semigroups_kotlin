@@ -10,28 +10,18 @@ import org.junit.Test
  */
 class C5S4DoubleProduct {
     private val c5 = cyclicGroup(5)
-    //The generator of c5
+    // The generator of C5
     private val gamma = Transformation(intArrayOf(2,3,4,5,1))
-    private val s4: Semigroup<Transformation>
-
-    private val actionOfSymOnCyc: ((Transformation) -> ((Transformation) -> (Transformation)))
-    private val actionOfCycOnSym: ((Transformation) -> ((Transformation) -> (Transformation)))
-    private val product : Semigroup<Pair<Transformation, Transformation>>
-
-    init {
-        //We want S4 embedded in S5.
-        val elements = mutableSetOf<Transformation>()
-        symmetricGroup(4).forEach{s -> elements.add(s.embed(5))}
-        s4 = Semigroup(elements, TransformationComposition)
-
-        //s4 acts on c5 as follows:
-        actionOfSymOnCyc = { beta -> { sigma -> c5.powerOf(gamma, beta.apply(sigma.apply(5)))}}
-
-        //c5 acts on s4 as follows:
-        actionOfCycOnSym = { theta -> { beta -> theta * beta * (c5.powerOf(gamma, 5 - beta.apply(theta.apply(5))))}}
-
-        product = doubleProduct(s4, c5, actionOfSymOnCyc, actionOfCycOnSym)
-    }
+    // We want S4 embedded in S5.
+    private val s4 = Semigroup(symmetricGroup(4).map {it.embed(5)}.toSet(), TransformationComposition)
+    // S4 acts on C5 as follows:
+    private val actionOfSymOnCyc: ((Transformation) -> ((Transformation) -> (Transformation))) =
+        { beta -> { sigma -> c5.powerOf(gamma, beta(sigma(5)))}}
+    // C5 acts on S4 as follows:
+    private val actionOfCycOnSym: ((Transformation) -> ((Transformation) -> (Transformation))) =
+        { theta -> { beta -> theta * beta * (c5.powerOf(gamma, 5 - beta(theta(5))))}}
+    private val product : Semigroup<Pair<Transformation, Transformation>> =
+        doubleProduct(s4, c5, actionOfSymOnCyc, actionOfCycOnSym)
 
     @Test
     fun decompositionTest() {
@@ -41,7 +31,7 @@ class C5S4DoubleProduct {
         for (beta in s4) {
             for (theta in c5) {
                 val left = theta * beta
-                val n_theta_beta = beta.apply(theta.apply(5))
+                val n_theta_beta = beta(theta(5))
                 val gamma_inv = c5.powerOf(gamma,5 - n_theta_beta)
                 val gamma_pow = c5.powerOf(gamma, n_theta_beta)
                 val right = theta * (beta * gamma_inv * gamma_pow)
