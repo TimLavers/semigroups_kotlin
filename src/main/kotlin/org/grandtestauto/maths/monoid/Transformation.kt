@@ -23,12 +23,13 @@ fun definesATransformation(map: IntArray): Boolean {
     return true
 }
 
-fun cycle2_3___n_1(rank_atLeast2: Int): Transformation {
-    val generatorData = IntArray(rank_atLeast2)
-    for (i in 0 until rank_atLeast2 - 1) {
+fun cycle2_3___n_1(rank: Int): Transformation {
+    require(rank > 0)
+    val generatorData = IntArray(rank)
+    for (i in 0 until rank - 1) {
         generatorData[i] = i + 2
     }
-    generatorData[rank_atLeast2 - 1] = 1
+    generatorData[rank - 1] = 1
     return Transformation(generatorData)
 }
 

@@ -1,13 +1,30 @@
 package org.grandtestauto.maths.monoid.test
 
+import io.kotest.equals.Equality
+import io.kotest.equals.EqualityResult
+import io.kotest.equals.SimpleEqualityResult
+import io.kotest.equals.SimpleEqualityResultDetail
+import io.kotest.matchers.collections.shouldContain
 import org.grandtestauto.maths.monoid.*
 import java.util.*
 import java.util.stream.Stream
 
-
 /**
  * @author Tim Lavers
  */
+class SemigroupEquivalence<T>: Equality<Semigroup<T>> {
+    override fun name(): String {
+        return "equivalence by isomorphism"
+    }
+
+    override fun verify(actual: Semigroup<T>, expected: Semigroup<T>): EqualityResult {
+        val isomorphism = findIsomorphism(actual, expected)
+        return if (isomorphism != null) {
+            SimpleEqualityResult(true, SimpleEqualityResultDetail{"Isomorphic by $isomorphism."})
+        } else SimpleEqualityResult(false, SimpleEqualityResultDetail { "Not isomorphic." })
+    }
+}
+infix fun <T> Iterable<Semigroup<T>>.shouldContainEquivalent(s: Semigroup<T>): Iterable<Semigroup<T>> = shouldContain(s, SemigroupEquivalence())
 
 fun tset(vararg transformations: Transformation): Set<Transformation> {
     val result = HashSet<Transformation>()
@@ -35,7 +52,7 @@ fun s(vararg elements: Int): Set<Int> {
 
 fun <T> set(vararg elements: T): Set<T> {
     val result = HashSet<T>()
-    Stream.of(*elements).forEach({ result.add(it) })
+    Stream.of(*elements).forEach { result.add(it) }
     return result
 }
 

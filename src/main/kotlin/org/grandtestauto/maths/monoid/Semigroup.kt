@@ -11,7 +11,7 @@ fun chainSemigroup(n_atLeast1: Int): Semigroup<Int> {
 }
 
 fun powerSetIntersection(rank_atLeast2: Int): Semigroup<Set<Int>> {
-    val generators = HashSet<Set<Int>>()
+    val generators = mutableSetOf<Set<Int>>()
     val dataForId = HashSet<Int>()
     for (i in 1..rank_atLeast2) {
         val data = HashSet<Int>()
@@ -61,17 +61,25 @@ fun <T> isAssociative(composition: ((T, T) -> (T)), elements: Set<T>): Boolean {
 }
 
 fun <T, U> isHomomorphism(function: FiniteFunction<T, U>, domain: Semigroup<T>, range: Semigroup<U>): Boolean {
-    assert(function.domain() == domain.elements)
-    assert(range.elements.containsAll(function.range()))
+    require(function.domain() == domain.elements)
+    require(range.elements.containsAll(function.range()))
     return isPartialHomomorphism(function, domain, range)
 }
 
+fun <T, U> findIsomorphism(domain: Semigroup<T>, range: Semigroup<U>): FiniteFunction<T, U>? =
+    allBijectionsFromTo(domain, range).firstOrNull { isHomomorphism(it, domain, range) }
+
+fun <T,U> areIsomorphic(domain: Semigroup<T>, range: Semigroup<U>) = findIsomorphism(domain, range) != null
 /**
  * Returns true if the given function, which is defined on perhaps
  * a subset of the elements of the domain semigroup,
  * is not inconsistent with being a homomorphism.
  */
-private fun <T, U> isPartialHomomorphism(function: FiniteFunction<T, U>, domain: Semigroup<T>, range: Semigroup<U>) : Boolean {
+private fun <T, U> isPartialHomomorphism(
+    function: FiniteFunction<T, U>,
+    domain: Semigroup<T>,
+    range: Semigroup<U>
+): Boolean {
     val result = booleanArrayOf(true)
     for (t1 in function.domain()) {
         if (!result[0]) break
@@ -87,8 +95,8 @@ private fun <T, U> isPartialHomomorphism(function: FiniteFunction<T, U>, domain:
         }
     }
     return result[0]
-
 }
+
 fun rightZeroSemigroup(rank: Int): Semigroup<String> {
     val elements = (1..rank).map { "rz$it" }.toSet()
     return Semigroup(elements) { _, t -> t }
@@ -145,15 +153,11 @@ fun orderPreservingTransformationMonoid(rank_atLeast2: Int): Semigroup<Transform
 }
 
 fun symmetricGroup(rank_atLeast2: Int): Monoid<Transformation> {
-    val result: Semigroup<Transformation>
-    if (rank_atLeast2 < 5) {
-        result = generateSymmetricGroup(rank_atLeast2)
+    val result: Semigroup<Transformation> = if (rank_atLeast2 < 5) {
+        generateSymmetricGroup(rank_atLeast2)
     } else {
         val resultForLowerRank = symmetricGroup(rank_atLeast2 - 1)
-        val symElements = HashSet<Transformation>()
-        for (g in resultForLowerRank) {
-            symElements.add(g.embed(rank_atLeast2))
-        }
+        val symElements = resultForLowerRank.map { it.embed(rank_atLeast2) }
         val cyclicGroup = cyclicGroup(rank_atLeast2)
         val products = HashSet<Transformation>()
         for (cycle in cyclicGroup) {
@@ -161,7 +165,7 @@ fun symmetricGroup(rank_atLeast2: Int): Monoid<Transformation> {
                 products.add(permutation.compose(cycle))
             }
         }
-        result = Semigroup(products, TransformationComposition)
+        Semigroup(products, TransformationComposition)
     }
     return asMonoid(result, unit(rank_atLeast2))
 }
@@ -183,27 +187,32 @@ private fun generateSymmetricGroup(rank_atLeast2: Int): Semigroup<Transformation
     return generateFrom(TransformationComposition, generators)
 }
 
-fun cyclicGroup(rank_atLeast2: Int): Monoid<Transformation> {
-    val generators = HashSet<Transformation>()
-    val gamma = cycle2_3___n_1(rank_atLeast2)
-    generators.add(gamma)
-    return asMonoid(generateFrom(TransformationComposition, generators), unit(rank_atLeast2))
+fun cyclicGroup(rank: Int): Monoid<Transformation> {
+    require(rank > 0)
+    if (rank == 1) {
+        val identity = unit(1)
+        return Monoid(setOf(identity), TransformationComposition, identity)
+    }
+    return asMonoid(generateFrom(TransformationComposition, setOf(cycle2_3___n_1(rank))), unit(rank))
 }
 
-fun <S, T> doubleProduct(left: Semigroup<S>,
-                         right: Semigroup<T>,
-                         actionOfLeftOnRight: ((S) -> ((T) -> T)),
-                         actionOfRightOnLeft: ((T) -> ((S) -> S))): Semigroup<Pair<S, T>> {
+fun <S, T> doubleProduct(
+    left: Semigroup<S>,
+    right: Semigroup<T>,
+    actionOfLeftOnRight: ((S) -> ((T) -> T)),
+    actionOfRightOnLeft: ((T) -> ((S) -> S))
+): Semigroup<Pair<S, T>> {
     fun elements(): Set<Pair<S, T>> {
         val result = HashSet<Pair<S, T>>()
         left.forEach { s -> right.forEach { t -> result.add(Pair(s, t)) } }
         return result
     }
 
-    fun compose(): ((Pair<S, T>, Pair<S, T>) -> (Pair<S, T>)) = {
-        x, y ->
-        Pair(left.composition(x.left(), actionOfRightOnLeft(x.right())(y.left())),
-                right.composition(actionOfLeftOnRight(y.left())(x.right()), y.right()))
+    fun compose(): ((Pair<S, T>, Pair<S, T>) -> (Pair<S, T>)) = { x, y ->
+        Pair(
+            left.composition(x.left(), actionOfRightOnLeft(x.right())(y.left())),
+            right.composition(actionOfLeftOnRight(y.left())(x.right()), y.right())
+        )
     }
 
     return Semigroup(elements(), compose())
@@ -213,11 +222,11 @@ fun <T> asMonoid(semigroup: Semigroup<T>, identity: T): Monoid<T> {
     return Monoid(semigroup.elements, semigroup.composition, identity)
 }
 
-fun <S,T> allHomomorphisms(s: Semigroup<S>, t: Semigroup<T>) : Set<FiniteFunction<S,T>> {
-    var result = mutableSetOf<FiniteFunction<S,T>>()
+fun <S, T> allHomomorphisms(s: Semigroup<S>, t: Semigroup<T>): Set<FiniteFunction<S, T>> {
+    var result = mutableSetOf<FiniteFunction<S, T>>()
 
     //Start with the single empty partial map from s.elements to t.elements
-    val seed = FiniteFunction(mapOf<S,T>())
+    val seed = FiniteFunction(mapOf<S, T>())
 
     //Add this to a set of all partial maps of s.elements to t.elements
     result.add(seed)
@@ -225,13 +234,11 @@ fun <S,T> allHomomorphisms(s: Semigroup<S>, t: Semigroup<T>) : Set<FiniteFunctio
     //For each element x of s:
     s.forEach { x ->
         //Create a new result set
-        val newResults = mutableSetOf<FiniteFunction<S,T>>()
+        val newResults = mutableSetOf<FiniteFunction<S, T>>()
         //For each partial map p in the result set
-        result.forEach {
-            p ->
+        result.forEach { p ->
             //For each element y of t form a new map by extending p with the pair (x,y)
-            t.forEach {
-                y ->
+            t.forEach { y ->
                 val newMap = p + Pair(x, y)
                 if (isPartialHomomorphism(newMap, s, t)) {
                     //For each of these possible partial maps,
@@ -282,9 +289,7 @@ open class Semigroup<T>(val elements: Set<T>, val composition: ((T, T) -> T)) : 
         other as Semigroup<*>
 
         if (elements != other.elements) return false
-        if (composition != other.composition) return false
-
-        return true
+        return composition == other.composition
     }
 
     override fun hashCode(): Int {
@@ -308,9 +313,16 @@ open class Semigroup<T>(val elements: Set<T>, val composition: ((T, T) -> T)) : 
         }
         return true
     }
+
+    fun isSubsemigroup(subset: Set<T>) = if (!elements.containsAll(subset)) {
+        false
+    } else isClosedUnderComposition(subset, composition)
+
+    fun allSubsemigroups() = elements.powerSet().filter { it.isNotEmpty() }.filter { isSubsemigroup(it) }.map { Semigroup(it, composition) }
 }
 
-class Monoid<T>(elements: Set<T>, composition: (T, T) -> T, private val identity: T) : Semigroup<T>(elements, composition) {
+class Monoid<T>(elements: Set<T>, composition: (T, T) -> T, private val identity: T) :
+    Semigroup<T>(elements, composition) {
     override fun powerOf(t: T, r: Int): T {
         if (r == 0) return identity
         return super.powerOf(t, r)

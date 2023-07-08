@@ -1,5 +1,7 @@
 package org.grandtestauto.maths.monoid.test
 
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.shouldBe
 import org.grandtestauto.maths.monoid.*
 import org.junit.Assert.*
 import org.junit.Test
@@ -67,6 +69,46 @@ class SemigroupTest : TestBase() {
         val idempotentsO2 = o2.idempotents
         assertEquals(3, idempotentsO2.size)
         assertFalse(idempotentsO2.contains(t(2, 1)))
+    }
+
+    @Test
+    fun isSubsemigroupTest() {
+        val i4 = chainSemigroup(4)
+        val i5 = chainSemigroup(5)
+        i4.isSubsemigroup(i4) shouldBe true
+        i4.isSubsemigroup(i5) shouldBe false
+        i5.isSubsemigroup(i4) shouldBe true
+        i5.isSubsemigroup(i5) shouldBe true
+    }
+
+    @Test
+    fun allSubsemigroupsTest() {
+        val cyc1 = cyclicGroup(1) as Semigroup<Transformation>
+        val subsemigroups1 = cyc1.allSubsemigroups()
+        subsemigroups1.size shouldBe 1
+
+        val cyc2 = cyclicGroup(2) as Semigroup<Transformation>
+        with(cyc2.allSubsemigroups()) {
+            size shouldBe 2
+            this shouldContainEquivalent cyc1
+            this shouldContain cyc2
+        }
+
+        val cyc3 = cyclicGroup(3) as Semigroup<Transformation>
+        with(cyc3.allSubsemigroups()) {
+            size shouldBe 2
+            this shouldContainEquivalent cyc1
+            this shouldContain cyc3
+        }
+
+        val cyc6 = cyclicGroup(6) as Semigroup<Transformation>
+        with(cyc6.allSubsemigroups()) {
+            size shouldBe 4
+            this shouldContainEquivalent cyc1
+            this shouldContainEquivalent cyc2
+            this shouldContainEquivalent cyc3
+            this shouldContain cyc6
+        }
     }
 
     @Test
@@ -345,23 +387,27 @@ class SemigroupTest : TestBase() {
 
     @Test
     fun cyclicGroupTest() {
+        val c1 = cyclicGroup(1)
+        c1.size shouldBe 1
+        c1 shouldContain t(1)
+
         val c2 = cyclicGroup(2)
-        assertEquals(2, c2.size)
-        assertTrue(c2.contains(t(1, 2)))
-        assertTrue(c2.contains(t(2, 1)))
+        c2.size shouldBe 2
+        c2 shouldContain t(1, 2)
+        c2 shouldContain t(2, 1)
 
         val c3 = cyclicGroup(3)
-        assertEquals(3, c3.size)
-        assertTrue(c3.contains(t(1, 2, 3)))
-        assertTrue(c3.contains(t(2, 3, 1)))
-        assertTrue(c3.contains(t(3, 1, 2)))
+        c3.size shouldBe 3
+        c3 shouldContain t(1, 2, 3)
+        c3 shouldContain t(2, 3, 1)
+        c3 shouldContain t(3, 1, 2)
 
         val c4 = cyclicGroup(4)
-        assertEquals(4, c4.size)
-        assertTrue(c4.contains(t(1, 2, 3, 4)))
-        assertTrue(c4.contains(t(2, 3, 4, 1)))
-        assertTrue(c4.contains(t(3, 4, 1, 2)))
-        assertTrue(c4.contains(t(4, 1, 2, 3)))
+        c4.size shouldBe 4
+        c4 shouldContain t(1, 2, 3, 4)
+        c4 shouldContain t(2, 3, 4, 1)
+        c4 shouldContain t(3, 4, 1, 2)
+        c4 shouldContain t(4, 1, 2, 3)
     }
 
     @Test
@@ -461,5 +507,31 @@ class SemigroupTest : TestBase() {
         assertTrue(semigroup2.contains(s(1, 3)))
         assertTrue(semigroup2.contains(s(2, 3)))
         assertTrue(semigroup2.contains(s(1, 2, 3)))
+    }
+
+    @Test
+    fun findIsomorphismTest() {
+        val cyc2 = cyclicGroup(2)
+        val cyc3 = cyclicGroup(3)
+        val cyc6 = cyclicGroup(6)
+        val sym2 = symmetricGroup(2)
+        val sym3 = symmetricGroup(3)
+
+        findIsomorphism(cyc2, cyc3) shouldBe null
+        findIsomorphism(cyc2, cyc6) shouldBe null
+        findIsomorphism(sym3, cyc6) shouldBe null
+
+        val iso = findIsomorphism(sym2, cyc2)!!
+        iso.isInjective() shouldBe true
+        isHomomorphism(iso, sym2, cyc2) shouldBe true
+    }
+
+    @Test
+    fun areIsomorphic() {
+        areIsomorphic(chainSemigroup(5), chainSemigroup(5)) shouldBe true
+        areIsomorphic(chainSemigroup(5), chainSemigroup(4)) shouldBe false
+        areIsomorphic(leftZeroSemigroup(1), rightZeroSemigroup(1)) shouldBe true
+        areIsomorphic(leftZeroSemigroup(2), rightZeroSemigroup(2)) shouldBe false
+        areIsomorphic(leftZeroSemigroup(3), rightZeroSemigroup(3)) shouldBe false
     }
 }

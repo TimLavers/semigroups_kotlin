@@ -1,14 +1,14 @@
 package org.grandtestauto.maths.monoid.test
 
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.shouldBe
 import org.grandtestauto.maths.monoid.FiniteFunction
+import org.grandtestauto.maths.monoid.allBijectionsFromTo
 import org.grandtestauto.maths.monoid.allFunctionsFromTo
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.lang.IllegalStateException
-
-import java.util.HashMap
-import java.util.HashSet
 
 /**
  * @author Tim Lavers
@@ -35,6 +35,15 @@ class FiniteFunctionTest : TestBase() {
         assertEquals(2, withEins1Uno1.data.size)
         assertEquals(1, withEins1Uno1("eins"))
         assertEquals(1, withEins1Uno1("uno"))
+    }
+
+    @Test
+    fun secondaryConstructor() {
+        val f = FiniteFunction(1 to "one", 2 to "two")
+        f.domain() shouldBe setOf(1, 2)
+        f.range() shouldBe setOf("one", "two")
+        f(1) shouldBe "one"
+        f(2) shouldBe "two"
     }
 
     @Test
@@ -120,108 +129,133 @@ class FiniteFunctionTest : TestBase() {
     }
 
     @Test
-    fun allTest(){
-        //Empty empty.
-        val domain = HashSet<String>()
-        var range: MutableSet<Int> = HashSet()
-        var all = allFunctionsFromTo(domain, range)
-        assertEquals(1, all.size)
-        Assert.assertTrue(all.iterator().next().domain().isEmpty())
-        Assert.assertTrue(all.iterator().next().range().isEmpty())
+    fun allFunctionsFromTo(){
+        // Empty to empty.
+        with (allFunctionsFromTo(setOf<String>(), setOf<Int>())) {
+            size shouldBe 1
+            first().domain() shouldBe emptySet()
+            first().range() shouldBe emptySet()
+        }
 
-        //Empty not empty.
-        range.add(1)
-        all = allFunctionsFromTo(domain, range)
-        assertEquals(1, all.size)
-        Assert.assertTrue(all.iterator().next().domain().isEmpty())
-        Assert.assertTrue(all.iterator().next().range().isEmpty())
+        // Empty to not empty.
+        with (allFunctionsFromTo(setOf<String>(), setOf(1))) {
+            size shouldBe 1
+            iterator().next().domain() shouldBe emptySet()
+            iterator().next().range() shouldBe emptySet()
+        }
 
-        //Empty not empty.
-        domain.add("Berg")
-        range = HashSet<Int>()
-        //        all = all(domain, range);
-        //        Assert.assertEquals(1, all.size());
-        //        Assert.assertFalse(all.iterator().next().domain().isEmpty());
-        //        Assert.assertFalse(all.iterator().next().range().isEmpty());
+        // Not empty to empty.
+        val berg = "Berg"
+        with (allFunctionsFromTo(setOf(berg), setOf<Int>())) {
+            size shouldBe 0
+        }
 
-        //1, 1
-        range.add(1)
-        all = allFunctionsFromTo(domain, range)
-        assertEquals(1, all.size)
-        val f = all.iterator().next()
-        assertEquals(1, f.invoke("Berg"))
+        // 1 element set to 1 element set
+        with (allFunctionsFromTo(setOf(berg), setOf(1))) {
+            size shouldBe 1
+            first()(berg) shouldBe 1
+        }
 
-        //1, 2
-        range.add(2)
-        all = allFunctionsFromTo(domain, range)
-        assertEquals(2, all.size)
-        Assert.assertTrue(all.contains(f("Berg", 1)))
-        Assert.assertTrue(all.contains(f("Berg", 2)))
+        // 1 element set to 2 element set
+        with (allFunctionsFromTo(setOf(berg), setOf(1, 2))) {
+            size shouldBe 2
+            this shouldContain FiniteFunction(berg to 1)
+            this shouldContain FiniteFunction(berg to 2)
+        }
 
-        //2, 2
-        domain.add("Webern")
-        all = allFunctionsFromTo(domain, range)
-        assertEquals(4, all.size)
-        Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 1)))
-        Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 2)))
-        Assert.assertTrue(all.contains(f(f("Berg", 2), "Webern", 1)))
-        Assert.assertTrue(all.contains(f(f("Berg", 2), "Webern", 2)))
+        // 2 element set to 2 element set
+        val webern = "Webern"
+        with (allFunctionsFromTo(setOf(berg, webern), setOf(1, 2))) {
+            size shouldBe 4
+            this shouldContain FiniteFunction(berg to 1, webern to 1)
+            this shouldContain FiniteFunction(berg to 1, webern to 2)
+            this shouldContain FiniteFunction(berg to 2, webern to 2)
+            this shouldContain FiniteFunction(berg to 2, webern to 1)
+        }
 
-        //2, 3
-        range.add(3)
-        all = allFunctionsFromTo(domain, range)
-        assertEquals(9, all.size)
-        Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 1)))
-        Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 2)))
-        Assert.assertTrue(all.contains(f(f("Berg", 1), "Webern", 3)))
-        Assert.assertTrue(all.contains(f(f("Berg", 2), "Webern", 1)))
-        Assert.assertTrue(all.contains(f(f("Berg", 2), "Webern", 2)))
-        Assert.assertTrue(all.contains(f(f("Berg", 2), "Webern", 3)))
-        Assert.assertTrue(all.contains(f(f("Berg", 3), "Webern", 1)))
-        Assert.assertTrue(all.contains(f(f("Berg", 3), "Webern", 2)))
-        Assert.assertTrue(all.contains(f(f("Berg", 3), "Webern", 3)))
+        // 2 element set to 3 element set
+        with (allFunctionsFromTo(setOf(berg, webern), setOf(1, 2, 3))) {
+            size shouldBe 9
+            this shouldContain FiniteFunction(berg to 1, webern to 1)
+            this shouldContain FiniteFunction(berg to 1, webern to 2)
+            this shouldContain FiniteFunction(berg to 1, webern to 3)
+            this shouldContain FiniteFunction(berg to 2, webern to 1)
+            this shouldContain FiniteFunction(berg to 2, webern to 2)
+            this shouldContain FiniteFunction(berg to 2, webern to 3)
+            this shouldContain FiniteFunction(berg to 3, webern to 1)
+            this shouldContain FiniteFunction(berg to 3, webern to 2)
+            this shouldContain FiniteFunction(berg to 3, webern to 3)
+        }
 
-        //3, 3
-        domain.add("Schoenberg")
-        all = allFunctionsFromTo(domain, range)
-        assertEquals(27, all.size)
-        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 1), "Schoenberg", 1)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 1), "Schoenberg", 2)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 1), "Schoenberg", 3)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 2), "Schoenberg", 1)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 2), "Schoenberg", 2)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 2), "Schoenberg", 3)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 3), "Schoenberg", 1)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 3), "Schoenberg", 2)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 1), "Webern", 3), "Schoenberg", 3)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 1), "Schoenberg", 1)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 1), "Schoenberg", 2)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 1), "Schoenberg", 3)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 2), "Schoenberg", 1)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 2), "Schoenberg", 2)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 2), "Schoenberg", 3)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 3), "Schoenberg", 1)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 3), "Schoenberg", 2)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 2), "Webern", 3), "Schoenberg", 3)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 1), "Schoenberg", 1)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 1), "Schoenberg", 2)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 1), "Schoenberg", 3)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 2), "Schoenberg", 1)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 2), "Schoenberg", 2)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 2), "Schoenberg", 3)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 3), "Schoenberg", 1)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 3), "Schoenberg", 2)))
-        Assert.assertTrue(all.contains(f(f(f("Berg", 3), "Webern", 3), "Schoenberg", 3)))
+        // 3 element set to 3 element set
+        val schoenberg = "Schoenberg"
+        with (allFunctionsFromTo(setOf(berg, webern, schoenberg), setOf(1, 2, 3))) {
+            size shouldBe 27
+            this shouldContain FiniteFunction(berg to 1, webern to 1, schoenberg to 1)
+            this shouldContain FiniteFunction(berg to 1, webern to 1, schoenberg to 2)
+            this shouldContain FiniteFunction(berg to 1, webern to 1, schoenberg to 3)
+            this shouldContain FiniteFunction(berg to 1, webern to 2, schoenberg to 1)
+            this shouldContain FiniteFunction(berg to 1, webern to 2, schoenberg to 2)
+            this shouldContain FiniteFunction(berg to 1, webern to 2, schoenberg to 3)
+            this shouldContain FiniteFunction(berg to 1, webern to 3, schoenberg to 1)
+            this shouldContain FiniteFunction(berg to 1, webern to 3, schoenberg to 2)
+            this shouldContain FiniteFunction(berg to 1, webern to 3, schoenberg to 3)
+
+            this shouldContain FiniteFunction(berg to 2, webern to 1, schoenberg to 1)
+            this shouldContain FiniteFunction(berg to 2, webern to 1, schoenberg to 2)
+            this shouldContain FiniteFunction(berg to 2, webern to 1, schoenberg to 3)
+            this shouldContain FiniteFunction(berg to 2, webern to 2, schoenberg to 1)
+            this shouldContain FiniteFunction(berg to 2, webern to 2, schoenberg to 2)
+            this shouldContain FiniteFunction(berg to 2, webern to 2, schoenberg to 3)
+            this shouldContain FiniteFunction(berg to 2, webern to 3, schoenberg to 1)
+            this shouldContain FiniteFunction(berg to 2, webern to 3, schoenberg to 2)
+            this shouldContain FiniteFunction(berg to 2, webern to 3, schoenberg to 3)
+
+            this shouldContain FiniteFunction(berg to 3, webern to 1, schoenberg to 1)
+            this shouldContain FiniteFunction(berg to 3, webern to 1, schoenberg to 2)
+            this shouldContain FiniteFunction(berg to 3, webern to 1, schoenberg to 3)
+            this shouldContain FiniteFunction(berg to 3, webern to 2, schoenberg to 1)
+            this shouldContain FiniteFunction(berg to 3, webern to 2, schoenberg to 2)
+            this shouldContain FiniteFunction(berg to 3, webern to 2, schoenberg to 3)
+            this shouldContain FiniteFunction(berg to 3, webern to 3, schoenberg to 1)
+            this shouldContain FiniteFunction(berg to 3, webern to 3, schoenberg to 2)
+            this shouldContain FiniteFunction(berg to 3, webern to 3, schoenberg to 3)
+        }
     }
 
-    private fun <S, T> f(d: S, r: T): FiniteFunction<S, T> {
-        return FiniteFunction.Builder<S, T>().add(d, r).build()
+    @Test
+    fun isInjective() {
+        FiniteFunction(1 to 1).isInjective() shouldBe true
+        FiniteFunction(1 to 1, 2 to 1).isInjective() shouldBe false
+        FiniteFunction(1 to "a", 2 to "b", 3 to "c").isInjective() shouldBe true
+        FiniteFunction(1 to "a", 2 to "b", 3 to "a").isInjective() shouldBe false
     }
 
-    private fun <S, T> f(f: FiniteFunction<S, T>, domainElement: S, rangeElement: T): FiniteFunction<S, T> {
-        val data = HashMap<S, T>()
-        f.domain().forEach { d -> data[d] = f.invoke(d) }
-        data[domainElement] = rangeElement
-        return FiniteFunction(data)
+    @Test
+    fun allBijections() {
+        with (allBijectionsFromTo(setOf(1), setOf("a"))) {
+            size shouldBe 1
+            forEach {
+                it.domain() shouldBe set(1)
+                it.range() shouldBe set("a")
+                it.isInjective() shouldBe true
+            }
+        }
+        with (allBijectionsFromTo(setOf(1,2,3), setOf("a", "b", "c"))) {
+            size shouldBe 6
+            forEach {
+                it.domain() shouldBe set(1,2,3)
+                it.range() shouldBe set("a", "b", "c")
+                it.isInjective() shouldBe true
+            }
+        }
+        with (allBijectionsFromTo(setOf(1,2,3, 4, 5), setOf(1, 2, 3, 4, 5))) {
+            size shouldBe 120
+            forEach {
+                it.domain() shouldBe set(1,2,3, 4, 5)
+                it.range() shouldBe set(1,2,3, 4, 5)
+                it.isInjective() shouldBe true
+            }
+        }
     }
 }

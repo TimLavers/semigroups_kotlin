@@ -22,13 +22,32 @@ fun <S, T> allFunctionsFromTo(domain: Set<S>, range: Set<T>): Set<FiniteFunction
     return result
 }
 
+fun <S, T> allBijectionsFromTo(domain: Set<S>, range: Set<T>): Set<FiniteFunction<S, T>> {
+    val result = HashSet<FiniteFunction<S, T>>()
+    if (domain.size != range.size) return result
+    if (domain.size == 1) return setOf(FiniteFunction(domain.first() to range.first()))
+    domain.forEach { d ->
+        val domainMinusD = domain.minus(d)
+        range.forEach { r ->
+            val rangeMinusR = range.minus(r)
+            val allBijectionsForSmallerSets = allBijectionsFromTo(domainMinusD, rangeMinusR)
+            allBijectionsForSmallerSets.forEach {
+                val expandedMap = it.plus(d to r)
+                result.add(expandedMap)
+            }
+        }
+    }
+    return result
+}
+
 /**
  * A function between two finite sets.
  */
 class FiniteFunction<S, T>(val data: Map<S, T>) : (S)->(T) {
+    constructor(vararg pairs: Pair<S, T>): this(pairs.toMap()) // todo test
 
     operator fun plus(other: Pair<S,T>) : FiniteFunction<S,T> {
-        val map =mutableMapOf<S,T>()
+        val map = mutableMapOf<S,T>()
         map.putAll(data)
         map[other.left()] = other.right()
         return FiniteFunction(map)
@@ -37,6 +56,8 @@ class FiniteFunction<S, T>(val data: Map<S, T>) : (S)->(T) {
     override fun invoke(s: S): T {
         return data[s] ?: error("$s ∉ domain")
     }
+
+    fun isInjective() = domain().size == range().size
 
     fun domain(): Set<S> {
         return data.keys

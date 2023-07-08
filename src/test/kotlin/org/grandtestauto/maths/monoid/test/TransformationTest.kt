@@ -1,5 +1,6 @@
 package org.grandtestauto.maths.monoid.test
 
+import io.kotest.matchers.shouldBe
 import org.grandtestauto.maths.monoid.*
 import org.junit.Assert
 import org.junit.Test
@@ -42,9 +43,10 @@ class TransformationTest {
 
     @Test
     fun cycle2_3___n_1Test() {
-        Assert.assertEquals(t(2, 1), cycle2_3___n_1(2))
-        Assert.assertEquals(t(2, 3, 1), cycle2_3___n_1(3))
-        Assert.assertEquals(t(2, 3, 4, 5, 6, 7, 8, 9, 1), cycle2_3___n_1(9))
+        cycle2_3___n_1(1) shouldBe t(1)
+        cycle2_3___n_1(2) shouldBe t(2, 1)
+        cycle2_3___n_1(3)  shouldBe t(2, 3, 1)
+        cycle2_3___n_1(9) shouldBe t(2, 3, 4, 5, 6, 7, 8, 9, 1)
     }
 
     @Test
