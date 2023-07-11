@@ -5,9 +5,9 @@ import java.util.*
 /**
  * The numbers 1..n with i*j = max(i, j).
  */
-fun chainSemigroup(n_atLeast1: Int): Semigroup<Int> {
-    val ints = (1..n_atLeast1).toSet()
-    return Semigroup(ints) { s, t -> s.coerceAtLeast(t) }
+fun chainSemigroup(n: Int): Semigroup<Int> {
+    require(n >= 1)
+    return Semigroup((1..n).toSet()) { s, t -> s.coerceAtLeast(t) }
 }
 
 fun powerSetIntersection(rank_atLeast2: Int): Semigroup<Set<Int>> {
@@ -70,6 +70,7 @@ fun <T, U> findIsomorphism(domain: Semigroup<T>, range: Semigroup<U>): FiniteFun
     allBijectionsFromTo(domain, range).firstOrNull { isHomomorphism(it, domain, range) }
 
 fun <T,U> areIsomorphic(domain: Semigroup<T>, range: Semigroup<U>) = findIsomorphism(domain, range) != null
+
 /**
  * Returns true if the given function, which is defined on perhaps
  * a subset of the elements of the domain semigroup,
@@ -152,13 +153,15 @@ fun orderPreservingTransformationMonoid(rank_atLeast2: Int): Semigroup<Transform
     return generateFrom(TransformationComposition, generators)
 }
 
-fun symmetricGroup(rank_atLeast2: Int): Monoid<Transformation> {
-    val result: Semigroup<Transformation> = if (rank_atLeast2 < 5) {
-        generateSymmetricGroup(rank_atLeast2)
+fun symmetricGroup(n: Int): Monoid<Transformation> {
+    require(n >= 1)
+    if (n == 1) return transformationMonoid1()
+    val result: Semigroup<Transformation> = if (n < 5) {
+        generateSymmetricGroup(n)
     } else {
-        val resultForLowerRank = symmetricGroup(rank_atLeast2 - 1)
-        val symElements = resultForLowerRank.map { it.embed(rank_atLeast2) }
-        val cyclicGroup = cyclicGroup(rank_atLeast2)
+        val resultForLowerRank = symmetricGroup(n - 1)
+        val symElements = resultForLowerRank.map { it.embed(n) }
+        val cyclicGroup = cyclicGroup(n)
         val products = HashSet<Transformation>()
         for (cycle in cyclicGroup) {
             for (permutation in symElements) {
@@ -167,7 +170,7 @@ fun symmetricGroup(rank_atLeast2: Int): Monoid<Transformation> {
         }
         Semigroup(products, TransformationComposition)
     }
-    return asMonoid(result, unit(rank_atLeast2))
+    return asMonoid(result, unit(n))
 }
 
 private fun generateSymmetricGroup(rank_atLeast2: Int): Semigroup<Transformation> {
@@ -189,11 +192,14 @@ private fun generateSymmetricGroup(rank_atLeast2: Int): Semigroup<Transformation
 
 fun cyclicGroup(rank: Int): Monoid<Transformation> {
     require(rank > 0)
-    if (rank == 1) {
-        val identity = unit(1)
-        return Monoid(setOf(identity), TransformationComposition, identity)
-    }
-    return asMonoid(generateFrom(TransformationComposition, setOf(cycle2_3___n_1(rank))), unit(rank))
+    return if (rank == 1) {
+        transformationMonoid1()
+    } else asMonoid(generateFrom(TransformationComposition, setOf(cycle2_3___n_1(rank))), unit(rank))
+}
+
+private fun transformationMonoid1(): Monoid<Transformation> {
+    val identity = unit(1)
+    return Monoid(setOf(identity), TransformationComposition, identity)
 }
 
 fun <S, T> doubleProduct(

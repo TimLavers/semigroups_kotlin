@@ -307,82 +307,70 @@ class SemigroupTest : TestBase() {
 
     @Test
     fun symmetricGroupTest() {
-        val s2 = symmetricGroup(2)
-        assertEquals(2, s2.size)
-        assertTrue(s2.contains(t(1, 2)))
-        assertTrue(s2.contains(t(2, 1)))
+        with (symmetricGroup(1)) {
+            size shouldBe 1
+            this shouldContain t(1)
+        }
+        with (symmetricGroup(2)) {
+            size shouldBe 2
+            this shouldContain t(1, 2)
+            this shouldContain t(2, 1)
+        }
+        with (symmetricGroup(3)) {
+            size shouldBe 6
+            this shouldContain t(1, 2, 3)
+            this shouldContain t(2, 1, 3)
+            this shouldContain t(1, 3, 2)
+            this shouldContain t(3, 2, 1)
+            this shouldContain t(2, 3, 1)
+            this shouldContain t(3, 1, 2)
+        }
 
-        val s3 = symmetricGroup(3)
-        assertEquals(6, s3.size)
-        assertTrue(s3.contains(t(1, 2, 3)))
-        assertTrue(s3.contains(t(2, 1, 3)))
-        assertTrue(s3.contains(t(1, 3, 2)))
-        assertTrue(s3.contains(t(3, 2, 1)))
-        assertTrue(s3.contains(t(2, 3, 1)))
-        assertTrue(s3.contains(t(3, 1, 2)))
+        with (symmetricGroup(4)) {
+            size shouldBe 24
+            this shouldContain t(1, 2, 3, 4)
+            this shouldContain t(2, 1, 3, 4)
+            this shouldContain t(1, 3, 2, 4)
+            this shouldContain t(3, 2, 1, 4)
+            this shouldContain t(2, 3, 1, 4)
+            this shouldContain t(3, 1, 2, 4) //6
 
-        val s4 = symmetricGroup(4)
-        assertEquals(24, s4.size)
-        assertTrue(s4.contains(t(1, 2, 3, 4)))
-        assertTrue(s4.contains(t(2, 1, 3, 4)))
-        assertTrue(s4.contains(t(1, 3, 2, 4)))
-        assertTrue(s4.contains(t(3, 2, 1, 4)))
-        assertTrue(s4.contains(t(2, 3, 1, 4)))
-        assertTrue(s4.contains(t(3, 1, 2, 4)))//6
+            this shouldContain t(1, 2, 4, 3)
+            this shouldContain t(2, 1, 4, 3)
+            this shouldContain t(1, 3, 4, 2)
+            this shouldContain t(3, 2, 4, 1)
+            this shouldContain t(2, 3, 4, 1)
+            this shouldContain t(3, 1, 4, 2) //6
 
-        assertTrue(s4.contains(t(1, 2, 4, 3)))
-        assertTrue(s4.contains(t(1, 2, 4, 3)))
-        assertTrue(s4.contains(t(1, 4, 3, 2)))
-        assertTrue(s4.contains(t(1, 3, 4, 2)))
-        assertTrue(s4.contains(t(1, 4, 2, 3)))//5
+            this shouldContain t(1, 4, 2, 3)
+            this shouldContain t(2, 4, 1, 3)
+            this shouldContain t(1, 4, 3, 2)
+            this shouldContain t(3, 4, 2, 1)
+            this shouldContain t(2, 4, 3, 1)
+            this shouldContain t(3, 4, 1, 2) //6
 
-        assertTrue(s4.contains(t(3, 2, 1, 4)))
-        assertTrue(s4.contains(t(3, 2, 4, 1)))
-        assertTrue(s4.contains(t(4, 2, 3, 1)))
-        assertTrue(s4.contains(t(4, 2, 1, 3)))//4
-
-        assertTrue(s4.contains(t(4, 1, 3, 2)))
-        assertTrue(s4.contains(t(4, 2, 3, 1)))
-        assertTrue(s4.contains(t(2, 4, 3, 1)))//3
-
-        assertTrue(s4.contains(t(2, 1, 4, 3)))
-        assertTrue(s4.contains(t(2, 4, 1, 3)))
-        assertTrue(s4.contains(t(2, 3, 4, 1)))
-        assertTrue(s4.contains(t(3, 1, 4, 2)))
-        assertTrue(s4.contains(t(3, 4, 1, 2)))
-        assertTrue(s4.contains(t(3, 4, 2, 1)))
-        assertTrue(s4.contains(t(4, 3, 2, 1)))
-        assertTrue(s4.contains(t(4, 1, 2, 3)))
-        assertTrue(s4.contains(t(4, 3, 1, 2)))
-
-        val s5 = symmetricGroup(5)
-        assertEquals(120, s5.size)
-        for (t in s5) {
-            assertEquals(5, t.rank())
-            assertTrue(t.apply(1) != t.apply(2))
-            assertTrue(t.apply(1) != t.apply(3))
-            assertTrue(t.apply(1) != t.apply(4))
-            assertTrue(t.apply(1) != t.apply(5))
-            assertTrue(t.apply(2) != t.apply(3))
-            assertTrue(t.apply(2) != t.apply(4))
-            assertTrue(t.apply(2) != t.apply(5))
-            assertTrue(t.apply(3) != t.apply(4))
-            assertTrue(t.apply(3) != t.apply(5))
-            assertTrue(t.apply(4) != t.apply(5))
+            this shouldContain t(4, 1, 2, 3)
+            this shouldContain t(4, 2, 1, 3)
+            this shouldContain t(4, 1, 3, 2)
+            this shouldContain t(4, 3, 2, 1)
+            this shouldContain t(4, 2, 3, 1)
+            this shouldContain t(4, 3, 1, 2) //6
+        }
+        with (symmetricGroup(5)) {
+            size shouldBe 120
+            for (t in this) {
+                t.rank() shouldBe 5
+                t.image.size shouldBe 5
+            }
         }
     }
 
     @Test
     fun symmetricGroupLargeTest() {
-        val s3 = symmetricGroup(3)
-        assertEquals(6, s3.size)
-        assertEquals(24, symmetricGroup(4).size)
-        assertEquals(120, symmetricGroup(5).size)
-        assertEquals(720, symmetricGroup(6).size)
-        assertEquals(5040, symmetricGroup(7).size)
-        assertEquals(40320, symmetricGroup(8).size)
-        assertEquals(40320 * 9, symmetricGroup(9).size)
-        //        Assert.assertEquals(40320 * 90, Semigroup.symmetricGroup(10).size);
+        symmetricGroup(6).size shouldBe 720
+        symmetricGroup(7).size shouldBe 5040
+        symmetricGroup(8).size shouldBe 40320
+        symmetricGroup(9).size shouldBe 40320 * 9
     }
 
     @Test
