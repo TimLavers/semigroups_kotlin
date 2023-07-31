@@ -1,9 +1,9 @@
 package org.grandtestauto.maths.monoid.test
 
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.shouldBe
 import org.grandtestauto.maths.monoid.*
-import org.junit.Assert
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
@@ -35,40 +35,6 @@ class IntSetTest : TestBase() {
     }
 
     @Test
-    fun powerSetTest() {
-        var powerSet = intsFrom1To(1).powerSet()
-        assertEquals(2, powerSet.size)
-        assertTrue(powerSet.contains(s(1)))
-        assertTrue(powerSet.contains(s()))
-
-        powerSet = intsFrom1To(2).powerSet()
-        assertEquals(4, powerSet.size)
-        assertTrue(powerSet.contains(s()))
-        assertTrue(powerSet.contains(s(1)))
-        assertTrue(powerSet.contains(s(2)))
-        assertTrue(powerSet.contains(s(1, 2)))
-
-        powerSet = intsFrom1To(4).powerSet()
-        assertEquals(16, powerSet.size)
-        assertTrue(powerSet.contains(s()))
-        assertTrue(powerSet.contains(s(1)))
-        assertTrue(powerSet.contains(s(2)))
-        assertTrue(powerSet.contains(s(3)))
-        assertTrue(powerSet.contains(s(4)))
-        assertTrue(powerSet.contains(s(1, 2)))
-        assertTrue(powerSet.contains(s(1, 3)))
-        assertTrue(powerSet.contains(s(1, 4)))
-        assertTrue(powerSet.contains(s(2, 3)))
-        assertTrue(powerSet.contains(s(2, 4)))
-        assertTrue(powerSet.contains(s(3, 4)))
-        assertTrue(powerSet.contains(s(1, 2, 3)))
-        assertTrue(powerSet.contains(s(1, 2, 4)))
-        assertTrue(powerSet.contains(s(1, 3, 4)))
-        assertTrue(powerSet.contains(s(2, 3, 4)))
-        assertTrue(powerSet.contains(s(1, 2, 3, 4)))
-    }
-
-    @Test
     fun unionCompositionTest() {
         val semigroup2 = Semigroup(intsets( s(1, 2), s(1,4), s(1, 2, 4)), UnionComposition)
         assertEquals(3, semigroup2.size)
@@ -81,10 +47,19 @@ class IntSetTest : TestBase() {
     }
 
     @Test
-    fun isASubsetOfTest() {
-        //Assert.assertFalse(s().isASubsetOf(s()))
-        assertTrue(s() isASubsetOf s(1))
-        Assert.assertFalse(s(1) isASubsetOf s())
-        assertTrue(s(1, 3, 5, 7).isASubsetOf(s(1, 2, 3, 4, 5, 6, 7, 8)))
+    fun allSubsetsTest() {
+        with (intsFrom1To(3).allSubsets()) {
+            size shouldBe 8
+            this shouldContain setOf(1, 2, 3)
+            this shouldContain setOf(1, 2)
+            this shouldContain setOf(1, 3)
+            this shouldContain setOf(2, 3)
+            this shouldContain setOf(3)
+            this shouldContain setOf(2)
+            this shouldContain setOf(1)
+            this shouldContain setOf()
+        }
+        intsFrom1To(6).allSubsets().size shouldBe 64
+        intsFrom1To(8).allSubsets().size shouldBe 256
     }
 }

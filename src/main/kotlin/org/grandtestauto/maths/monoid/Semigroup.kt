@@ -74,7 +74,7 @@ fun <T,U> areIsomorphic(domain: Semigroup<T>, range: Semigroup<U>) = findIsomorp
 /**
  * Returns true if the given function, which is defined on perhaps
  * a subset of the elements of the domain semigroup,
- * is not inconsistent with being a homomorphism.
+ * is consistent with being a homomorphism.
  */
 private fun <T, U> isPartialHomomorphism(
     function: FiniteFunction<T, U>,
@@ -173,16 +173,17 @@ fun symmetricGroup(n: Int): Monoid<Transformation> {
     return asMonoid(result, unit(n))
 }
 
-private fun generateSymmetricGroup(rank_atLeast2: Int): Semigroup<Transformation> {
+private fun generateSymmetricGroup(n: Int): Semigroup<Transformation> {
+    require(n >= 2)
     val generators = HashSet<Transformation>()
-    for (i in 1 until rank_atLeast2) {
-        val generatorData = IntArray(rank_atLeast2)
+    for (i in 1 until n) {
+        val generatorData = IntArray(n)
         for (j in 1 until i) {
             generatorData[j - 1] = j
         }
         generatorData[i - 1] = i + 1
         generatorData[i] = i
-        for (j in i + 1 until rank_atLeast2) {
+        for (j in i + 1 until n) {
             generatorData[j] = j + 1
         }
         generators.add(Transformation(generatorData))
@@ -324,9 +325,14 @@ open class Semigroup<T>(val elements: Set<T>, val composition: ((T, T) -> T)) : 
         false
     } else isClosedUnderComposition(subset, composition)
 
-    fun allSubsemigroups() = elements.powerSet().filter { it.isNotEmpty() }.filter { isSubsemigroup(it) }.map { Semigroup(it, composition) }
+    fun allSubsemigroups() = elements
+        .subsetsSatisfying{ isSubsemigroup(it) }
+        .filter { it.isNotEmpty() }
+        .map { Semigroup(it, composition) }
+//    fun allSubsemigroups() = elements.powerSette().filter { it.isNotEmpty() }.filter { isSubsemigroup(it) }.map { Semigroup(it, composition) }
 }
-
+//fun allSubsemigroups() = elements.subsetsSatisfying{ isSubsemigroup(it) }.filter { it.isNotEmpty() }.map { Semigroup(it, composition) }
+//
 class Monoid<T>(elements: Set<T>, composition: (T, T) -> T, private val identity: T) :
     Semigroup<T>(elements, composition) {
     override fun powerOf(t: T, r: Int): T {

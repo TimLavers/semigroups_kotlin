@@ -64,4 +64,42 @@ class SmallSemigroupsTest : TestBase() {
         println("non trivials: ${nonTrivial.size}")
         nonTrivial.forEach { println("it = $it") }
     }
+
+    @Test
+    fun o4o4() {
+        val o4 = orderPreservingTransformationMonoid(4)
+        println("o4.size = ${o4.size}")
+//        val allFunctions = allFunctionsFromTo(o4.elements, o3.elements)
+        val allHomomorphisms = allHomomorphisms(o4, o4)
+        val nonTrivial = allHomomorphisms.filter { it.range().size > 2 }
+        println("allHomomorphisms = ${allHomomorphisms.size}")
+        println("non trivials: ${nonTrivial.size}")
+        nonTrivial.forEach { println("it = ${it.range().size}=> $it") }
+    }
+
+    @Test
+    fun o3o3() {
+        val o3 = orderPreservingTransformationMonoid(3)
+        println("o3.size = ${o3.size}")
+//        val allFunctions = allFunctionsFromTo(o4.elements, o3.elements)
+        val allHomomorphisms = allHomomorphisms(o3, o3)
+        val nonTrivial = allHomomorphisms.filter { it.range().size >= 4 }
+        println("allHomomorphisms = ${allHomomorphisms.size}")
+        println("non trivials: ${nonTrivial.size}")
+        nonTrivial.forEach { println("it = ${it.range().size}=> $it") }
+    }
+
+//    @Test
+    fun o5o5() {
+        val o5 = orderPreservingTransformationMonoid(5)
+        val subsemigroups = o5.allSubsemigroups()
+        println("number of subs: ${subsemigroups.size}.")
+    }
+
+    @Test
+    fun chainSubs() {
+        val c4 = chainSemigroup(3)
+        val subs = c4.allSubsemigroups()
+        println( "subs: ${subs.size}")
+    }
 }

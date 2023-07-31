@@ -30,24 +30,24 @@ class SemigroupTest : TestBase() {
     @Test
     fun isCongruenceTest() {
         val o3 = orderPreservingTransformationMonoid(3)
-        val silly = createRelation(o3.elements, { a, b -> a.apply(1) == b.apply(1) })
+        val silly = createRelation(o3.elements) { a, b -> a.apply(1) == b.apply(1) }
         assert(!o3.isCongruence(silly))
 
-        val closer = createRelation(o3.elements, { a, b -> a.image == b.image })
+        val closer = createRelation(o3.elements) { a, b -> a.image == b.image }
         assert(!o3.isCongruence(closer))
 
         val o5 = orderPreservingTransformationMonoid(5)
-        val almost = createRelation(o5.elements, { a, b -> a.kernel == b.kernel })
+        val almost = createRelation(o5.elements) { a, b -> a.kernel == b.kernel }
         assert(!o5.isCongruence(almost))
 
-        val identityCongruence = createRelation(o5.elements, { a, b -> a.kernel == b.kernel && a.image == b.image })
+        val identityCongruence = createRelation(o5.elements) { a, b -> a.kernel == b.kernel && a.image == b.image }
         assert(o5.isCongruence(identityCongruence))
 
         /*
-        If we map On to {0, 1} by id -> 1 and all other elements -> 0, we shold
+        If we map On to {0, 1} by id -> 1 and all other elements -> 0, we should
         get a homomorphism with kernel equivalent to the following congruence.
          */
-        val zeroOrId = createRelation(o5.elements, { a, b -> (a.image.size < 5 && b.image.size < 5) || (a.image.size == 5 && b.image.size == 5) })
+        val zeroOrId = createRelation(o5.elements) { a, b -> (a.image.size < 5 && b.image.size < 5) || (a.image.size == 5 && b.image.size == 5) }
         assert(o5.isCongruence(zeroOrId))
 
         //todo tn examples
@@ -112,6 +112,15 @@ class SemigroupTest : TestBase() {
     }
 
     @Test
+    fun isSubsemigroupLoad() {
+        val primes = listOf(2, 3, 5, 7, 11, 13, 17, 19)
+        primes.forEach {
+            println("testing for $it")
+            (cyclicGroup(it) as Semigroup<Transformation>).allSubsemigroups().size shouldBe 2
+        }
+    }
+
+    @Test
     fun isHomomorphismTest() {
         val cyc2 = cyclicGroup(2)
         val cyc3 = cyclicGroup(3)
@@ -126,7 +135,7 @@ class SemigroupTest : TestBase() {
         val o2 = orderPreservingTransformationMonoid(2)
         val all_o2_o2 = allFunctionsFromTo(o2.elements, o2.elements)
         assertEquals(27, all_o2_o2.size)
-        val homomorphisms_o2_o2 = all_o2_o2.filter({ isHomomorphism(it, o2, o2) })
+        val homomorphisms_o2_o2 = all_o2_o2.filter { isHomomorphism(it, o2, o2) }
         all_o2_o2.forEach {
             if (it in homomorphisms_o2_o2) {
                 assertTrue(checkHomomorphism(it, o2))

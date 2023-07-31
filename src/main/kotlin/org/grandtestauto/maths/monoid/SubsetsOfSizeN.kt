@@ -28,11 +28,5 @@ class SubsetsOfSizeN<out T>(private val originatingSet: Set<T>, cardinalityOfSub
         return subsets
     }
 
-    private fun without(excluded: T): Set<T> {
-        val result = mutableSetOf<T>()
-        originatingSet.forEach{t ->
-            if (t != excluded) result.add(t)
-        }
-        return result
-    }
+    private fun without(excluded: T) = originatingSet.filter { it != excluded }.toSet()
 }
