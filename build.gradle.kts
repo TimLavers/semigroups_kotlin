@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val kotestVersion = "5.5.5"
 
-
 plugins {
     kotlin("jvm") version "1.8.21"
 }
@@ -13,7 +12,8 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib")) 
+    implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 //	testImplementation("junit:junit:4.13.1")
     implementation(kotlin("test"))
     implementation("io.kotest:kotest-assertions-core:$kotestVersion")

@@ -113,7 +113,7 @@ class SemigroupTest : TestBase() {
 
     @Test
     fun isSubsemigroupLoad() {
-        val primes = listOf(2, 3, 5, 7, 11, 13, 17, 19)
+        val primes = listOf(2, 3, 5, 7, 11, 13, 17, 19, 23)
         primes.forEach {
             println("testing for $it")
             (cyclicGroup(it) as Semigroup<Transformation>).allSubsemigroups().size shouldBe 2
