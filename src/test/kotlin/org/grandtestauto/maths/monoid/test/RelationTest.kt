@@ -1,5 +1,6 @@
 package org.grandtestauto.maths.monoid.test
 
+import io.kotest.matchers.shouldBe
 import org.grandtestauto.maths.monoid.*
 import org.junit.Assert
 import org.junit.Test
@@ -13,14 +14,12 @@ class RelationTest : TestBase() {
 
     @Test
     fun leftTest() {
-        val t = Pair("left", 99)
-        Assert.assertEquals("left", t.left())
+        Pair("left", 99).left() shouldBe "left"
     }
 
     @Test
     fun rightTest() {
-        val t = Pair("left", 99)
-        Assert.assertEquals(99, t.right())
+        Pair("left", 99).right() shouldBe 99
     }
 
     @Test
@@ -259,13 +258,15 @@ class RelationTest : TestBase() {
 
     @Test
     fun containsTest() {
-        var relation = relation<Int>()
-        Assert.assertFalse(relation.contains(tu(1, 1)))
-        Assert.assertFalse(relation.contains(tu(1, 2)))
+        with (relation<Int>()) {
+            contains(1 to 1) shouldBe false
+            contains(1 to 2) shouldBe false
+        }
 
-        relation = relation(tu(1, 2), tu(1, 3))
-        Assert.assertFalse(relation.contains(tu(1, 1)))
-        Assert.assertTrue(relation.contains(tu(1, 2)))
+        with(relation(1 to 2, 1 to 3)) {
+            contains(1 to 1) shouldBe false
+            contains(1 to 2) shouldBe true
+        }
     }
 
     @Test

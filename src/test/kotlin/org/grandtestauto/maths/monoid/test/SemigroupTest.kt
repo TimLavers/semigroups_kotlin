@@ -109,6 +109,17 @@ class SemigroupTest : TestBase() {
             this shouldContainEquivalent cyc3
             this shouldContain cyc6
         }
+
+        val cyc4 = cyclicGroup(4) as Semigroup<Transformation>
+        val sym4 = symmetricGroup(4) as Semigroup<Transformation>
+        val sym3 = symmetricGroup(3) as Semigroup<Transformation>
+        with(sym4.allSubsemigroups()) {
+            size shouldBe 30
+            this.filter { areIsomorphic(it, cyc1) }.size shouldBe 1
+            this.filter { areIsomorphic(it, cyc2) }.size shouldBe 9
+            this.filter { areIsomorphic(it, cyc4) }.size shouldBe 3
+            this.filter { areIsomorphic(it, sym3) }.size shouldBe 4
+        }
     }
 
     @Test
@@ -299,7 +310,7 @@ class SemigroupTest : TestBase() {
         assertTrue(o3.contains(t(2, 3, 3)))
 
         assertTrue(o3.contains(t(1, 2, 3)))
-        o3.forEach { t -> assertTrue("Not order-preserving: " + t, isOrderPreserving(t)) }
+        o3.forEach { t -> assertTrue("Not order-preserving: $t", isOrderPreserving(t)) }
 
         val o4 = orderPreservingTransformationMonoid(4)
         assertEquals(35, o4.size)
@@ -416,7 +427,7 @@ class SemigroupTest : TestBase() {
         fun dumb(x: Transformation, y: Transformation): Transformation {
             val dumb = IntArray(x.rank())
             for (i in 1..x.rank()) {
-                dumb[i - 1] = Math.max(x.apply(i), y.apply(i))
+                dumb[i - 1] = x.apply(i).coerceAtLeast(y.apply(i))
             }
             return Transformation(dumb)
         }

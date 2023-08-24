@@ -1,7 +1,7 @@
 package org.grandtestauto.maths.monoid.test
 
+import io.kotest.matchers.shouldBe
 import org.grandtestauto.maths.monoid.*
-import org.junit.Assert
 import org.junit.Test
 import java.util.*
 
@@ -13,26 +13,22 @@ class PO4PreserveTest : TestBase() {
     @Test
     fun runTest() {
         val tuples = HashSet<Pair<Int, Int>>()
-        tuples.add(tu(1, 2))
-        tuples.add(tu(1, 3))
-        tuples.add(tu(1, 4))
-        tuples.add(tu(2, 4))
-        tuples.add(tu(3, 4))
-        tuples.add(tu(1, 1))
-        tuples.add(tu(2, 2))
-        tuples.add(tu(3, 3))
-        tuples.add(tu(4, 4))
-        val baseSet = HashSet<Int>()
-        baseSet.add(1)
-        baseSet.add(2)
-        baseSet.add(3)
-        baseSet.add(4)
+        tuples.add(1 to 2)
+        tuples.add(1 to 3)
+        tuples.add(1 to 4)
+        tuples.add(2 to 3)
+        tuples.add(2 to 4)
+        tuples.add(1 to 1)
+        tuples.add(2 to 2)
+        tuples.add(3 to 3)
+        tuples.add(4 to 4)
+        val baseSet = intsFrom1To(4).toSet()
         val relation = Relation(baseSet, tuples)
-        Assert.assertTrue(relation.isAPartialOrder)
+        relation.isAPartialOrder shouldBe true
 
         val orderPreservers = orderPreservingTransformationMonoid(4)
-        Assert.assertTrue(isAssociative(TransformationComposition, orderPreservers.elements))
-        Assert.assertTrue(isClosedUnderComposition(orderPreservers.elements, TransformationComposition))
+        isAssociative(TransformationComposition, orderPreservers.elements) shouldBe true
+        isClosedUnderComposition(orderPreservers.elements, TransformationComposition) shouldBe true
 
         println("opt size: " + orderPreservers.size)
 
@@ -46,7 +42,7 @@ class PO4PreserveTest : TestBase() {
             println()
             println("lClass with size: " + lClass.size)
             lClass.forEach { tuple -> println(tuple.toString()) }
-            val fixity = lClass.sumBy { it.numberOfFixedPoints }
+            val fixity = lClass.sumOf { it.numberOfFixedPoints }
             totalFixity[0] += fixity
             println("fixity = $fixity")
         }
@@ -59,7 +55,7 @@ class PO4PreserveTest : TestBase() {
             println()
             println("rClass with size: " + rClass.size)
             rClass.forEach { tuple -> println(tuple.toString()) }
-            val fixity = rClass.sumBy { it.numberOfFixedPoints }
+            val fixity = rClass.sumOf { it.numberOfFixedPoints }
             totalFixity[0] += fixity
             println("fixity = $fixity")
         }
