@@ -1,5 +1,6 @@
 package org.grandtestauto.maths.monoid.test
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import org.grandtestauto.maths.monoid.*
 import org.junit.Assert
@@ -28,7 +29,7 @@ class TransformationTest {
     fun subsemigroupOfOrderPreservingTransformationsTest() {
         val filtered = subsemigroupOfOrderPreservingTransformations(transformationMonoid(5))
         val expected = orderPreservingTransformationMonoid(5)
-        Assert.assertEquals(expected, filtered)
+        expected.elements shouldBe filtered.elements
     }
 
     @Test
@@ -162,6 +163,7 @@ class TransformationTest {
 
     @Test
     fun unitTest(){
+        shouldThrow<IllegalArgumentException> { unit(0) }
         Assert.assertEquals(Transformation(intArrayOf(1)), unit(1))
         Assert.assertEquals(Transformation(intArrayOf(1, 2)), unit(2))
         Assert.assertEquals(Transformation(intArrayOf(1, 2, 3, 4, 5)), unit(5))

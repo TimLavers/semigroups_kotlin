@@ -33,11 +33,10 @@ fun cycle2_3___n_1(rank: Int): Transformation {
     return Transformation(generatorData)
 }
 
-fun unit(rank: Int): Transformation {
-    val map = IntArray(rank)
-    for (i in map.indices) {
-        map[i] = i + 1
-    }
+fun unit(n: Int): Transformation {
+    require(n > 0)
+    val map = IntArray(n)
+    map.indices.forEach { map[it] = it + 1 }
     return Transformation(map)
 }
 

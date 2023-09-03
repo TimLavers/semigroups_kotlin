@@ -129,28 +129,33 @@ fun transformationMonoid(rank_atLeast2: Int): Semigroup<Transformation> {
     return Semigroup(elements, TransformationComposition)
 }
 
-fun orderPreservingTransformationMonoid(rank_atLeast2: Int): Semigroup<Transformation> {
-    val generators = HashSet<Transformation>()
-    generators.add(unit(rank_atLeast2))
-    for (i in 1 until rank_atLeast2) {
-        val generatorLeftData = IntArray(rank_atLeast2)
-        val generatorRightData = IntArray(rank_atLeast2)
-        for (j in 1 until i) {
-            generatorLeftData[j - 1] = j
-            generatorRightData[j - 1] = j
-        }
-        generatorLeftData[i - 1] = i
-        generatorRightData[i - 1] = i + 1
-        generatorLeftData[i] = i
-        generatorRightData[i] = i + 1
-        for (j in i + 1 until rank_atLeast2) {
-            generatorLeftData[j] = j + 1
-            generatorRightData[j] = j + 1
-        }
-        generators.add(Transformation(generatorLeftData))
-        generators.add(Transformation(generatorRightData))
-    }
-    return generateFrom(TransformationComposition, generators)
+fun orderPreservingTransformationMonoid(n: Int) = generateTransformationMonoid(n) {a, b -> setOf(nudgeUp(a, b), nudgeDown(a, b)) }
+
+fun nudgeUp(n: Int, i: Int) = nudge(n, i, true)
+
+fun nudgeDown(n: Int, i: Int) = nudge(n, i, false)
+
+private fun nudge(n: Int, i: Int, up: Boolean): Transformation {
+    require(n > 1)
+    require(i > 0)
+    require(i < n)
+    val data = IntArray(n)
+    (1 until i).forEach { data[it - 1] = it}
+    data[i - 1] = if (up) i + 1 else i
+    data[i] = if (up) i + 1 else i
+    (i + 1 until n).forEach { data[it] = it + 1 }
+    return Transformation(data)
+}
+
+fun monoidOfNonDecreasingTransformations(n: Int) = generateTransformationMonoid(n) { a, b -> setOf(nudgeUp(a, b)) }
+
+fun monoidOfNonIncreasingTransformations(n: Int) = generateTransformationMonoid(n) {a, b -> setOf(nudgeDown(a, b)) }
+
+private fun generateTransformationMonoid(n: Int, generatorGenerator: ((Int, Int) -> Set<Transformation>)): Monoid<Transformation> {
+    val unit = unit(n)
+    val generators = mutableSetOf(unit)
+    (1 until n).forEach { generators.addAll(generatorGenerator( n, it )) }
+    return asMonoid( generateFrom(TransformationComposition, generators), unit)
 }
 
 fun symmetricGroup(n: Int): Monoid<Transformation> {

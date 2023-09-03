@@ -10,7 +10,7 @@ import org.junit.Test
  */
 class C5S4DoubleProduct {
     private val c5 = cyclicGroup(5)
-    // The generator of C5
+    // A generator of C5
     private val gamma = Transformation(intArrayOf(2,3,4,5,1))
     // We want S4 embedded in S5.
     private val s4 = Semigroup(symmetricGroup(4).map {it.embed(5)}.toSet(), TransformationComposition)

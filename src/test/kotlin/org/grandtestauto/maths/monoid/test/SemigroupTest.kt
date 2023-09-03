@@ -1,5 +1,6 @@
 package org.grandtestauto.maths.monoid.test
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import org.grandtestauto.maths.monoid.*
@@ -288,7 +289,52 @@ class SemigroupTest : TestBase() {
     }
 
     @Test
+    fun nudgeUpTest() {
+        nudgeUp(2, 1) shouldBe t(2, 2)
+        nudgeUp(3, 1) shouldBe t(2, 2, 3)
+        nudgeUp(3, 2) shouldBe t(1, 3, 3)
+        nudgeUp(5, 1) shouldBe t(2, 2, 3, 4, 5)
+        nudgeUp(5, 2) shouldBe t(1, 3, 3, 4, 5)
+        nudgeUp(5, 3) shouldBe t(1, 2, 4, 4, 5)
+        nudgeUp(5, 4) shouldBe t(1, 2, 3, 5, 5)
+    }
+
+    @Test
+    fun `nudge up requirements`() {
+        shouldThrow<IllegalArgumentException> { nudgeUp(0, 0) }
+        shouldThrow<IllegalArgumentException> { nudgeUp(0, 1) }
+        shouldThrow<IllegalArgumentException> { nudgeUp(0, 2) }
+        shouldThrow<IllegalArgumentException> { nudgeUp(1, 1) }
+        shouldThrow<IllegalArgumentException> { nudgeUp(2, 0) }
+        shouldThrow<IllegalArgumentException> { nudgeUp(2, 2) }
+    }
+
+    @Test
+    fun nudgeDownTest() {
+        nudgeDown(2, 1) shouldBe t(1, 1)
+        nudgeDown(3, 1) shouldBe t(1, 1, 3)
+        nudgeDown(3, 2) shouldBe t(1, 2, 2)
+        nudgeDown(5, 1) shouldBe t(1, 1, 3, 4, 5)
+        nudgeDown(5, 2) shouldBe t(1, 2, 2, 4, 5)
+        nudgeDown(5, 3) shouldBe t(1, 2, 3, 3, 5)
+        nudgeDown(5, 4) shouldBe t(1, 2, 3, 4, 4)
+    }
+
+    @Test
+    fun `nudge down requirements`() {
+        shouldThrow<IllegalArgumentException> { nudgeDown(0, 0) }
+        shouldThrow<IllegalArgumentException> { nudgeDown(0, 1) }
+        shouldThrow<IllegalArgumentException> { nudgeDown(0, 2) }
+        shouldThrow<IllegalArgumentException> { nudgeDown(1, 1) }
+        shouldThrow<IllegalArgumentException> { nudgeDown(2, 0) }
+        shouldThrow<IllegalArgumentException> { nudgeDown(2, 2) }
+    }
+
+    @Test
     fun orderPreservingTransformationMonoidTest() {
+        val o1 = orderPreservingTransformationMonoid(1)
+        assertEquals(1, o1.size)
+
         val o2 = orderPreservingTransformationMonoid(2)
         assertEquals(3, o2.size)
         assertTrue(o2.contains(t(1, 1)))
@@ -315,6 +361,86 @@ class SemigroupTest : TestBase() {
         val o4 = orderPreservingTransformationMonoid(4)
         assertEquals(35, o4.size)
         o4.forEach { t -> assertTrue(isOrderPreserving(t)) }
+    }
+
+    @Test
+    fun `monoid of non decreasing transformations`() {
+        shouldThrow<IllegalArgumentException> { monoidOfNonDecreasingTransformations( 0) }
+
+        with (monoidOfNonDecreasingTransformations(1)) {
+            size shouldBe 1
+            elements shouldContain t(1)
+        }
+        with (monoidOfNonDecreasingTransformations(2)) {
+            size shouldBe 2
+            elements shouldContain t(1, 2)
+            elements shouldContain t(2, 2)
+        }
+        with (monoidOfNonDecreasingTransformations(3)) {
+            size shouldBe 5
+            elements shouldContain t(1, 2, 3)
+            elements shouldContain t(1, 3, 3)
+            elements shouldContain t(2, 2, 3)
+            elements shouldContain t(2, 3, 3)
+            elements shouldContain t(3, 3, 3)
+        }
+        with (monoidOfNonDecreasingTransformations(4)) {
+            size shouldBe 14
+            elements shouldContain t(1, 2, 3, 4)
+            elements shouldContain t(1, 2, 4, 4)
+            elements shouldContain t(1, 3, 3, 4)
+            elements shouldContain t(1, 3, 4, 4)
+            elements shouldContain t(1, 4, 4, 4)
+            elements shouldContain t(2, 2, 3, 4)
+            elements shouldContain t(2, 2, 4, 4)
+            elements shouldContain t(2, 3, 3, 4)
+            elements shouldContain t(2, 3, 4, 4)
+            elements shouldContain t(2, 4, 4, 4)
+            elements shouldContain t(3, 3, 3, 4)
+            elements shouldContain t(3, 3, 4, 4)
+            elements shouldContain t(3, 4, 4, 4)
+            elements shouldContain t(4, 4, 4, 4)
+        }
+    }
+
+    @Test
+    fun `monoid of non increasing transformations`() {
+        shouldThrow<IllegalArgumentException> { monoidOfNonIncreasingTransformations( 0) }
+
+        with (monoidOfNonIncreasingTransformations(1)) {
+            size shouldBe 1
+            elements shouldContain t(1)
+        }
+        with (monoidOfNonIncreasingTransformations(2)) {
+            size shouldBe 2
+            elements shouldContain t(1, 2)
+            elements shouldContain t(1, 1)
+        }
+        with (monoidOfNonIncreasingTransformations(3)) {
+            size shouldBe 5
+            elements shouldContain t(1, 2, 3)
+            elements shouldContain t(1, 1, 3)
+            elements shouldContain t(1, 2, 2)
+            elements shouldContain t(1, 1, 2)
+            elements shouldContain t(1, 1, 1)
+        }
+        with (monoidOfNonIncreasingTransformations(4)) {
+            size shouldBe 14
+            elements shouldContain t(1, 2, 3, 4)
+            elements shouldContain t(1, 1, 3, 4)
+            elements shouldContain t(1, 2, 2, 4)
+            elements shouldContain t(1, 1, 2, 4)
+            elements shouldContain t(1, 1, 1, 4)
+            elements shouldContain t(1, 2, 3, 3)
+            elements shouldContain t(1, 1, 3, 3)
+            elements shouldContain t(1, 2, 2, 3)
+            elements shouldContain t(1, 1, 2, 3)
+            elements shouldContain t(1, 1, 1, 3)
+            elements shouldContain t(1, 1, 1, 2)
+            elements shouldContain t(1, 1, 2, 2)
+            elements shouldContain t(1, 1, 1, 2)
+            elements shouldContain t(1, 1, 1, 1)
+        }
     }
 
     @Test
