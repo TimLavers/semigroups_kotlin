@@ -106,12 +106,12 @@ class SmallSemigroupsTest : TestBase() {
         val allHomomorphisms = allHomomorphisms(semigroup, semigroup)
     }
 
-    @Test
-    fun o5o5() {
-        val o5 = orderPreservingTransformationMonoid(5)
-        val allIsomorphisms = allInjectiveHomomorphisms(o5, o5)
-        allIsomorphisms.forEach { println(it) }
-    }
+//    @Test
+//    fun o5o5() {
+//        val o5 = orderPreservingTransformationMonoid(5)
+//        val allIsomorphisms = allInjectiveHomomorphisms(o5, o5)
+//        allIsomorphisms.forEach { println(it) }
+//    }
 
     @Test
     fun `non injective kernel of tn`() {
