@@ -65,6 +65,14 @@ class Transformation(private val map: IntArray) {
         Relation(domain, pairs)
     }
 
+    val fixedPoints: Set<Int> by lazy {
+        (1..map.size).filter { it == apply(it) }.toSet()
+    }
+
+    val movedPoints: Set<Int> by lazy {
+        (1..map.size).filter { it != apply(it) }.toSet()
+    }
+
     val domain: Set<Int> by lazy {
         (1..map.size).toSet()
     }
@@ -113,6 +121,12 @@ class Transformation(private val map: IntArray) {
             compositeMap[i - 1] = t.map[map[i - 1] -1]
         }
         return Transformation(compositeMap)
+    }
+
+    fun preImage(i: Int): Set<Int> {
+        require(i > 0)
+        require(i <= map.size)
+        return domain.filter { apply(it) == i }.toSet()
     }
 
     operator fun times(other: Transformation): Transformation {

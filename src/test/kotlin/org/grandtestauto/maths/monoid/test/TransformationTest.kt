@@ -51,6 +51,28 @@ class TransformationTest {
     }
 
     @Test
+    fun fixedPointsTest() {
+        cycle2_3___n_1(9).fixedPoints shouldBe emptySet()
+        t(1,1,1,2,1).fixedPoints shouldBe setOf(1)
+        t(1,2,1,4,1).fixedPoints shouldBe setOf(1, 2, 4)
+    }
+
+    @Test
+    fun movedPointsTest() {
+        cycle2_3___n_1(5).movedPoints shouldBe setOf(1, 2, 3, 4, 5)
+        t(1,1,1,2,1).movedPoints shouldBe setOf(2, 3, 4, 5)
+    }
+
+    @Test
+    fun preImageTest() {
+        cycle2_3___n_1(8).preImage(1) shouldBe setOf(8)
+        cycle2_3___n_1(7).preImage(7) shouldBe setOf(6)
+        t(1, 1, 1).preImage(2) shouldBe emptySet()
+        t(1, 1, 1).preImage(1) shouldBe setOf(1, 2, 3)
+        t(1, 2, 1, 5, 2).preImage(2) shouldBe setOf(5, 2)
+    }
+
+    @Test
     fun numberOfFixedPointsTest(){
         Assert.assertEquals(1, Transformation(intArrayOf(1)).numberOfFixedPoints)
         Assert.assertEquals(1, Transformation(intArrayOf(1, 1)).numberOfFixedPoints)
@@ -67,29 +89,21 @@ class TransformationTest {
         var t = Transformation(intArrayOf(1))
         Assert.assertEquals(relation(tu(1, 1)), t.kernel)
 
-        t = Transformation(intArrayOf(1, 2))
-        Assert.assertEquals(relation(tu(1, 1), tu(2, 2)), t.kernel)
+        Transformation(intArrayOf(1, 2)).kernel shouldBe relation(tu(1, 1), tu(2, 2))
 
-        t = Transformation(intArrayOf(1, 1))
-        Assert.assertEquals(relation(tu(1, 1), tu(2, 2), tu(1, 2), tu(2, 1)), t.kernel)
+        Transformation(intArrayOf(1, 1)).kernel shouldBe relation(tu(1, 1), tu(2, 2), tu(1, 2), tu(2, 1))
 
-        t = Transformation(intArrayOf(1, 1, 2))
-        Assert.assertEquals(relation(tu(1, 1), tu(2, 2), tu(1, 2), tu(2, 1), tu(3, 3)), t.kernel)
+        Transformation(intArrayOf(1, 1, 2)).kernel shouldBe relation(tu(1, 1), tu(2, 2), tu(1, 2), tu(2, 1), tu(3, 3))
 
-        t = Transformation(intArrayOf(2, 1, 2))
-        Assert.assertEquals(relation(tu(1, 1), tu(2, 2), tu(1, 3), tu(3, 1), tu(3, 3)), t.kernel)
+        Transformation(intArrayOf(2, 1, 2)).kernel shouldBe  relation(tu(1, 1), tu(2, 2), tu(1, 3), tu(3, 1), tu(3, 3))
 
-        t = Transformation(intArrayOf(2, 2, 2))
-        Assert.assertEquals(relation(tu(1, 1), tu(1, 2), tu(1, 3), tu(2, 1), tu(2, 2), tu(2, 3), tu(3, 1), tu(3, 2), tu(3, 3)), t.kernel)
+        Transformation(intArrayOf(2, 2, 2)).kernel shouldBe relation(tu(1, 1), tu(1, 2), tu(1, 3), tu(2, 1), tu(2, 2), tu(2, 3), tu(3, 1), tu(3, 2), tu(3, 3))
 
-        t = Transformation(intArrayOf(2, 2, 1, 1))
-        Assert.assertEquals(relation(tu(1, 1), tu(1, 2), tu(2, 1), tu(2, 2), tu(3, 3), tu(3, 4), tu(4, 3), tu(4, 4)), t.kernel)
+        Transformation(intArrayOf(2, 2, 1, 1)).kernel shouldBe relation(tu(1, 1), tu(1, 2), tu(2, 1), tu(2, 2), tu(3, 3), tu(3, 4), tu(4, 3), tu(4, 4))
 
-        t = Transformation(intArrayOf(1, 2, 1, 1))
-        Assert.assertEquals(relation(tu(1, 1), tu(1, 3), tu(1, 4), tu(3, 1), tu(3, 3), tu(3, 4), tu(4, 1), tu(4, 3), tu(4, 4), tu(2, 2)), t.kernel)
+        Transformation(intArrayOf(1, 2, 1, 1)).kernel shouldBe relation(tu(1, 1), tu(1, 3), tu(1, 4), tu(3, 1), tu(3, 3), tu(3, 4), tu(4, 1), tu(4, 3), tu(4, 4), tu(2, 2))
 
-        t = Transformation(intArrayOf(1, 2, 3, 4))
-        Assert.assertEquals(relation(tu(1, 1), tu(2, 2), tu(3, 3), tu(4, 4)), t.kernel)
+        Transformation(intArrayOf(1, 2, 3, 4)).kernel shouldBe relation(tu(1, 1), tu(2, 2), tu(3, 3), tu(4, 4))
     }
 
     @Test

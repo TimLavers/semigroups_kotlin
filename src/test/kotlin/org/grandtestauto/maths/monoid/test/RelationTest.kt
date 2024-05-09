@@ -1,5 +1,6 @@
 package org.grandtestauto.maths.monoid.test
 
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import org.grandtestauto.maths.monoid.*
 import org.junit.Assert
@@ -44,32 +45,69 @@ class RelationTest : TestBase() {
         val ints = s(1,2,3,4,5)
         val gt : ((Int), (Int)) -> (Boolean) = {a, b -> a > b }
         val created = createRelation(ints, gt)
-        Assert.assertEquals(10, created.size())
-        assert(created.contains(tu(2, 1)))
-        assert(created.contains(tu(3, 1)))
-        assert(created.contains(tu(4, 1)))
-        assert(created.contains(tu(5, 1)))
-        assert(created.contains(tu(3, 2)))
-        assert(created.contains(tu(4, 2)))
-        assert(created.contains(tu(5, 2)))
-        assert(created.contains(tu(4, 3)))
-        assert(created.contains(tu(5, 3)))
-        assert(created.contains(tu(5, 4)))
+        created.size shouldBe 10
+        created shouldContain tu(2, 1)
+        created shouldContain tu(3, 1)
+        created shouldContain tu(4, 1)
+        created shouldContain tu(5, 1)
+        created shouldContain tu(3, 2)
+        created shouldContain tu(4, 2)
+        created shouldContain tu(5, 2)
+        created shouldContain tu(4, 3)
+        created shouldContain tu(5, 3)
+        created shouldContain tu(5, 4)
+    }
+
+    @Test
+    fun converseTest() {
+        val ints = s(1,2,3,4,5)
+        val gt : ((Int), (Int)) -> (Boolean) = {a, b -> a > b }
+        val created = createRelation(ints, gt)
+        val converse = created.converse()
+        converse.size shouldBe 10
+        converse shouldContain tu(1, 2)
+        converse shouldContain tu(1, 3)
+        converse shouldContain tu(1, 4)
+        converse shouldContain tu(1, 5)
+        converse shouldContain tu(2, 3)
+        converse shouldContain tu(2, 4)
+        converse shouldContain tu(2, 5)
+        converse shouldContain tu(3, 4)
+        converse shouldContain tu(3, 5)
+        converse shouldContain tu(4, 5)
+    }
+
+    @Test
+    fun isEmptyTest() {
+        relation<Int>().isEmpty() shouldBe true
+        relation(tu(1, 1), tu(2, 2)).isEmpty() shouldBe false
+    }
+
+    @Test
+    fun containsAllTest() {
+        relation<Int>().containsAll(setOf()) shouldBe true
+        relation<Int>().containsAll(setOf(Pair(2, 3))) shouldBe false
+        with(relation(tu(1,1), tu(1,2), tu(2,1))) {
+            this.containsAll(setOf(Pair(1,1))) shouldBe true
+            this.containsAll(setOf(Pair(1,1), Pair(1, 2))) shouldBe true
+            this.containsAll(setOf(Pair(1,1), Pair(1, 2), Pair(2, 1))) shouldBe true
+            this.containsAll(setOf(Pair(1,1), Pair(1, 2), Pair(2, 2))) shouldBe false
+        }
     }
 
     @Test
     fun transitiveClosureTest() {
         val empty = relation<Int>()
-        Assert.assertEquals(0, empty.transitiveClosure().size())
+        Assert.assertEquals(0, empty.transitiveClosure().size)
 
         var generators = relation(tu(1, 1))
         var closure = generators.transitiveClosure()
-        Assert.assertEquals(1, closure.size())
+        Assert.assertEquals(1, closure.size)
         Assert.assertTrue(closure.contains(tu(1, 1)))
 
         generators = relation(tu(1, 1), tu(2, 2), tu(3, 3), tu(4, 4), tu(5, 5))
         closure = generators.transitiveClosure()
-        Assert.assertEquals(5, closure.size())
+        Assert.assertEquals(5, closure.size)
         Assert.assertTrue(closure.contains(tu(1, 1)))
         Assert.assertTrue(closure.contains(tu(2, 2)))
         Assert.assertTrue(closure.contains(tu(3, 3)))
@@ -78,7 +116,7 @@ class RelationTest : TestBase() {
 
         generators = relation(tu(1, 2), tu(2, 3), tu(3, 4), tu(4, 5), tu(5, 6))
         closure = generators.transitiveClosure()
-        Assert.assertEquals(15, closure.size())
+        Assert.assertEquals(15, closure.size)
         for (i in 1..5) {
             for (j in i + 1..6) {
                 Assert.assertTrue(closure.contains(tu(i, j)))
@@ -94,7 +132,7 @@ class RelationTest : TestBase() {
         //12,13,14,24,34 below 45,46,47,57,67
         generators = relation(tu(1, 2), tu(1, 3), tu(2, 4), tu(3, 4), tu(4, 5), tu(4, 6), tu(4, 7), tu(5, 7), tu(6, 7))
         closure = generators.transitiveClosure()
-        Assert.assertEquals(19, closure.size())
+        Assert.assertEquals(19, closure.size)
         Assert.assertTrue(closure.contains(tu(1, 2)))
         Assert.assertTrue(closure.contains(tu(1, 3)))
         Assert.assertTrue(closure.contains(tu(1, 4)))
@@ -118,11 +156,11 @@ class RelationTest : TestBase() {
 
     @Test
     fun sizeTest() {
-        Assert.assertEquals(0, relation<Int>().size())
-        Assert.assertEquals(1, relation(tu(2, 2)).size())
-        Assert.assertEquals(2, relation(tu(1, 1), tu(2, 2)).size())
-        Assert.assertEquals(3, relation(tu(1, 1), tu(2, 2), tu(1, 2)).size())
-        Assert.assertEquals(4, relation(tu(1, 1), tu(2, 2), tu(1, 2), tu(2, 1)).size())
+        Assert.assertEquals(0, relation<Int>().size)
+        Assert.assertEquals(1, relation(tu(2, 2)).size)
+        Assert.assertEquals(2, relation(tu(1, 1), tu(2, 2)).size)
+        Assert.assertEquals(3, relation(tu(1, 1), tu(2, 2), tu(1, 2)).size)
+        Assert.assertEquals(4, relation(tu(1, 1), tu(2, 2), tu(1, 2), tu(2, 1)).size)
     }
 
     @Test

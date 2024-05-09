@@ -264,6 +264,40 @@ fun <S, T> allHomomorphisms(s: Semigroup<S>, t: Semigroup<T>): Set<FiniteFunctio
     }
     return result
 }
+fun allInjectiveHomomorphisms(s: Semigroup<Transformation>, t: Semigroup<Transformation>): Set<FiniteFunction<Transformation, Transformation>> {
+    var result = mutableSetOf<FiniteFunction<Transformation, Transformation>>()
+
+    //Start with the single empty partial map from s.elements to t.elements
+    val seed = FiniteFunction(mapOf<Transformation, Transformation>())
+
+    //Add this to a set of all partial maps of s.elements to t.elements
+    result.add(seed)
+
+    //For each element x of s:
+    s.forEach { x ->
+        println("working with $x..., number partials = ${result.size}")
+        val imageSizeX = x.image.size
+        //Create a new result set
+        val newResults = mutableSetOf<FiniteFunction<Transformation, Transformation>>()
+        //For each partial map p in the result set
+        result.forEach { p ->
+            //For each element y of t form a new map by extending p with the pair (x,y)
+            t.forEach { y ->
+                if (y.image.size == imageSizeX && !p.range().contains(y)) {
+                    val newMap = p + Pair(x, y)
+                    if (isPartialHomomorphism(newMap, s, t)) {
+                        //For each of these possible partial maps,
+                        //add those that respect composition to the new result set
+                        newResults.add(newMap)
+                    }
+                }
+            }
+        }
+        //Replace the new result set with the old
+        result = newResults
+    }
+    return result
+}
 
 /**
  * An immutable set of elements and an associative binary operation under which that set is closed.

@@ -25,7 +25,7 @@ fun <T> createRelation(baseSet: Set<T>, criterion: ((T, T) -> Boolean)): Relatio
 
  * @author Tim Lavers
  */
-class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Pair<T, T>>) : Iterable<Pair<T, T>> {
+class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Pair<T, T>>) : Set<Pair<T, T>> {
     init {
         this.elements.forEach {
             assert(baseSet.contains(it.left())) { "Not in base set: " + it.left() }
@@ -39,13 +39,19 @@ class Relation<T>(private val baseSet: Set<T>, private val elements: Set<Pair<T,
     val isAnEquivalence: Boolean by lazy { calculateIsAnEquivalence() }
     val isTransitive: Boolean by lazy { calculateIsTransitive() }
 
-    operator fun contains(element: Pair<T, T>) = elements.contains(element)
+    override operator fun contains(element: Pair<T, T>) = elements.contains(element)
 
     fun transitiveClosure() = generate(TransitiveClosureGenerator())
 
     override fun iterator() = elements.iterator()
 
-    fun size() = elements.size
+    fun converse() = Relation(baseSet, elements.map { it.flip() }.toSet())
+
+    override val size = elements.size
+
+    override fun containsAll(elements: Collection<Pair<T, T>>) = this.elements.containsAll(elements)
+
+    override fun isEmpty() = elements.isEmpty()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
